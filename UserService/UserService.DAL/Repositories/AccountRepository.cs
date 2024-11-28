@@ -5,7 +5,7 @@ using UserService.DAL.Interfaces;
 
 namespace UserService.DAL.Repositories
 {
-    internal class AccountRepository : Repository<Account>, IAccountRepository
+    public class AccountRepository : Repository<Account>, IAccountRepository
     {
         private readonly DataContext _context;
 

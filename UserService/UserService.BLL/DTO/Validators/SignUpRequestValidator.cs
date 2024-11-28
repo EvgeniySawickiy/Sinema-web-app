@@ -3,7 +3,7 @@ using UserService.BLL.DTO.Request;
 
 namespace UserService.BLL.DTO.Validators
 {
-    internal class SignUpRequestValidator : AbstractValidator<SignUpRequest>
+    public class SignUpRequestValidator : AbstractValidator<SignUpRequest>
     {
         public SignUpRequestValidator()
         {
@@ -11,7 +11,7 @@ namespace UserService.BLL.DTO.Validators
             .NotEmpty().WithMessage("Login is required.")
             .Length(3, 50).WithMessage("Login must be between 3 and 50 characters.");
 
-            RuleFor(user => user.PasswordHash)
+            RuleFor(user => user.Password)
                 .NotEmpty().WithMessage("Password is required.")
                 .MinimumLength(6).WithMessage("Password must be at least 6 characters.");
 

@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using UserService.DAL.EF;
+﻿using UserService.DAL.EF;
 using UserService.DAL.Entities;
 using UserService.DAL.Interfaces;
 

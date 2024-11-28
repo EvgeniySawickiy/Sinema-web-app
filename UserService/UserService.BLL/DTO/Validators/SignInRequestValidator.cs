@@ -3,7 +3,7 @@ using UserService.BLL.DTO.Request;
 
 namespace UserService.BLL.DTO.Validators
 {
-    internal class SignInRequestValidator : AbstractValidator<SignInRequest>
+    public class SignInRequestValidator : AbstractValidator<SignInRequest>
     {
         public SignInRequestValidator()
         {
