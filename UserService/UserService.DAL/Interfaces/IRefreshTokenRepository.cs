@@ -2,7 +2,7 @@
 
 namespace UserService.DAL.Interfaces
 {
-    public interface IUserRepository : IRepository<User>
+    public interface IRefreshTokenRepository : IRepository<RefreshToken>
     {
     }
 }

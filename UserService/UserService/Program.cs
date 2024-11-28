@@ -1,4 +1,6 @@
 using Microsoft.EntityFrameworkCore;
+using UserService.BLL.Interfaces;
+using UserService.BLL.Services;
 using UserService.DAL.EF;
 using UserService.DAL.Interfaces;
 using UserService.DAL.Repositories;
@@ -9,6 +11,9 @@ builder.Services.AddDbContext<DataContext>(options =>
 options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
+builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<IUserService, UsersService>();
 
 builder.Services.AddControllers();
 

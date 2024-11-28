@@ -5,9 +5,9 @@ using UserService.DAL.Interfaces;
 
 namespace UserService.DAL.Repositories
 {
-    public class UserRepository : Repository<User>, IUserRepository
+    public class RefreshTokenRepository : Repository<RefreshToken>, IRefreshTokenRepository
     {
-        public UserRepository(DataContext context)
+        public RefreshTokenRepository(DataContext context)
             : base(context)
         {
         }
