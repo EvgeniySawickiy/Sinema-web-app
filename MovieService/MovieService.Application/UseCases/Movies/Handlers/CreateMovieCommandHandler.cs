@@ -22,8 +22,7 @@ namespace MovieService.Application.UseCases.Movies.Handlers
                 description: request.Description,
                 durationInMinutes: request.DurationInMinutes,
                 genre: Enum.Parse<Genre>(request.Genre, true),
-                rating: request.Rating
-            );
+                rating: request.Rating);
 
             await _unitOfWork.Movies.AddAsync(movie, cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);

@@ -2,12 +2,24 @@
 {
     public class Showtime
     {
-        public Guid Id { get; init; } = Guid.NewGuid();
-        public required Guid MovieId { get; init; }
-        public required DateTime StartTime { get; init; }
-        public required Guid HallId { get; init; }
+        public Showtime(Guid movieId, DateTime startTime, Guid hallId)
+        {
+            Id = Guid.NewGuid();
+            MovieId = movieId;
+            StartTime = startTime;
+            HallId = hallId;
+        }
 
-        public Movie? Movie { get; set; }
-        public Hall? Hall { get; set; }
+        public Guid Id { get; private set; }
+        public Guid MovieId { get; private set; }
+        public DateTime StartTime { get; private set; }
+        public Guid HallId { get; private set; }
+
+        public Movie Movie { get; set; }
+        public Hall Hall { get; set; }
+
+        public void UpdateMovieId(Guid movieId) => MovieId = movieId;
+        public void UpdateStartTime(DateTime startTime) => StartTime = startTime;
+        public void UpdateHallId(Guid hallId) => HallId = hallId;
     }
 }

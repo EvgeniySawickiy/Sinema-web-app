@@ -19,8 +19,7 @@ namespace MovieService.Application.UseCases.Showtimes.Handlers
             var showtime = new Showtime(
                 movieId: request.MovieId,
                 startTime: request.StartTime,
-                hallId: request.HallId
-            );
+                hallId: request.HallId);
 
             await _unitOfWork.Showtimes.AddAsync(showtime, cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);

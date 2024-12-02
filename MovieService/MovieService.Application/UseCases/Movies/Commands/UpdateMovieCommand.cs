@@ -2,7 +2,7 @@
 
 namespace MovieService.Application.UseCases.Movies.Commands
 {
-    public class UpdateMovieCommand : IRequest
+    public class UpdateMovieCommand : IRequest<Unit>
     {
         public Guid Id { get; set; }
         public string? Title { get; set; }

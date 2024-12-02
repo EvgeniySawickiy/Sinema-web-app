@@ -2,7 +2,7 @@
 
 namespace MovieService.Application.UseCases.Halls.Commands
 {
-    public class UpdateHallCommand : IRequest
+    public class UpdateHallCommand : IRequest<Unit>
     {
         public Guid Id { get; set; }
         public string? Name { get; set; }

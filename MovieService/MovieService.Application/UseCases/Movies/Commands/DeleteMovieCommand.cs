@@ -2,7 +2,7 @@
 
 namespace MovieService.Application.UseCases.Movies.Commands
 {
-    public class DeleteMovieCommand : IRequest
+    public class DeleteMovieCommand : IRequest<Unit>
     {
         public Guid Id { get; set; }
     }
