@@ -3,13 +3,18 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.11.35431.28
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MovieService", "MovieService\MovieService.csproj", "{C9DD830C-18B5-499E-A734-85AF9DCB136F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MovieService", "MovieService\MovieService.csproj", "{C9DD830C-18B5-499E-A734-85AF9DCB136F}"
+	ProjectSection(ProjectDependencies) = postProject
+		{36E75E3E-1241-41F4-9472-26426C5FE748} = {36E75E3E-1241-41F4-9472-26426C5FE748}
+		{F2727C42-BFC5-4D48-954D-0658AF26F377} = {F2727C42-BFC5-4D48-954D-0658AF26F377}
+		{F9A0C79D-8458-468E-8B1B-4E378003FD7E} = {F9A0C79D-8458-468E-8B1B-4E378003FD7E}
+	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MovieService.Core", "MovieService.Core\MovieService.Core.csproj", "{F9A0C79D-8458-468E-8B1B-4E378003FD7E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MovieService.Core", "MovieService.Core\MovieService.Core.csproj", "{F9A0C79D-8458-468E-8B1B-4E378003FD7E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MovieService.Application", "MovieService.Application\MovieService.Application.csproj", "{F2727C42-BFC5-4D48-954D-0658AF26F377}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MovieService.Application", "MovieService.Application\MovieService.Application.csproj", "{F2727C42-BFC5-4D48-954D-0658AF26F377}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MovieService.DataAccess", "MovieService.DataAccess\MovieService.DataAccess.csproj", "{36E75E3E-1241-41F4-9472-26426C5FE748}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MovieService.DataAccess", "MovieService.DataAccess\MovieService.DataAccess.csproj", "{36E75E3E-1241-41F4-9472-26426C5FE748}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
