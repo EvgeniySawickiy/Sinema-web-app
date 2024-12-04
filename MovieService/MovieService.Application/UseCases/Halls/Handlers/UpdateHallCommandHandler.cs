@@ -1,10 +1,11 @@
 ﻿using MediatR;
+using MovieService.Application.DTO.Hall;
 using MovieService.Application.UseCases.Halls.Commands;
 using MovieService.DataAccess.Interfaces;
 
 namespace MovieService.Application.UseCases.Halls.Handlers
 {
-    public class UpdateHallCommandHandler : IRequestHandler<UpdateHallCommand, Unit>
+    public class UpdateHallCommandHandler : IRequestHandler<UpdateHallCommand, HallDto>
     {
         private readonly IUnitOfWork _unitOfWork;
 
@@ -13,7 +14,7 @@ namespace MovieService.Application.UseCases.Halls.Handlers
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<Unit> Handle(UpdateHallCommand request, CancellationToken cancellationToken)
+        public async Task<HallDto> Handle(UpdateHallCommand request, CancellationToken cancellationToken)
         {
             var hall = await _unitOfWork.Halls.GetByIdAsync(request.Id, cancellationToken);
 
@@ -35,7 +36,12 @@ namespace MovieService.Application.UseCases.Halls.Handlers
             await _unitOfWork.Halls.UpdateAsync(hall, cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-            return Unit.Value;
+            return new HallDto
+            {
+                Id = hall.Id,
+                Name = hall.Name,
+                TotalSeats = hall.TotalSeats,
+            };
         }
     }
 }

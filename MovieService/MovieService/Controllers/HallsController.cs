@@ -42,8 +42,8 @@ namespace MovieService.Controllers
         public async Task<IActionResult> UpdateHall(Guid id, [FromBody] UpdateHallCommand command, CancellationToken cancellationToken)
         {
             command.Id = id;
-            await _mediator.Send(command, cancellationToken);
-            return NoContent();
+            var updatedHall = await _mediator.Send(command, cancellationToken);
+            return Ok(updatedHall);
         }
 
         [HttpDelete("{id:guid}")]
