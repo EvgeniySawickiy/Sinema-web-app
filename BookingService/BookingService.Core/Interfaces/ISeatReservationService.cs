@@ -1,0 +1,10 @@
+﻿using BookingService.Core.Entities;
+
+namespace BookingService.Core.Interfaces
+{
+    public interface ISeatReservationService
+    {
+        Task ReserveSeatsAsync(Guid showtimeId, List<Seat> seats);
+        Task ReleaseSeatsAsync(Guid showtimeId, List<Seat> seats);
+    }
+}

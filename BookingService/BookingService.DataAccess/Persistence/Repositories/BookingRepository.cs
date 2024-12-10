@@ -5,7 +5,7 @@ using MongoDB.Driver;
 
 namespace BookingService.DataAccess.Persistence.Repositories
 {
-    public class BookingRepository : IRepository<Booking>
+    public class BookingRepository : IBookingRepository
     {
         private readonly IMongoCollection<Booking> _collection;
 
@@ -42,6 +42,11 @@ namespace BookingService.DataAccess.Persistence.Repositories
         public async Task DeleteAsync(Guid id)
         {
             await _collection.DeleteOneAsync(x => x.Id == id);
+        }
+
+        public async Task<IEnumerable<Booking>> GetByUserIdAsync(Guid userId)
+        {
+            return await _collection.Find(b => b.UserId == userId).ToListAsync();
         }
     }
 }

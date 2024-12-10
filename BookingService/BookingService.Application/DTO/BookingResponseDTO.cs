@@ -1,13 +1,10 @@
-﻿using BookingService.Core.Enums;
-using MongoDB.Bson;
-using MongoDB.Bson.Serialization.Attributes;
+﻿using BookingService.Core.Entities;
+using BookingService.Core.Enums;
 
-namespace BookingService.Core.Entities
+namespace BookingService.Application.DTO
 {
-    public class Booking
+    public class BookingResponseDTO
     {
-        [BsonId]
-        [BsonGuidRepresentation(GuidRepresentation.Standard)]
         public Guid Id { get; set; }
         public Guid UserId { get; set; }
         public Guid ShowtimeId { get; set; }

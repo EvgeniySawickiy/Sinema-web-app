@@ -1,11 +1,11 @@
-﻿using BookingService.Core.Entities;
+﻿using System.Linq.Expressions;
+using BookingService.Core.Entities;
 using BookingService.DataAccess.Persistence.Interfaces;
 using MongoDB.Driver;
-using System.Linq.Expressions;
 
 namespace BookingService.DataAccess.Persistence.Repositories
 {
-    public class SeatRepository : IRepository<Seat>
+    public class SeatRepository : ISeatRepository
     {
         private readonly IMongoCollection<Seat> _collection;
 
