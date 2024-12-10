@@ -20,5 +20,12 @@ namespace MovieService.DataAccess.Persistence.Repositories
                 .Include(s => s.Movie)
                 .ToListAsync(cancellationToken);
         }
+
+        public new async Task<Showtime?> GetByIdAsync(Guid id, CancellationToken cancellationToken)
+        {
+            return await _context.Showtimes
+                .Include(s => s.Hall)
+                .Include(s => s.Movie).FirstOrDefaultAsync(s => s.Id == id, cancellationToken);
+        }
     }
 }
