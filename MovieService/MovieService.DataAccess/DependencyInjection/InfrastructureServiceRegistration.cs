@@ -20,6 +20,8 @@ namespace MovieService.DataAccess.DependencyInjection
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
+            services.AddGrpc();
+
             return services;
         }
     }
