@@ -1,5 +1,6 @@
 ﻿using System.Linq.Expressions;
 using BookingService.Core.Entities;
+using BookingService.DataAccess.Cache;
 using BookingService.DataAccess.Persistence.Interfaces;
 using MongoDB.Driver;
 
@@ -8,10 +9,12 @@ namespace BookingService.DataAccess.Persistence.Repositories
     public class BookingRepository : IBookingRepository
     {
         private readonly IMongoCollection<Booking> _collection;
+        private readonly IRedisCacheService _cacheService;
 
-        public BookingRepository(MongoContext context)
+        public BookingRepository(MongoContext context, IRedisCacheService cacheService)
         {
             _collection = context.GetCollection<Booking>("Bookings");
+            _cacheService = cacheService;
         }
 
         public async Task<IEnumerable<Booking>> GetAllAsync()
@@ -21,7 +24,20 @@ namespace BookingService.DataAccess.Persistence.Repositories
 
         public async Task<Booking> GetByIdAsync(Guid id)
         {
-            return await _collection.Find(x => x.Id == id).FirstOrDefaultAsync();
+            var cacheKey = $"booking:{id}";
+            var cachedBooking = await _cacheService.GetCacheAsync<Booking>(cacheKey);
+            if (cachedBooking != null)
+            {
+                return cachedBooking;
+            }
+
+            var booking = await _collection.Find(b => b.Id == id).FirstOrDefaultAsync();
+            if (booking != null)
+            {
+                await _cacheService.SetCacheAsync(cacheKey, booking, TimeSpan.FromMinutes(10));
+            }
+
+            return booking;
         }
 
         public async Task<IEnumerable<Booking>> FindAsync(Expression<Func<Booking, bool>> predicate)

@@ -26,8 +26,9 @@ namespace BookingService.DataAccess.DependencyInjection
                 return new MongoContext(new MongoDbSettings(connectionString, databaseName));
             });
 
-            var redisConnection = configuration.GetConnectionString("Redis");
-            services.AddSingleton<IConnectionMultiplexer>(sp => ConnectionMultiplexer.Connect(redisConnection));
+            var redisConnectionString = configuration.GetSection("Redis:ConnectionString").Value;
+            var connectionMultiplexer = ConnectionMultiplexer.Connect(redisConnectionString);
+            services.AddSingleton<IConnectionMultiplexer>(connectionMultiplexer);
             services.AddScoped<IRedisCacheService, RedisCacheService>();
 
             services.AddSingleton<IConnectionFactory>(_ =>
