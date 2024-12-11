@@ -1,21 +1,25 @@
-﻿using BookingService.Core.Entities;
+﻿using AutoMapper;
+using BookingService.Application.DTO;
+using BookingService.Core.Entities;
 using BookingService.DataAccess.Persistence.Interfaces;
 using MediatR;
 
 namespace BookingService.Application.Features.Bookings.Queries.Handlers
 {
-    public class GetBookingsByUserIdQueryHandler : IRequestHandler<GetBookingsByUserIdQuery, IEnumerable<Booking>>
+    public class GetBookingsByUserIdQueryHandler : IRequestHandler<GetBookingsByUserIdQuery, IEnumerable<BookingResponseDTO>>
     {
         private readonly IBookingRepository _bookingRepository;
+        private readonly IMapper _mapper;
 
-        public GetBookingsByUserIdQueryHandler(IBookingRepository bookingRepository)
+        public GetBookingsByUserIdQueryHandler(IBookingRepository bookingRepository, IMapper mapper)
         {
             _bookingRepository = bookingRepository;
+            _mapper = mapper;
         }
 
-        public async Task<IEnumerable<Booking>> Handle(GetBookingsByUserIdQuery request, CancellationToken cancellationToken)
+        public async Task<IEnumerable<BookingResponseDTO>> Handle(GetBookingsByUserIdQuery request, CancellationToken cancellationToken)
         {
-            return await _bookingRepository.GetByUserIdAsync(request.UserId);
+            return _mapper.Map<List<BookingResponseDTO>>(await _bookingRepository.GetByUserIdAsync(request.UserId));
         }
     }
 }

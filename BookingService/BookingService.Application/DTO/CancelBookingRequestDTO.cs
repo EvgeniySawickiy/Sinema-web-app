@@ -1,5 +1,4 @@
-﻿
-namespace BookingService.Application.DTO
+﻿namespace BookingService.Application.DTO
 {
     public class CancelBookingRequestDTO
     {

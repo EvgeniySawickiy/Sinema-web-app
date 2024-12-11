@@ -9,7 +9,11 @@ namespace BookingService.Core.Entities
         [BsonId]
         [BsonGuidRepresentation(GuidRepresentation.Standard)]
         public Guid Id { get; set; }
+
+        [BsonGuidRepresentation(GuidRepresentation.Standard)]
         public Guid UserId { get; set; }
+
+        [BsonGuidRepresentation(GuidRepresentation.Standard)]
         public Guid ShowtimeId { get; set; }
         public DateTime BookingTime { get; set; }
         public BookingStatus Status { get; set; }

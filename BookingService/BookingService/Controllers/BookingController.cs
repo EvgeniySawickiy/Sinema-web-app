@@ -1,6 +1,7 @@
 ﻿using BookingService.Application.DTO;
 using BookingService.Application.Features.Bookings.Commands;
 using BookingService.Application.Features.Bookings.Queries;
+using BookingService.Core.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -44,6 +45,13 @@ namespace BookingService.Controllers
             }
 
             return Ok(booking);
+        }
+
+        [HttpGet("bookings")]
+        public async Task<IActionResult> GetAllBookings(CancellationToken cancellationToken)
+        {
+            var bookings = await _mediator.Send(new GetAllBookingsQuery(), cancellationToken);
+            return Ok(bookings);
         }
 
         [HttpGet("user/{userId:guid}")]

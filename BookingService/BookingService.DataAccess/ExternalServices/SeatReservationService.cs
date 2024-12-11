@@ -26,17 +26,21 @@ namespace BookingService.DataAccess.ExternalServices
 
             foreach (var seat in seats)
             {
-                var existingSeat = await _seatCollection.Find(s => s.Row == seat.Row && s.Number == seat.Number && s.IsReserved).FirstOrDefaultAsync();
-                if (existingSeat != null)
+                var existingSeat = await _seatCollection.Find(s => s.Row == seat.Row && s.Number == seat.Number && s.HallId == seat.HallId).FirstOrDefaultAsync();
+                if (existingSeat != null && existingSeat.IsReserved)
                 {
                     throw new Exception($"Seat at Row {seat.Row}, Number {seat.Number} is already reserved.");
                 }
-            }
-
-            foreach (var seat in seats)
-            {
-                seat.IsReserved = true;
-                await _seatCollection.InsertOneAsync(seat);
+                else if (existingSeat is not null)
+                {
+                    var update = Builders<Seat>.Update.Set(s => s.IsReserved, true);
+                    await _seatCollection.UpdateOneAsync(s => s.Id == existingSeat.Id, update);
+                }
+                else
+                {
+                    seat.IsReserved = true;
+                    await _seatCollection.InsertOneAsync(seat);
+                }
             }
         }
 

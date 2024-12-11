@@ -13,6 +13,8 @@ namespace BookingService.Application.Mappings
 
             CreateMap<BookingDTO, Booking>();
 
+            CreateMap<BookingResponseDTO, Booking>().ReverseMap();
+
             CreateMap<Seat, SeatDTO>();
 
             CreateMap<SeatDTO, Seat>();
