@@ -7,10 +7,13 @@ using UserService.BLL.DTO.Validators;
 using UserService.BLL.Interfaces;
 using UserService.BLL.Services;
 using UserService.DAL.EF;
+using UserService.DAL.External_Services;
 using UserService.DAL.Interfaces;
 using UserService.DAL.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddGrpc();
 
 builder.Services.AddDbContext<DataContext>(options =>
 options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -71,6 +74,8 @@ builder.Services.AddSwaggerGen(opt =>
             });
 });
 var app = builder.Build();
+
+app.MapGrpcService<UserServiceGrpc>();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
