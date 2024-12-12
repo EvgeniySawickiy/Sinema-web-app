@@ -4,7 +4,7 @@ namespace BookingService.Core.Interfaces
 {
     public interface ISeatReservationService
     {
-        Task ReserveSeatsAsync(Guid showtimeId, List<Seat> seats);
+        Task<decimal> ReserveSeatsAsync(Guid showtimeId, List<Seat> seats);
         Task ReleaseSeatsAsync(Guid showtimeId, List<Seat> seats);
     }
 }

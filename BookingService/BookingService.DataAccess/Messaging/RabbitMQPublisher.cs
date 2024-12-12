@@ -8,31 +8,29 @@ namespace BookingService.DataAccess.Messaging
     {
         private readonly IConnection _connection;
 
-        public RabbitMQPublisher()
+        public RabbitMQPublisher(IConnectionFactory connectionFactory)
         {
-            var factory = new ConnectionFactory
-            {
-                HostName = "localhost",
-                UserName = "guest",
-                Password = "guest",
-            };
-
-            _connection = factory.CreateConnection();
+            _connection = connectionFactory.CreateConnection();
         }
 
-        public void Publish<T>(string exchange, T message)
+        public void Publish(string exchange, string routingKey, object message)
         {
             using var channel = _connection.CreateModel();
 
-            channel.ExchangeDeclare(exchange: exchange, type: ExchangeType.Fanout);
+            channel.ExchangeDeclare(exchange: exchange, type: ExchangeType.Topic);
 
+            channel.QueueDeclare(queue: "NotificationQueue", durable: true, exclusive: false, autoDelete: false, arguments: null);
+            channel.QueueDeclare(queue: "PaymentQueue", durable: true, exclusive: false, autoDelete: false, arguments: null);
+
+            channel.QueueBind(queue: "NotificationQueue", exchange: "BookingExchange", routingKey: "booking.*");
+            channel.QueueBind(queue: "PaymentQueue", exchange: "BookingExchange", routingKey: "booking.created");
             var body = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(message));
 
             channel.BasicPublish(
-                exchange: exchange,
-                routingKey: string.Empty,
-                basicProperties: null,
-                body: body);
+                           exchange: exchange,
+                           routingKey: routingKey,
+                           basicProperties: null,
+                           body: body);
         }
     }
 }

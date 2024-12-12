@@ -2,6 +2,6 @@
 {
     public interface IEventPublisher
     {
-        void Publish<T>(string exchange, T message);
+        void Publish(string exchange, string routingKey, object message);
     }
 }

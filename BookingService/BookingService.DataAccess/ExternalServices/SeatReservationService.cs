@@ -16,7 +16,7 @@ namespace BookingService.DataAccess.ExternalServices
             _movieServiceClient = movieServiceClient;
         }
 
-        public async Task ReserveSeatsAsync(Guid showtimeId, List<Seat> seats)
+        public async Task<decimal> ReserveSeatsAsync(Guid showtimeId, List<Seat> seats)
         {
             var isValidShowtime = await _movieServiceClient.GetShowtimeInfoAsync(showtimeId.ToString());
             if (isValidShowtime == null || !isValidShowtime.IsActive)
@@ -42,6 +42,8 @@ namespace BookingService.DataAccess.ExternalServices
                     await _seatCollection.InsertOneAsync(seat);
                 }
             }
+
+            return decimal.Parse(isValidShowtime.Price);
         }
 
         public async Task ReleaseSeatsAsync(Guid showtimeId, List<Seat> seats)

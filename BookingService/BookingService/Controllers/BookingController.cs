@@ -65,7 +65,7 @@ namespace BookingService.Controllers
         [HttpDelete("{id:guid}")]
         public async Task<IActionResult> CancelBooking(Guid id, [FromBody] CancelBookingRequestDTO request, CancellationToken cancellationToken)
         {
-            var command = new CancelBookingCommand { BookingId = id };
+            var command = new CancelBookingCommand { BookingId = id, Reason = request.Reason };
             await _mediator.Send(command, cancellationToken);
             return NoContent();
         }

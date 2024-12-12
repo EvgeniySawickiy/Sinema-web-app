@@ -31,8 +31,21 @@ namespace BookingService.DataAccess.DependencyInjection
             services.AddSingleton<IConnectionMultiplexer>(connectionMultiplexer);
             services.AddScoped<IRedisCacheService, RedisCacheService>();
 
-            services.AddSingleton<IConnectionFactory>(_ =>
-                new ConnectionFactory { Uri = new Uri(configuration.GetConnectionString("RabbitMQ")) });
+            services.AddSingleton<IConnectionFactory>(sp => new ConnectionFactory
+            {
+                Uri = new Uri(configuration.GetConnectionString("RabbitMQ")),
+                DispatchConsumersAsync = true,
+            });
+
+            services.AddSingleton(sp =>
+            {
+                var connectionFactory = sp.GetRequiredService<IConnectionFactory>();
+                var connection = connectionFactory.CreateConnection();
+
+                return connection;
+            });
+
+            services.AddSingleton<RabbitMQPublisher>();
             services.AddScoped<IEventPublisher, RabbitMQPublisher>();
 
             services.AddSingleton(sp =>
