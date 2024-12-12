@@ -31,6 +31,7 @@ namespace MovieService.Application.UseCases.Showtimes.Handlers
                 StartTime = showtime.StartTime,
                 HallId = showtime.HallId,
                 HallName = showtime.Hall.Name,
+                TicketPrice = showtime.TicketPrice,
             };
         }
     }

@@ -8,5 +8,6 @@
         public DateTime StartTime { get; set; }
         public Guid HallId { get; set; }
         public string HallName { get; set; }
+        public decimal TicketPrice { get; set; }
     }
 }
