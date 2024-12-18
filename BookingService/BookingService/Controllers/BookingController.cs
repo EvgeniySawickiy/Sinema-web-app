@@ -19,16 +19,8 @@ namespace BookingService.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateBooking([FromBody] CreateBookingRequestDTO request, CancellationToken cancellationToken)
+        public async Task<IActionResult> CreateBooking([FromBody] CreateBookingCommand command, CancellationToken cancellationToken)
         {
-            var command = new CreateBookingCommand
-            {
-                UserId = request.UserId,
-                ShowtimeId = request.ShowtimeId,
-                Seats = request.Seats,
-                TotalAmount = request.TotalAmount,
-            };
-
             var bookingId = await _mediator.Send(command, cancellationToken);
             return Ok(new { Id = bookingId });
         }
@@ -39,19 +31,21 @@ namespace BookingService.Controllers
             var query = new GetBookingByIdQuery { BookingId = id };
             var booking = await _mediator.Send(query, cancellationToken);
 
-            if (booking == null)
-            {
-                return NotFound();
-            }
-
             return Ok(booking);
         }
 
         [HttpGet("bookings")]
-        public async Task<IActionResult> GetAllBookings(CancellationToken cancellationToken)
+        public async Task<IActionResult> GetAllBookings([FromQuery] int? pageNumber, [FromQuery] int? pageSize, CancellationToken cancellationToken)
         {
-            var bookings = await _mediator.Send(new GetAllBookingsQuery(), cancellationToken);
-            return Ok(bookings);
+            var query = new GetAllBookingsQuery
+            {
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+            };
+
+            var result = await _mediator.Send(query);
+
+            return Ok(result);
         }
 
         [HttpGet("user/{userId:guid}")]

@@ -9,22 +9,19 @@ namespace BookingService.DataAccess.ExternalServices
     public class MovieServiceGrpcClient
     {
         private readonly MovieServiceClient _client;
-        private readonly IServiceProvider _serviceProvider;
+        private readonly IRedisCacheService _redisCacheService;
 
-        public MovieServiceGrpcClient(MovieServiceClient client, IServiceProvider serviceProvider)
+        public MovieServiceGrpcClient(MovieServiceClient client, IRedisCacheService redisCacheService)
         {
             _client = client;
-            _serviceProvider = serviceProvider;
+            _redisCacheService = redisCacheService;
         }
 
         public async Task<GetShowtimeResponse> GetShowtimeInfoAsync(string showtimeId)
         {
             var cacheKey = $"showtime:{showtimeId}";
 
-            using var scope = _serviceProvider.CreateScope();
-            var cacheService = scope.ServiceProvider.GetRequiredService<IRedisCacheService>();
-
-            var cachedShowtime = await cacheService.GetCacheAsync<GetShowtimeResponse>(cacheKey);
+            var cachedShowtime = await _redisCacheService.GetAsync<GetShowtimeResponse>(cacheKey);
             if (cachedShowtime != null)
             {
                 return cachedShowtime;
@@ -33,7 +30,7 @@ namespace BookingService.DataAccess.ExternalServices
             var request = new GetShowtimeRequest { ShowtimeId = showtimeId };
             var response = await _client.GetShowtimeInfoAsync(request);
 
-            await cacheService.SetCacheAsync(cacheKey, response, TimeSpan.FromMinutes(10));
+            await _redisCacheService.SetAsync(cacheKey, response, TimeSpan.FromMinutes(10));
 
             return response;
         }

@@ -25,7 +25,7 @@ namespace BookingService.DataAccess.Persistence.Repositories
         public async Task<Booking> GetByIdAsync(Guid id)
         {
             var cacheKey = $"booking:{id}";
-            var cachedBooking = await _cacheService.GetCacheAsync<Booking>(cacheKey);
+            var cachedBooking = await _cacheService.GetAsync<Booking>(cacheKey);
             if (cachedBooking != null)
             {
                 return cachedBooking;
@@ -34,7 +34,7 @@ namespace BookingService.DataAccess.Persistence.Repositories
             var booking = await _collection.Find(b => b.Id == id).FirstOrDefaultAsync();
             if (booking != null)
             {
-                await _cacheService.SetCacheAsync(cacheKey, booking, TimeSpan.FromMinutes(10));
+                await _cacheService.SetAsync(cacheKey, booking, TimeSpan.FromMinutes(10));
             }
 
             return booking;
@@ -63,6 +63,20 @@ namespace BookingService.DataAccess.Persistence.Repositories
         public async Task<IEnumerable<Booking>> GetByUserIdAsync(Guid userId)
         {
             return await _collection.Find(b => b.UserId == userId).ToListAsync();
+        }
+        
+        public async Task<int> GetTotalCountAsync()
+        {
+            return (int)await _collection.CountDocumentsAsync(FilterDefinition<Booking>.Empty);
+        }
+        
+        public async Task<IEnumerable<Booking>> GetPagedAsync(int pageNumber, int pageSize)
+        {
+            return await _collection.Find(FilterDefinition<Booking>.Empty)
+                .SortBy(b => b.Id)
+                .Skip((pageNumber - 1) * pageSize)
+                .Limit(pageSize)
+                .ToListAsync();
         }
     }
 }

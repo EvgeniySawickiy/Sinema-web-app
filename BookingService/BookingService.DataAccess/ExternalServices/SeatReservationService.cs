@@ -1,4 +1,5 @@
 ﻿using BookingService.Core.Entities;
+using BookingService.Core.Exceptions;
 using BookingService.Core.Interfaces;
 using BookingService.DataAccess.Persistence;
 using MongoDB.Driver;
@@ -21,25 +22,23 @@ namespace BookingService.DataAccess.ExternalServices
             var isValidShowtime = await _movieServiceClient.GetShowtimeInfoAsync(showtimeId.ToString());
             if (isValidShowtime == null || !isValidShowtime.IsActive)
             {
-                throw new Exception($"Showtime {showtimeId} is invalid or inactive.");
+                throw new InvalidShowtimeException(showtimeId);
             }
 
             foreach (var seat in seats)
             {
                 var existingSeat = await _seatCollection.Find(s => s.Row == seat.Row && s.Number == seat.Number && s.HallId == seat.HallId).FirstOrDefaultAsync();
-                if (existingSeat != null && existingSeat.IsReserved)
+                if (existingSeat != null)
                 {
-                    throw new Exception($"Seat at Row {seat.Row}, Number {seat.Number} is already reserved.");
-                }
-                else if (existingSeat is not null)
-                {
+                    if (existingSeat.IsReserved)
+                    {
+                        throw new SeatAlreadyReservedException(seat.Row, seat.Number);
+                    }
+
+
                     var update = Builders<Seat>.Update.Set(s => s.IsReserved, true);
-                    await _seatCollection.UpdateOneAsync(s => s.Id == existingSeat.Id, update);
-                }
-                else
-                {
-                    seat.IsReserved = true;
-                    await _seatCollection.InsertOneAsync(seat);
+                    var options = new UpdateOptions { IsUpsert = true };
+                    await _seatCollection.UpdateOneAsync(s => s.Id == existingSeat.Id, update, options);
                 }
             }
 

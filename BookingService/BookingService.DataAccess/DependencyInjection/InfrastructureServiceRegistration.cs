@@ -58,7 +58,7 @@ namespace BookingService.DataAccess.DependencyInjection
             {
                 o.Address = new Uri(configuration["Grpc:MovieService"]);
             });
-            services.AddSingleton<MovieServiceGrpcClient>();
+            services.AddScoped<MovieServiceGrpcClient>();
 
             services.AddScoped<ISeatReservationService, SeatReservationService>();
 

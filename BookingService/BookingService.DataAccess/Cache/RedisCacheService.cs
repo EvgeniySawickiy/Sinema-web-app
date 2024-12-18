@@ -5,17 +5,16 @@ namespace BookingService.DataAccess.Cache
 {
     public class RedisCacheService : IRedisCacheService
     {
-        private readonly IConnectionMultiplexer _redis;
+        private readonly IDatabase _database;
 
         public RedisCacheService(IConnectionMultiplexer redis)
         {
-            _redis = redis;
+            _database = redis.GetDatabase();
         }
 
-        public async Task<T?> GetCacheAsync<T>(string key)
+        public async Task<T?> GetAsync<T>(string key)
         {
-            var db = _redis.GetDatabase();
-            var value = await db.StringGetAsync(key);
+            var value = await _database.StringGetAsync(key);
             if (value.IsNullOrEmpty)
             {
                 return default;
@@ -24,17 +23,15 @@ namespace BookingService.DataAccess.Cache
             return JsonSerializer.Deserialize<T>(value!);
         }
 
-        public async Task SetCacheAsync<T>(string key, T value, TimeSpan expiration)
+        public async Task SetAsync<T>(string key, T value, TimeSpan expiration)
         {
-            var db = _redis.GetDatabase();
             var jsonValue = JsonSerializer.Serialize(value);
-            await db.StringSetAsync(key, jsonValue, expiration);
+            await _database.StringSetAsync(key, jsonValue, expiration);
         }
 
-        public async Task RemoveCacheAsync(string key)
+        public async Task RemoveAsync(string key)
         {
-            var db = _redis.GetDatabase();
-            await db.KeyDeleteAsync(key);
+            await _database.KeyDeleteAsync(key);
         }
     }
 }

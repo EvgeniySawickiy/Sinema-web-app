@@ -5,5 +5,7 @@ namespace BookingService.DataAccess.Persistence.Interfaces
     public interface IBookingRepository : IRepository<Booking>
     {
         Task<IEnumerable<Booking>> GetByUserIdAsync(Guid userId);
+        Task<int> GetTotalCountAsync();
+        Task<IEnumerable<Booking>> GetPagedAsync(int pageNumber, int pageSize);
     }
 }

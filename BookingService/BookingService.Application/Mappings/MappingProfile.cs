@@ -8,16 +8,12 @@ namespace BookingService.Application.Mappings
     {
         public MappingProfile()
         {
-            CreateMap<Booking, BookingDTO>()
+            CreateMap<Booking, BookingDTO>().ReverseMap()
                 .ForMember(dest => dest.Seats, opt => opt.MapFrom(src => src.Seats));
-
-            CreateMap<BookingDTO, Booking>();
 
             CreateMap<BookingResponseDTO, Booking>().ReverseMap();
 
-            CreateMap<Seat, SeatDTO>();
-
-            CreateMap<SeatDTO, Seat>();
+            CreateMap<Seat, SeatDTO>().ReverseMap();
         }
     }
 }

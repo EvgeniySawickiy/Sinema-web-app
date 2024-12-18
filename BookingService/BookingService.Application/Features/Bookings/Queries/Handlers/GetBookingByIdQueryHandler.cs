@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using BookingService.Application.DTO;
 using BookingService.Core.Entities;
+using BookingService.Core.Exceptions;
 using BookingService.DataAccess.Persistence.Interfaces;
 using MediatR;
 
@@ -19,7 +20,13 @@ namespace BookingService.Application.Features.Bookings.Queries.Handlers
 
         public async Task<BookingResponseDTO> Handle(GetBookingByIdQuery request, CancellationToken cancellationToken)
         {
-            return _mapper.Map<BookingResponseDTO>(await _bookingRepository.GetByIdAsync(request.BookingId));
+            var booking = _mapper.Map<BookingResponseDTO>(await _bookingRepository.GetByIdAsync(request.BookingId));
+            if (booking == null)
+            {
+               throw new BookingNotFoundException(request.BookingId);
+            }
+
+            return booking;
         }
     }
 }

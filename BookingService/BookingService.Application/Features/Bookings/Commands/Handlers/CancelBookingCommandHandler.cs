@@ -1,5 +1,6 @@
 ﻿using BookingService.Core.Entities;
 using BookingService.Core.Events;
+using BookingService.Core.Exceptions;
 using BookingService.Core.Interfaces;
 using BookingService.DataAccess.Messaging;
 using BookingService.DataAccess.Persistence.Interfaces;
@@ -26,7 +27,7 @@ namespace BookingService.Application.Features.Bookings.Commands.Handlers
 
             if (booking == null)
             {
-                throw new Exception("Booking not found");
+                throw new BookingNotFoundException(request.BookingId);
             }
 
             await _seatReservationService.ReleaseSeatsAsync(booking.ShowtimeId, booking.Seats);
