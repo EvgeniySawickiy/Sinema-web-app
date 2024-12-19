@@ -1,0 +1,28 @@
+﻿syntax = "proto3";
+
+option csharp_namespace = "MovieService.Grpc";
+
+service MovieService {
+    rpc GetShowtimeInfo(GetShowtimeRequest) returns (GetShowtimeResponse);
+    rpc StreamShowtimeUpdates(ShowtimeUpdatesRequest) returns (stream ShowtimeUpdate);
+}
+
+message GetShowtimeRequest {
+    string showtime_id = 1;
+}
+
+message GetShowtimeResponse {
+    string showtime_id = 1;
+    string movie_title = 2;
+    string start_time = 3;
+    string end_time = 4;
+    string price =5;
+    bool is_active = 6;
+}
+
+message ShowtimeUpdatesRequest {}
+
+message ShowtimeUpdate {
+    string showtime_id = 1;
+    string update_type = 2;
+}
