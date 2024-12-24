@@ -1,8 +1,10 @@
-﻿using NotificationService.Application.Interfaces;
+﻿using Microsoft.AspNetCore.SignalR;
+using NotificationService.Application.Interfaces;
 using NotificationService.Core.Entities;
 using NotificationService.Core.Enums;
 using NotificationService.Core.Events;
 using NotificationService.Core.Interfaces;
+using NotificationService.Infrastructure.Hubs;
 
 namespace NotificationService.Infrastructure.Services;
 
@@ -10,6 +12,7 @@ public class NotificationService : INotificationService
 {
     private readonly INotificationRepository _notificationRepository;
     private readonly IUserNotificationRepository _userNotificationRepository;
+    private readonly IHubContext<NotificationHub> _hubContext;
     private readonly IEmailService _emailService;
     private readonly IUserService _userService;
 
@@ -17,12 +20,14 @@ public class NotificationService : INotificationService
         INotificationRepository notificationRepository,
         IUserNotificationRepository userNotificationRepository,
         IEmailService emailService,
-        IUserService userService)
+        IUserService userService,
+        IHubContext<NotificationHub> hubContext)
     {
         _notificationRepository = notificationRepository;
         _userNotificationRepository = userNotificationRepository;
         _emailService = emailService;
         _userService = userService;
+        _hubContext = hubContext;
     }
 
     public async Task HandleBookingCreatedAsync(BookingCreatedEvent bookingCreatedEvent)
@@ -56,7 +61,7 @@ public class NotificationService : INotificationService
 
         await _userNotificationRepository.AddUserNotificationAsync(userNotification);
 
-        await SendNotificationAsync(notification);
+        await SendNotificationAsync(notification, user.Id);
     }
 
     public async Task HandleBookingCancelledAsync(BookingCancelledEvent bookingCancelledEvent)
@@ -65,13 +70,13 @@ public class NotificationService : INotificationService
         if (user == null)
         {
             throw new Exception("User Not Found");
-            return;
         }
 
         var notification = new Notification
         {
             Title = "Отмена бронирования",
-            Message = $"Ваше бронирование с ID {bookingCancelledEvent.BookingId} было отменено. Причина: {bookingCancelledEvent.Reason}",
+            Message =
+                $"Ваше бронирование с ID {bookingCancelledEvent.BookingId} было отменено. Причина: {bookingCancelledEvent.Reason}",
             Recipient = user.Email,
             Type = NotificationType.Email,
             CreatedAt = DateTime.UtcNow,
@@ -91,18 +96,41 @@ public class NotificationService : INotificationService
 
         await _userNotificationRepository.AddUserNotificationAsync(userNotification);
 
-        await SendNotificationAsync(notification);
+        await SendNotificationAsync(notification, user.Id);
     }
 
-    private async Task SendNotificationAsync(Notification notification)
+    private async Task SendNotificationAsync(Notification notification, Guid userId)
     {
-        if (notification.Type == NotificationType.Email)
+        try
         {
-            await _emailService.SendEmailAsync(notification.Recipient, notification.Title, notification.Message);
-        }
+            if (notification.Type == NotificationType.Email)
+            {
+                await _emailService.SendEmailAsync(
+                    to: notification.Recipient,
+                    subject: notification.Title,
+                    body: notification.Message,
+                    isHtml: true);
+            }
 
-        notification.Status = NotificationStatus.Sent;
-        notification.SentAt = DateTime.UtcNow;
-        await _notificationRepository.UpdateAsync(notification);
+            await _hubContext.Clients.User(userId.ToString()).SendAsync("ReceiveNotification", new
+            {
+                Title = notification.Title,
+                Message = notification.Message,
+                CreatedAt = notification.CreatedAt,
+            });
+
+            notification.Status = NotificationStatus.Sent;
+            notification.SentAt = DateTime.UtcNow;
+
+            await _notificationRepository.UpdateAsync(notification);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error sending notification: {ex.Message}");
+
+            notification.Status = NotificationStatus.Failed;
+
+            await _notificationRepository.UpdateAsync(notification);
+        }
     }
 }

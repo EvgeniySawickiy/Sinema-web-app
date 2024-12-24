@@ -1,4 +1,6 @@
-﻿using NotificationService.Infrastructure.Protos;
+﻿using Microsoft.Extensions.Options;
+using NotificationService.Core.Entities;
+using NotificationService.Infrastructure.Protos;
 
 namespace NotificationService.Infrastructure.DependencyInjection
 {
@@ -33,6 +35,8 @@ namespace NotificationService.Infrastructure.DependencyInjection
             {
                 Uri = new Uri(configuration.GetConnectionString("RabbitMQ")),
             };
+
+            services.AddSignalR();
             services.AddSingleton<IConnectionFactory>(connectionFactory);
             services.AddSingleton<IMessagePublisher, RabbitMQPublisher>();
             services.AddHostedService<BookingEventConsumer>();
@@ -41,20 +45,14 @@ namespace NotificationService.Infrastructure.DependencyInjection
             services.AddScoped<IUserNotificationRepository, UserNotificationRepository>();
             services.AddScoped<INotificationService, NotificationService>();
 
-            services.AddScoped<INotificationService, Services.NotificationService>();
-
             services.AddScoped<IUserService, UserServiceGrpcClient>();
-            services.AddScoped<IEmailService, EmailService>();
-            services.AddScoped<IUserService, UserService>();
 
             services.AddSingleton<IConnectionMultiplexer>(sp =>
             {
                 var connectionString = configuration.GetConnectionString("Redis");
                 return ConnectionMultiplexer.Connect(connectionString);
             });
-            services.AddScoped<ICacheService, RedisCacheService>();
 
-            services.AddSingleton<IMessagePublisher, RabbitMQPublisher>();
             return services;
         }
     }

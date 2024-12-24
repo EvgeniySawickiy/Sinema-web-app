@@ -1,9 +1,13 @@
-﻿using NotificationService.Core.Enums;
+﻿using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
+using NotificationService.Core.Enums;
 
 namespace NotificationService.Core.Entities
 {
     public class Notification
     {
+        [BsonId]
+        [BsonGuidRepresentation(GuidRepresentation.Standard)]
         public Guid Id { get; set; } = Guid.NewGuid();
         public string Title { get; set; } = string.Empty;
         public string Message { get; set; } = string.Empty;

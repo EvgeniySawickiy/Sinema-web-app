@@ -25,8 +25,7 @@ namespace NotificationService.Infrastructure.Messaging
                 exchange: exchange,
                 routingKey: routingKey,
                 basicProperties: null,
-                body: body
-            );
+                body: body);
 
             await Task.CompletedTask;
         }

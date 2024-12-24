@@ -22,7 +22,7 @@ public class BookingEventConsumer : BackgroundService
 
         var factory = new ConnectionFactory
         {
-            Uri = new Uri(configuration.GetConnectionString("RabbitMQ"))
+            Uri = new Uri(configuration.GetConnectionString("RabbitMQ")),
         };
         _connection = factory.CreateConnection();
         _channel = _connection.CreateModel();
@@ -41,17 +41,12 @@ public class BookingEventConsumer : BackgroundService
 
     protected override Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        var consumer = new AsyncEventingBasicConsumer(_channel);
-        consumer.Received += (ch, ea) =>
-        {
-            var content = Encoding.UTF8.GetString(ea.Body.ToArray());
-			
-            // Каким-то образом обрабатываем полученное сообщение
-            throw new Exception($"Получено сообщение: {content}");
+        var consumer = new EventingBasicConsumer(_channel);
 
-            _channel.BasicAck(ea.DeliveryTag, false);
+        consumer.Received += async (sender, args) =>
+        {
+            await OnEventReceived(sender, args);
         };
-        //consumer.Received += OnEventReceived;
 
         _channel.BasicConsume(queue: "NotificationQueue", autoAck: false, consumer: consumer);
         return Task.CompletedTask;
