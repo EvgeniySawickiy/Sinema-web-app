@@ -24,6 +24,8 @@ namespace UserService.BLL.Services
             var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["AppSettings:JwtSecretKey"]));
             var signinCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
             var tokeOptions = new JwtSecurityToken(
+                issuer: _configuration["AppSettings:JwtIssuer"],
+                audience: _configuration["AppSettings:JwtAudience"],
                 claims: claims,
                 expires: DateTime.Now.AddMinutes(10),
                 signingCredentials: signinCredentials);

@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MovieService.Application.DTO.Showtime;
 using MovieService.Application.UseCases.Showtimes.Commands;
@@ -31,6 +32,7 @@ namespace MovieService.Controllers
             return Ok(showtime);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<ActionResult<Guid>> CreateShowtime([FromBody] CreateShowtimeCommand command, CancellationToken cancellationToken)
         {
@@ -38,6 +40,7 @@ namespace MovieService.Controllers
             return CreatedAtAction(nameof(GetShowtimeById), new { id = showtimeId }, showtimeId);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id:guid}")]
         public async Task<IActionResult> DeleteShowtime(Guid id, CancellationToken cancellationToken)
         {

@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MovieService.Application.DTO.Movie;
 using MovieService.Application.UseCases.Movies.Commands;
@@ -38,6 +39,7 @@ namespace MovieService.Controllers
             return Ok(movies);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<ActionResult<Guid>> CreateMovie([FromBody] CreateMovieCommand command, CancellationToken cancellationToken)
         {
@@ -45,6 +47,7 @@ namespace MovieService.Controllers
             return CreatedAtAction(nameof(GetMovieById), new { id = movieId }, movieId);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPut("{id:guid}")]
         public async Task<IActionResult> UpdateMovie(Guid id, [FromBody] UpdateMovieCommand command, CancellationToken cancellationToken)
         {
@@ -53,6 +56,7 @@ namespace MovieService.Controllers
             return NoContent();
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id:guid}")]
         public async Task<IActionResult> DeleteMovie(Guid id, CancellationToken cancellationToken)
         {

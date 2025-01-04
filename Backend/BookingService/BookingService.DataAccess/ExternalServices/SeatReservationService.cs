@@ -27,7 +27,9 @@ namespace BookingService.DataAccess.ExternalServices
 
             foreach (var seat in seats)
             {
-                var existingSeat = await _seatCollection.Find(s => s.Row == seat.Row && s.Number == seat.Number && s.HallId == seat.HallId).FirstOrDefaultAsync();
+                var existingSeat = await _seatCollection
+                    .Find(s => s.Row == seat.Row && s.Number == seat.Number && s.ShowTimeId == seat.ShowTimeId)
+                    .FirstOrDefaultAsync();
                 if (existingSeat != null)
                 {
                     if (existingSeat.IsReserved)
@@ -50,15 +52,16 @@ namespace BookingService.DataAccess.ExternalServices
             var isValidShowtime = await _movieServiceClient.GetShowtimeInfoAsync(showtimeId.ToString());
             if (isValidShowtime == null || !isValidShowtime.IsActive)
             {
-                throw new Exception($"Showtime {showtimeId} is invalid or inactive.");
+                throw new InvalidShowtimeException(showtimeId);
             }
 
             foreach (var seat in seats)
             {
-                var existingSeat = await _seatCollection.Find(s => s.Row == seat.Row && s.Number == seat.Number && s.IsReserved).FirstOrDefaultAsync();
+                var existingSeat = await _seatCollection
+                    .Find(s => s.Row == seat.Row && s.Number == seat.Number && s.IsReserved).FirstOrDefaultAsync();
                 if (existingSeat == null)
                 {
-                    throw new Exception($"Seat at Row {seat.Row}, Number {seat.Number} is not reserved.");
+                    throw new SeatAlreadyReservedException(seat.Row, seat.Number);
                 }
 
                 var update = Builders<Seat>.Update.Set(s => s.IsReserved, false);

@@ -30,7 +30,8 @@ namespace MovieService.DataAccess.Services
                 MovieTitle = showtime.Movie.Title,
                 StartTime = showtime.StartTime.ToString("o"),
                 EndTime = showtime.StartTime.AddMinutes(showtime.Movie.DurationInMinutes).ToString("o"),
-                IsActive = showtime.StartTime < DateTime.UtcNow ? true : false,
+                Price = showtime.TicketPrice.ToString(),
+                IsActive = showtime.StartTime > DateTime.UtcNow ? true : false,
             };
         }
     }

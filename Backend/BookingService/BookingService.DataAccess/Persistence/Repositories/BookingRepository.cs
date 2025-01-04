@@ -64,12 +64,12 @@ namespace BookingService.DataAccess.Persistence.Repositories
         {
             return await _collection.Find(b => b.UserId == userId).ToListAsync();
         }
-        
+
         public async Task<int> GetTotalCountAsync()
         {
             return (int)await _collection.CountDocumentsAsync(FilterDefinition<Booking>.Empty);
         }
-        
+
         public async Task<IEnumerable<Booking>> GetPagedAsync(int pageNumber, int pageSize)
         {
             return await _collection.Find(FilterDefinition<Booking>.Empty)

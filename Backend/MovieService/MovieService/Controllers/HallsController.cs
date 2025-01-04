@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MovieService.Application.DTO.Hall;
 using MovieService.Application.UseCases.Halls.Commands;
@@ -17,6 +18,7 @@ namespace MovieService.Controllers
             _mediator = mediator;
         }
 
+        [Authorize]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<HallDto>>> GetAllHalls(CancellationToken cancellationToken)
         {
@@ -24,6 +26,7 @@ namespace MovieService.Controllers
             return Ok(halls);
         }
 
+        [Authorize]
         [HttpGet("{id:guid}")]
         public async Task<ActionResult<HallDto>> GetHallById(Guid id, CancellationToken cancellationToken)
         {
@@ -31,6 +34,7 @@ namespace MovieService.Controllers
             return Ok(hall);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<ActionResult<Guid>> CreateHall([FromBody] CreateHallCommand command, CancellationToken cancellationToken)
         {
@@ -38,6 +42,7 @@ namespace MovieService.Controllers
             return CreatedAtAction(nameof(GetHallById), new { id = hallId }, hallId);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPut("{id:guid}")]
         public async Task<IActionResult> UpdateHall(Guid id, [FromBody] UpdateHallCommand command, CancellationToken cancellationToken)
         {
@@ -46,6 +51,7 @@ namespace MovieService.Controllers
             return Ok(updatedHall);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id:guid}")]
         public async Task<IActionResult> DeleteHall(Guid id, CancellationToken cancellationToken)
         {

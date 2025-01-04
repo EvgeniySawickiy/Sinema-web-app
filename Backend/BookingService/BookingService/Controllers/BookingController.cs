@@ -1,8 +1,10 @@
-﻿using BookingService.Application.DTO;
+﻿using System.Security.Claims;
+using BookingService.Application.DTO;
 using BookingService.Application.Features.Bookings.Commands;
 using BookingService.Application.Features.Bookings.Queries;
 using BookingService.Core.Entities;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BookingService.Controllers
@@ -18,6 +20,7 @@ namespace BookingService.Controllers
             _mediator = mediator;
         }
 
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> CreateBooking([FromBody] CreateBookingCommand command, CancellationToken cancellationToken)
         {
@@ -25,6 +28,7 @@ namespace BookingService.Controllers
             return Ok(new { Id = bookingId });
         }
 
+        [Authorize]
         [HttpGet("{id:guid}")]
         public async Task<IActionResult> GetBookingById(Guid id, CancellationToken cancellationToken)
         {
@@ -34,6 +38,7 @@ namespace BookingService.Controllers
             return Ok(booking);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpGet("bookings")]
         public async Task<IActionResult> GetAllBookings([FromQuery] int? pageNumber, [FromQuery] int? pageSize, CancellationToken cancellationToken)
         {
@@ -48,14 +53,21 @@ namespace BookingService.Controllers
             return Ok(result);
         }
 
+        [Authorize]
         [HttpGet("user/{userId:guid}")]
-        public async Task<IActionResult> GetBookingsByUserId(Guid userId, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetBookingsByUserId(CancellationToken cancellationToken)
         {
-            var query = new GetBookingsByUserIdQuery { UserId = userId };
+            var userIdFromToken = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            var query = new GetBookingsByUserIdQuery
+            {
+                UserId = Guid.Parse(userIdFromToken),
+            };
             var bookings = await _mediator.Send(query, cancellationToken);
             return Ok(bookings);
         }
 
+        [Authorize]
         [HttpDelete("{id:guid}")]
         public async Task<IActionResult> CancelBooking(Guid id, [FromBody] CancelBookingRequestDTO request, CancellationToken cancellationToken)
         {
