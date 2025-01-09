@@ -33,7 +33,6 @@ namespace BookingService.DataAccess.ExternalServices
             await _redisCacheService.SetAsync(cacheKey, response, TimeSpan.FromMinutes(10));
 
             return response;
-            }
         }
 
         public async Task StreamShowtimeUpdatesAsync()
@@ -46,3 +45,4 @@ namespace BookingService.DataAccess.ExternalServices
         }
     }
 }
+
