@@ -1,8 +1,10 @@
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using BookingService.Application.DependencyInjection;
 using BookingService.DataAccess.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
-
+using Microsoft.OpenApi.Models;
+AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
@@ -27,6 +29,36 @@ builder.Services.AddAuthentication("Bearer").AddJwtBearer(options =>
     };
     options.SaveToken = true;
 });
+
+builder.Services.AddSwaggerGen(opt =>
+{
+    opt.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Description = "Please enter token",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header,
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        Scheme = "bearer",
+    });
+
+    opt.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer",
+                },
+            },
+            new string[] { }
+        },
+    });
+});
+
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())

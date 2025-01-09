@@ -1,3 +1,4 @@
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
@@ -13,6 +14,15 @@ using UserService.DAL.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+    {
+        policy.AllowAnyOrigin()
+            .AllowAnyMethod()
+            .AllowAnyHeader();
+    });
+});
 builder.Services.AddGrpc();
 
 builder.Services.AddDbContext<DataContext>(options =>
@@ -74,7 +84,24 @@ builder.Services.AddSwaggerGen(opt =>
                 },
             });
 });
+
+using (var scope = builder.Services.BuildServiceProvider().CreateScope())
+{
+    var services = scope.ServiceProvider;
+    try
+    {
+        var context = services.GetRequiredService<DataContext>();
+        context.Database.Migrate();
+    }
+    catch (Exception ex)
+    {
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "Произошла ошибка при выполнении миграций.");
+    }
+}
+
 var app = builder.Build();
+app.UseCors();
 
 app.MapGrpcService<UserServiceGrpc>();
 

@@ -1,7 +1,11 @@
 using System.Text;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using MovieService.Application.DependencyInjection;
 using MovieService.DataAccess.DependencyInjection;
+using MovieService.DataAccess.Persistence;
 using MovieService.DataAccess.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -31,6 +35,50 @@ builder.Services.AddAuthentication("Bearer").AddJwtBearer(options =>
     };
     options.SaveToken = true;
 });
+
+builder.Services.AddSwaggerGen(opt =>
+{
+    opt.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Description = "Please enter token",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header,
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        Scheme = "bearer",
+    });
+
+    opt.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer",
+                },
+            },
+            new string[] { }
+        },
+    });
+});
+
+using (var scope = builder.Services.BuildServiceProvider().CreateScope())
+{
+    var services = scope.ServiceProvider;
+    try
+    {
+        var context = services.GetRequiredService<DataContext>();
+        context.Database.Migrate();
+    }
+    catch (Exception ex)
+    {
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "Произошла ошибка при выполнении миграций.");
+    }
+}
+
 var app = builder.Build();
 
 app.MapGrpcService<MovieServiceGrpc>();
