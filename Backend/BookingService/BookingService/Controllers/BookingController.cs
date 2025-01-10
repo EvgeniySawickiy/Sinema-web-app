@@ -3,6 +3,7 @@ using BookingService.Application.DTO;
 using BookingService.Application.Features.Bookings.Commands;
 using BookingService.Application.Features.Bookings.Queries;
 using BookingService.Core.Entities;
+using BookingService.Core.Exceptions;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -58,10 +59,14 @@ namespace BookingService.Controllers
         public async Task<IActionResult> GetBookingsByUserId(CancellationToken cancellationToken)
         {
             var userIdFromToken = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (!Guid.TryParse(userIdFromToken, out var userId))
+            {
+                throw new UserNotFoundException(userId);
+            }
 
             var query = new GetBookingsByUserIdQuery
             {
-                UserId = Guid.Parse(userIdFromToken),
+                UserId = userId,
             };
             var bookings = await _mediator.Send(query, cancellationToken);
             return Ok(bookings);
