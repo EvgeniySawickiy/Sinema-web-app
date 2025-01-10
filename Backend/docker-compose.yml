@@ -1,0 +1,135 @@
+services:
+  
+  gateway:
+    build:
+      context: ./ApiGateway
+      dockerfile: ApiGateway/Dockerfile
+    container_name: gateway
+    ports:
+      - "5000:5000"
+    networks:
+      - backend
+    depends_on:
+      - user-service
+      - movie-service
+      - booking-service
+
+  user-service:
+    build:
+      context: ./UserService
+      dockerfile: UserService/Dockerfile
+    container_name: user-service
+    ports:
+      - "8090:8080"
+      - "8091:8081"
+    depends_on:
+      - user-postgres
+    networks:
+      - backend
+    restart: unless-stopped
+
+  user-postgres:
+    image: postgres:15
+    container_name: user-db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 1234
+      POSTGRES_DB: userdb
+    ports:
+      - "5434:5432"
+    volumes:
+      - user_db_data:/var/lib/postgresql/data
+    networks:
+      - backend
+    restart: unless-stopped   
+  
+  movie-service:
+    build:
+      context: ./MovieService
+      dockerfile: MovieService/Dockerfile
+    container_name: movie-service
+    ports:
+      - "8082:8080"
+      - "8083:8081"
+    depends_on:
+      - movie-postgres
+    networks:
+      - backend
+    restart: unless-stopped
+    environment:
+     ASPNETCORE_ENVIRONMENT: "Development"
+     Kestrel__Endpoints__WebApi__Protocols: "Http1"
+     Kestrel__Endpoints__WebApi__Url: "http://movie-service:8080"
+     Kestrel__Endpoints__Grpc__Protocols: "Http2"
+     Kestrel__Endpoints__Grpc__Url: "http://movie-service:8085"
+  
+  movie-postgres:
+    image: postgres:15
+    container_name: movie-db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 1234
+      POSTGRES_DB: moviedb
+    ports:
+      - "5433:5432"
+    volumes:
+      - movie_db_data:/var/lib/postgresql/data
+    networks:
+      - backend
+    restart: unless-stopped
+  
+  booking-service:
+    build:
+      context: ./BookingService
+      dockerfile: BookingService/Dockerfile
+    container_name: booking-service
+    ports:
+      - "8070:8080"
+      - "8071:8081"
+    depends_on:
+      - redis
+      - mongo-booking
+    networks:
+      - backend
+    restart: unless-stopped
+  
+  mongo-booking:
+    image: mongo:latest
+    container_name: mongo-booking
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - backend
+    restart: unless-stopped
+  
+  redis:
+    image: redis:latest
+    container_name: redis_container
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+    networks:
+      - backend
+  
+  rabbitmq:
+    image: rabbitmq:management
+    container_name: rabbitmq_container
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - backend
+    restart: unless-stopped
+
+volumes:
+  user_db_data:
+  movie_db_data:
+  mongo_data:
+  redis_data:
+
+networks:
+  backend:
