@@ -6,7 +6,7 @@ services:
       dockerfile: ApiGateway/Dockerfile
     container_name: gateway
     ports:
-      - "5000:5000"
+      - "7000:7000"
     networks:
       - backend
     depends_on:
@@ -21,12 +21,17 @@ services:
     container_name: user-service
     ports:
       - "8090:8080"
-      - "8091:8081"
     depends_on:
       - user-postgres
     networks:
       - backend
     restart: unless-stopped
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Development"
+      Kestrel__Endpoints__WebApi__Protocols: "Http1"
+      Kestrel__Endpoints__WebApi__Url: "http://user-service:8080"
+      Kestrel__Endpoints__Grpc__Protocols: "Http2"
+      Kestrel__Endpoints__Grpc__Url: "http://user-service:8085"
 
   user-postgres:
     image: postgres:15
@@ -50,18 +55,17 @@ services:
     container_name: movie-service
     ports:
       - "8082:8080"
-      - "8083:8081"
     depends_on:
       - movie-postgres
     networks:
       - backend
     restart: unless-stopped
     environment:
-     ASPNETCORE_ENVIRONMENT: "Development"
-     Kestrel__Endpoints__WebApi__Protocols: "Http1"
-     Kestrel__Endpoints__WebApi__Url: "http://movie-service:8080"
-     Kestrel__Endpoints__Grpc__Protocols: "Http2"
-     Kestrel__Endpoints__Grpc__Url: "http://movie-service:8085"
+      ASPNETCORE_ENVIRONMENT: "Development"
+      Kestrel__Endpoints__WebApi__Protocols: "Http1"
+      Kestrel__Endpoints__WebApi__Url: "http://movie-service:8080"
+      Kestrel__Endpoints__Grpc__Protocols: "Http2"
+      Kestrel__Endpoints__Grpc__Url: "http://movie-service:8085"
   
   movie-postgres:
     image: postgres:15
@@ -85,10 +89,23 @@ services:
     container_name: booking-service
     ports:
       - "8070:8080"
-      - "8071:8081"
     depends_on:
       - redis
       - mongo-booking
+    networks:
+      - backend
+    restart: unless-stopped
+  
+  notification-service:
+    build:
+      context: ./NotificationService
+      dockerfile: NotificationService/Dockerfile
+    container_name: notification-service
+    ports:
+      - "8060:8080"
+    depends_on:
+      - mongo-booking
+      - rabbitmq
     networks:
       - backend
     restart: unless-stopped

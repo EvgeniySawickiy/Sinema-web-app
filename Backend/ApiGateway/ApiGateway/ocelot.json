@@ -6,11 +6,11 @@
       "DownstreamHostAndPorts": [
         {
           "Host": "user-service",
-          "Port": 8090
+          "Port": 8080
         }
       ],
       "UpstreamPathTemplate": "/users/{everything}",
-      "UpstreamHttpMethod": ["GET", "POST", "PUT", "DELETE"]
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ]
     },
     {
       "DownstreamPathTemplate": "/auth/{everything}",
@@ -18,11 +18,11 @@
       "DownstreamHostAndPorts": [
         {
           "Host": "user-service",
-          "Port": 8090
+          "Port": 8080
         }
       ],
       "UpstreamPathTemplate": "/auth/{everything}",
-      "UpstreamHttpMethod": ["POST"]
+      "UpstreamHttpMethod": [ "POST" ]
     },
     {
       "DownstreamPathTemplate": "/api/halls/{everything}",
@@ -30,11 +30,11 @@
       "DownstreamHostAndPorts": [
         {
           "Host": "movie-service",
-          "Port": 8082
+          "Port": 8080
         }
       ],
       "UpstreamPathTemplate": "/halls/{everything}",
-      "UpstreamHttpMethod": ["GET", "POST", "PUT", "DELETE"],
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer",
         "AllowedScopes": []
@@ -46,11 +46,11 @@
       "DownstreamHostAndPorts": [
         {
           "Host": "movie-service",
-          "Port": 8082
+          "Port": 8080
         }
       ],
       "UpstreamPathTemplate": "/movies/{everything}",
-      "UpstreamHttpMethod": ["GET", "POST", "PUT", "DELETE"],
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer",
         "AllowedScopes": []
@@ -62,11 +62,11 @@
       "DownstreamHostAndPorts": [
         {
           "Host": "movie-service",
-          "Port": 8082
+          "Port": 8080
         }
       ],
       "UpstreamPathTemplate": "/showtimes/{everything}",
-      "UpstreamHttpMethod": ["GET", "POST", "DELETE"],
+      "UpstreamHttpMethod": [ "GET", "POST", "DELETE" ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer",
         "AllowedScopes": []
@@ -78,11 +78,27 @@
       "DownstreamHostAndPorts": [
         {
           "Host": "booking-service",
-          "Port": 8070
+          "Port": 8080
         }
       ],
       "UpstreamPathTemplate": "/booking/{everything}",
-      "UpstreamHttpMethod": ["GET", "POST", "DELETE"],
+      "UpstreamHttpMethod": [ "GET", "POST", "DELETE" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      }
+    },
+    {
+      "DownstreamPathTemplate": "/api/Notification/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "notification-service",
+          "Port": 8080
+        }
+      ],
+      "UpstreamPathTemplate": "/Notification/{everything}",
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer",
         "AllowedScopes": []
@@ -90,6 +106,6 @@
     }
   ],
   "GlobalConfiguration": {
-    "BaseUrl": "https://localhost:5000"
+    "BaseUrl": "https://localhost:7000"
   }
 }
