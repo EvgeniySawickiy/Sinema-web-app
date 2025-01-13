@@ -67,7 +67,7 @@ public class BookingEventConsumer : BackgroundService
                 var bookingCreatedEvent = JsonSerializer.Deserialize<BookingCreatedEvent>(body);
                 if (bookingCreatedEvent != null)
                 {
-                    await notificationService.HandleBookingCreatedAsync(bookingCreatedEvent);
+                   await notificationService.HandleBookingCreatedAsync(bookingCreatedEvent);
                 }
             }
             else if (routingKey == "booking.cancelled")
@@ -75,7 +75,7 @@ public class BookingEventConsumer : BackgroundService
                 var bookingCancelledEvent = JsonSerializer.Deserialize<BookingCancelledEvent>(body);
                 if (bookingCancelledEvent != null)
                 {
-                    await notificationService.HandleBookingCancelledAsync(bookingCancelledEvent);
+                     await notificationService.HandleBookingCancelledAsync(bookingCancelledEvent);
                 }
             }
 

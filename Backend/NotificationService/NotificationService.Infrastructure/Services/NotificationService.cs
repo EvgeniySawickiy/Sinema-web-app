@@ -1,11 +1,9 @@
-﻿using Microsoft.AspNetCore.SignalR;
-using NotificationService.Application.Interfaces;
+﻿using NotificationService.Application.Interfaces;
 using NotificationService.Core.Entities;
 using NotificationService.Core.Enums;
 using NotificationService.Core.Events;
 using NotificationService.Core.Exceptions;
 using NotificationService.Core.Interfaces;
-using NotificationService.Infrastructure.Hubs;
 
 namespace NotificationService.Infrastructure.Services;
 
@@ -13,7 +11,6 @@ public class NotificationService : INotificationService
 {
     private readonly INotificationRepository _notificationRepository;
     private readonly IUserNotificationRepository _userNotificationRepository;
-    private readonly IHubContext<NotificationHub> _hubContext;
     private readonly IEmailService _emailService;
     private readonly IUserService _userService;
 
@@ -21,14 +18,12 @@ public class NotificationService : INotificationService
         INotificationRepository notificationRepository,
         IUserNotificationRepository userNotificationRepository,
         IEmailService emailService,
-        IUserService userService,
-        IHubContext<NotificationHub> hubContext)
+        IUserService userService)
     {
         _notificationRepository = notificationRepository;
         _userNotificationRepository = userNotificationRepository;
         _emailService = emailService;
         _userService = userService;
-        _hubContext = hubContext;
     }
 
     public async Task HandleBookingCreatedAsync(BookingCreatedEvent bookingCreatedEvent)
@@ -112,8 +107,9 @@ public class NotificationService : INotificationService
                     body: notification.Message,
                     isHtml: true);
             }
-            else if (notification.Type == NotificationType.Email)
+            else if (notification.Type == NotificationType.Push)
             {
+                // Когда-нибудь потом сделаю
             }
 
             notification.Status = NotificationStatus.Sent;

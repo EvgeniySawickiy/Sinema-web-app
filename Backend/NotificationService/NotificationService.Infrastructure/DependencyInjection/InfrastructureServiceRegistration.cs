@@ -45,6 +45,8 @@ namespace NotificationService.Infrastructure.DependencyInjection
             services.AddScoped<IUserNotificationRepository, UserNotificationRepository>();
             services.AddScoped<INotificationService, NotificationService>();
 
+            services.AddScoped<IPushNotificationService, PushNotificationService>();
+
             services.AddScoped<IUserService, UserServiceGrpcClient>();
 
             services.AddSingleton<IConnectionMultiplexer>(sp =>
