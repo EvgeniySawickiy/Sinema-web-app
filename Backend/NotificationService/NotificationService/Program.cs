@@ -7,6 +7,7 @@ using NotificationService.Core.Entities;
 using NotificationService.Infrastructure.DependencyInjection;
 using NotificationService.Infrastructure.Hubs;
 using NotificationService.Infrastructure.Services;
+using NotificationService.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -71,7 +72,8 @@ var app = builder.Build();
 
 app.MapHub<NotificationHub>("/notificationHub");
 
-// Configure the HTTP request pipeline.
+app.UseMiddleware<ExceptionHandlerMiddleware>();
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
