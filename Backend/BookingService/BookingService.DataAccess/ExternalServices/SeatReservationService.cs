@@ -30,17 +30,20 @@ namespace BookingService.DataAccess.ExternalServices
                 var existingSeat = await _seatCollection
                     .Find(s => s.Row == seat.Row && s.Number == seat.Number && s.ShowTimeId == seat.ShowTimeId)
                     .FirstOrDefaultAsync();
-                if (existingSeat != null)
+                if (existingSeat == null)
+                {
+                    seat.IsReserved = true;
+                    await _seatCollection.InsertOneAsync(seat);
+                }
+                else
                 {
                     if (existingSeat.IsReserved)
                     {
                         throw new SeatAlreadyReservedException(seat.Row, seat.Number);
                     }
 
-
                     var update = Builders<Seat>.Update.Set(s => s.IsReserved, true);
-                    var options = new UpdateOptions { IsUpsert = true };
-                    await _seatCollection.UpdateOneAsync(s => s.Id == existingSeat.Id, update, options);
+                    await _seatCollection.UpdateOneAsync(s => s.Id == existingSeat.Id, update);
                 }
             }
 
@@ -61,7 +64,7 @@ namespace BookingService.DataAccess.ExternalServices
                     .Find(s => s.Row == seat.Row && s.Number == seat.Number && s.IsReserved).FirstOrDefaultAsync();
                 if (existingSeat == null)
                 {
-                    throw new SeatAlreadyReservedException(seat.Row, seat.Number);
+                    throw new SeatIsNotReservedException(seat.Row, seat.Number);
                 }
 
                 var update = Builders<Seat>.Update.Set(s => s.IsReserved, false);
