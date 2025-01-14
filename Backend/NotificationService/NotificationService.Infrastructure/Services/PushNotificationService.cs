@@ -20,10 +20,10 @@ public class PushNotificationService : IPushNotificationService
 
     public async Task SendToGroupAsync(List<string> userIds, string message)
     {
-        foreach (var userId in userIds)
-        {
-            await _hubContext.Clients.User(userId).SendAsync("ReceiveNotification", message);
-        }
+        var tasks = userIds.Select(userId =>
+            _hubContext.Clients.User(userId).SendAsync("ReceiveNotification", message));
+
+        await Task.WhenAll(tasks);
     }
 
     public async Task BroadcastAsync(string message)

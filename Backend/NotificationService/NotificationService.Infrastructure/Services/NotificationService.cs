@@ -107,10 +107,6 @@ public class NotificationService : INotificationService
                     body: notification.Message,
                     isHtml: true);
             }
-            else if (notification.Type == NotificationType.Push)
-            {
-                // Когда-нибудь потом сделаю
-            }
 
             notification.Status = NotificationStatus.Sent;
             notification.SentAt = DateTime.UtcNow;
