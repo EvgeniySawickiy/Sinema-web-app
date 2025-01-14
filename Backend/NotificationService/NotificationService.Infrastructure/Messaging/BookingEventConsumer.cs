@@ -13,12 +13,21 @@ namespace NotificationService.Infrastructure.Messaging;
 public class BookingEventConsumer : BackgroundService
 {
     private readonly IServiceProvider _serviceProvider;
+    private readonly string _exchangeName;
+    private readonly string _queueName;
+    private readonly string _bookingCreatedRoutingKey;
+    private readonly string _bookingCancelledRoutingKey;
     private IConnection _connection;
     private IModel _channel;
 
     public BookingEventConsumer(IConfiguration configuration, IServiceProvider serviceProvider)
     {
         _serviceProvider = serviceProvider;
+
+        _exchangeName = configuration["RabbitMQ:ExchangeName"] ?? "BookingExchange";
+        _queueName = configuration["RabbitMQ:QueueName"] ?? "NotificationQueue";
+        _bookingCreatedRoutingKey = configuration["RabbitMQ:RoutingKeys:BookingCreated"] ?? "booking.created";
+        _bookingCancelledRoutingKey = configuration["RabbitMQ:RoutingKeys:BookingCancelled"] ?? "booking.cancelled";
 
         var factory = new ConnectionFactory
         {
@@ -29,9 +38,9 @@ public class BookingEventConsumer : BackgroundService
 
         try
         {
-            _channel.ExchangeDeclarePassive("BookingExchange");
-            _channel.QueueDeclarePassive("NotificationQueue");
-            _channel.QueueBind(queue: "NotificationQueue", exchange: "BookingExchange", routingKey: "booking.*");
+            _channel.ExchangeDeclarePassive(_exchangeName);
+            _channel.QueueDeclarePassive(_queueName);
+            _channel.QueueBind(queue: _queueName, exchange: _exchangeName, routingKey: $"{_exchangeName}.*");
         }
         catch (RabbitMQ.Client.Exceptions.OperationInterruptedException ex)
         {
@@ -48,7 +57,7 @@ public class BookingEventConsumer : BackgroundService
             await OnEventReceived(sender, args);
         };
 
-        _channel.BasicConsume(queue: "NotificationQueue", autoAck: false, consumer: consumer);
+        _channel.BasicConsume(queue: _queueName, autoAck: false, consumer: consumer);
         return Task.CompletedTask;
     }
 
@@ -62,20 +71,20 @@ public class BookingEventConsumer : BackgroundService
 
         try
         {
-            if (routingKey == "booking.created")
+            if (routingKey == _bookingCreatedRoutingKey)
             {
                 var bookingCreatedEvent = JsonSerializer.Deserialize<BookingCreatedEvent>(body);
                 if (bookingCreatedEvent != null)
                 {
-                   await notificationService.HandleBookingCreatedAsync(bookingCreatedEvent);
+                    await notificationService.HandleBookingCreatedAsync(bookingCreatedEvent);
                 }
             }
-            else if (routingKey == "booking.cancelled")
+            else if (routingKey == _bookingCancelledRoutingKey)
             {
                 var bookingCancelledEvent = JsonSerializer.Deserialize<BookingCancelledEvent>(body);
                 if (bookingCancelledEvent != null)
                 {
-                     await notificationService.HandleBookingCancelledAsync(bookingCancelledEvent);
+                    await notificationService.HandleBookingCancelledAsync(bookingCancelledEvent);
                 }
             }
 
