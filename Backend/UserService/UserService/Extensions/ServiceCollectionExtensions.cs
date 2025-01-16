@@ -3,6 +3,7 @@ using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using NotificationService.Protos;
 using UserService.BLL.DTO.Validators;
 using UserService.BLL.Interfaces;
 using UserService.BLL.Services;
@@ -17,6 +18,12 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddCustomServices(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddGrpc();
+
+        services.AddGrpcClient<Notification.NotificationClient>(o =>
+        {
+            o.Address = new Uri(configuration["Grpc:NotificationServiceUrl"]);
+        });
+
         services.AddDbContext<DataContext>(options =>
             options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
 
@@ -29,6 +36,7 @@ public static class ServiceCollectionExtensions
         services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
         services.AddValidatorsFromAssemblyContaining<SignInRequestValidator>();
         services.AddValidatorsFromAssemblyContaining<SignUpRequestValidator>();
+        services.AddSingleton(new EmailTemplateLoader(Path.Combine(Directory.GetCurrentDirectory(), "Templates", "Email")));
         services.AddControllers();
 
         services.AddAuthentication("Bearer").AddJwtBearer(options =>

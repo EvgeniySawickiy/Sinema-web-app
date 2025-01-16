@@ -37,11 +37,13 @@ public class NotificationController : ControllerBase
     public async Task<IActionResult> SendEmails([FromBody] BulkEmailNotificationRequest request)
     {
         _logger.LogInformation("Sending emails to multiple recipients.");
-        foreach (var email in request.Emails)
+        var tasks = request.Emails.Select(email =>
         {
             _logger.LogInformation("Sending email to {Email}", email);
-            await _emailService.SendEmailAsync(email, request.Subject, request.Message, true);
-        }
+            return _emailService.SendEmailAsync(email, request.Subject, request.Message, true);
+        });
+
+        await Task.WhenAll(tasks);
 
         _logger.LogInformation("All emails sent successfully.");
         return Ok(new { Message = "Emails sent successfully." });

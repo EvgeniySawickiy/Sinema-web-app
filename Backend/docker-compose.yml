@@ -113,6 +113,10 @@ services:
       - rabbitmq
     environment:
       Logstash__Uri: "http://logstash:5044"
+      Kestrel__Endpoints__WebApi__Protocols: "Http1"
+      Kestrel__Endpoints__WebApi__Url: "http://notification-service:8080"
+      Kestrel__Endpoints__Grpc__Protocols: "Http2"
+      Kestrel__Endpoints__Grpc__Url: "http://notification-service:8085"
     networks:
       - backend
     restart: unless-stopped

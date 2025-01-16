@@ -1,11 +1,12 @@
-﻿using System.Data;
-using System.Security.Claims;
+﻿using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using AutoMapper;
 using FluentValidation;
 using FluentValidation.Results;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using NotificationService.Protos;
 using TransportShop.DAL.Enums;
 using UserService.BLL.DTO.Request;
 using UserService.BLL.DTO.Response;
@@ -18,14 +19,17 @@ namespace UserService.BLL.Services
 {
     public class UsersService : IUserService
     {
-        private readonly ILogger<UsersService> _logger;
-        private IUserRepository userRepo;
-        private IRefreshTokenRepository tokenRepo;
-        private IAccountRepository accountRepo;
-        private ITokenService tokenService;
-        private IValidator<SignInRequest> signInValidator;
-        private IValidator<SignUpRequest> signUpValidator;
-        private IMapper mapper;
+        private readonly IConfiguration configuration;
+        private readonly ILogger<UsersService> logger;
+        private readonly IUserRepository userRepo;
+        private readonly IRefreshTokenRepository tokenRepo;
+        private readonly IAccountRepository accountRepo;
+        private readonly ITokenService tokenService;
+        private readonly IValidator<SignInRequest> signInValidator;
+        private readonly IValidator<SignUpRequest> signUpValidator;
+        private readonly IMapper mapper;
+        private readonly Notification.NotificationClient notificationClient;
+        private readonly EmailTemplateLoader emailTemplateLoader;
 
         public UsersService(
             IUserRepository userRepo,
@@ -35,7 +39,10 @@ namespace UserService.BLL.Services
             IMapper mapper,
             IValidator<SignInRequest> signInValidator,
             IValidator<SignUpRequest> signUpValidator,
-            ILogger<UsersService> logger)
+            ILogger<UsersService> logger,
+            IConfiguration configuration,
+            Notification.NotificationClient notificationClient,
+            EmailTemplateLoader emailTemplateLoader)
         {
             this.userRepo = userRepo;
             this.tokenRepo = tokenRepo;
@@ -44,10 +51,14 @@ namespace UserService.BLL.Services
             this.signInValidator = signInValidator;
             this.signUpValidator = signUpValidator;
             this.mapper = mapper;
-            this._logger = logger;
+            this.logger = logger;
+            this.configuration = configuration;
+            this.notificationClient = notificationClient;
+            this.emailTemplateLoader = emailTemplateLoader;
         }
 
-        public async Task<TokenResponse> SignInAsync(SignInRequest request,
+        public async Task<TokenResponse> SignInAsync(
+            SignInRequest request,
             CancellationToken cancellationToken = default)
         {
             await ValidateRequestAsync(signInValidator, request, cancellationToken);
@@ -55,13 +66,13 @@ namespace UserService.BLL.Services
             Account? account = await accountRepo.GetAccountByLoginAsync(request.Login, cancellationToken);
             if (account == null)
             {
-                _logger.LogError("Error during user sign-in attempt {Login}", request.Login);
+                logger.LogError("Error during user sign-in attempt {Login}", request.Login);
                 throw new NotFoundException("User is not found");
             }
 
             if (account.PasswordHash != HashPassword(request.Password))
             {
-                _logger.LogWarning("Incorrect password for user {Login}", request.Login);
+                logger.LogWarning("Incorrect password for user {Login}", request.Login);
                 throw new BadRequestException("Wrong password");
             }
 
@@ -71,7 +82,7 @@ namespace UserService.BLL.Services
                 new Claim(ClaimTypes.Role, account.Role.ToString()),
             };
 
-            _logger.LogInformation("Generating tokens for user {Login}", request.Login);
+            logger.LogInformation("Generating tokens for user {Login}", request.Login);
 
             string newAccessTokenString = tokenService.GenerateAccessToken(claims);
             string newRefreshTokenString = tokenService.GenerateRefreshToken();
@@ -81,7 +92,7 @@ namespace UserService.BLL.Services
             {
                 refreshToken.Token = newRefreshTokenString;
                 refreshToken.LifeTime = DateTime.UtcNow.AddDays(7);
-                await tokenRepo.UpdateAsync(refreshToken);
+                await tokenRepo.UpdateAsync(refreshToken, cancellationToken);
             }
             else
             {
@@ -92,7 +103,7 @@ namespace UserService.BLL.Services
                     LifeTime = DateTime.Now.AddDays(7),
                 };
 
-                await tokenRepo.AddAsync(newRefreshToken);
+                await tokenRepo.AddAsync(newRefreshToken, cancellationToken);
             }
 
             return new TokenResponse
@@ -102,23 +113,24 @@ namespace UserService.BLL.Services
             };
         }
 
-        public async Task<TokenResponse> SignUpAsync(SignUpRequest request,
+        public async Task<TokenResponse> SignUpAsync(
+            SignUpRequest request,
             CancellationToken cancellationToken = default)
         {
             await ValidateRequestAsync(signUpValidator, request, cancellationToken);
 
             if (await accountRepo.GetAccountByLoginAsync(request.Login, cancellationToken) != null)
             {
-                _logger.LogWarning("Attempt to register with an existing login {Login}", request.Login);
+                logger.LogWarning("Attempt to register with an existing login {Login}", request.Login);
                 throw new BadRequestException("Login is already in use");
             }
 
-            _logger.LogInformation("Creating a new user and account for {Login}", request.Login);
+            logger.LogInformation("Creating a new user and account for {Login}", request.Login);
 
             User user = mapper.Map<User>(request);
             user.Id = Guid.NewGuid();
 
-            await userRepo.AddAsync(user);
+            await userRepo.AddAsync(user, cancellationToken);
 
             Account account = mapper.Map<Account>(request);
             account.Id = Guid.NewGuid();
@@ -153,10 +165,11 @@ namespace UserService.BLL.Services
             };
         }
 
-        public async Task<TokenResponse> RefreshTokenAsync(TokenRequest request,
+        public async Task<TokenResponse> RefreshTokenAsync(
+            TokenRequest request,
             CancellationToken cancellationToken = default)
         {
-            _logger.LogInformation("Refreshing token");
+            logger.LogInformation("Refreshing token");
             string requestAccessToken = request.AccessToken;
             string requestRefreshToken = request.RefreshToken;
 
@@ -193,15 +206,16 @@ namespace UserService.BLL.Services
             };
         }
 
-        public async Task<Guid> GetMyIdByJwtAsync(ClaimsPrincipal principal,
+        public async Task<Guid> GetMyIdByJwtAsync(
+            ClaimsPrincipal principal,
             CancellationToken cancellationToken = default)
         {
-            _logger.LogInformation("Retrieving user ID from JWT");
+            logger.LogInformation("Retrieving user ID from JWT");
 
             string? login = principal.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
             if (login == null)
             {
-                _logger.LogWarning("User name not found in token");
+                logger.LogWarning("User name not found in token");
                 throw new NotFoundException("User is not found");
             }
 
@@ -214,10 +228,11 @@ namespace UserService.BLL.Services
             return account.Id;
         }
 
-        public async Task<UserResponse> GetMyProfileByJwtAsync(ClaimsPrincipal principal,
+        public async Task<UserResponse> GetMyProfileByJwtAsync(
+            ClaimsPrincipal principal,
             CancellationToken cancellationToken = default)
         {
-            _logger.LogInformation("Requesting user profile");
+            logger.LogInformation("Requesting user profile");
             string? login = principal.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
             if (login == null)
             {
@@ -246,7 +261,7 @@ namespace UserService.BLL.Services
             IEnumerable<User> users = await userRepo.GetAllAsync(cancellationToken);
             if (users == null || !users.Any())
             {
-                _logger.LogWarning("Users not found");
+                logger.LogWarning("Users not found");
                 throw new NotFoundException("Users not found");
             }
 
@@ -259,7 +274,7 @@ namespace UserService.BLL.Services
             User user = await userRepo.GetByIdAsync(id, cancellationToken);
             if (user == null)
             {
-                _logger.LogWarning("User with id {userId} not found", id);
+                logger.LogWarning("User with id {userId} not found", id);
                 throw new NotFoundException("User is not found");
             }
 
@@ -272,17 +287,114 @@ namespace UserService.BLL.Services
             Account account = await accountRepo.GetByIdAsync(id, cancellationToken);
             if (account == null)
             {
-                _logger.LogWarning("User with id {userId} not found", id);
+                logger.LogWarning("User with id {userId} not found", id);
                 throw new NotFoundException("Account is not found");
             }
 
             await accountRepo.DeleteAsync(account, cancellationToken);
         }
 
+        public async Task SendConfirmationEmail(Guid userId)
+        {
+            var user = await userRepo.GetByIdAsync(userId);
+            if (user == null)
+            {
+                throw new Exception("User not found.");
+            }
+
+            user.EmailConfirmationToken = Guid.NewGuid().ToString();
+            user.EmailConfirmationTokenExpiresAt = DateTime.UtcNow.AddHours(24);
+
+            await userRepo.UpdateAsync(user);
+
+            var confirmationLink = $"{configuration["AppSettings:ApiGatewayUrl"]}/confirm-email?token={user.EmailConfirmationToken}";
+
+            var template = emailTemplateLoader.LoadTemplate("ConfirmEmail.html");
+            var emailRequest = new EmailRequest
+            {
+                To = user.Email,
+                Subject = "Confirm your email",
+                Body = template.Replace("{{ConfirmationLink}}", confirmationLink),
+            };
+
+            var response = await notificationClient.SendEmailAsync(emailRequest);
+
+            if (!response.Success)
+            {
+                throw new Exception("Failed to send confirmation email.");
+            }
+        }
+
+        public async Task ConfirmEmail(string token)
+        {
+            var user = await userRepo.GetByConfirmationTokenAsync(token);
+            if (user == null)
+            {
+                throw new Exception("Invalid or expired token.");
+            }
+
+            if (user.EmailConfirmationTokenExpiresAt < DateTime.UtcNow)
+            {
+                throw new Exception("Token has expired.");
+            }
+
+            user.IsEmailConfirmed = true;
+            user.EmailConfirmationToken = null;
+            user.EmailConfirmationTokenExpiresAt = null;
+
+            await userRepo.UpdateAsync(user);
+        }
+
+        public async Task RequestPasswordResetAsync(string email)
+        {
+            var account = await accountRepo.GetByEmailAsync(email);
+            if (account == null)
+            {
+                throw new Exception("User not found.");
+            }
+
+            account.PasswordResetToken = Guid.NewGuid().ToString();
+            account.PasswordResetTokenExpiresAt = DateTime.UtcNow.AddHours(1);
+
+            await accountRepo.UpdateAsync(account);
+
+            var resetLink = $"{configuration["AppSettings:ApiGatewayUrl"]}/reset-password?token={account.PasswordResetToken}";
+
+            var template = emailTemplateLoader.LoadTemplate("ResetPassword.html");
+            var emailRequest = new EmailRequest
+            {
+                To = email,
+                Subject = "Password Reset Request",
+                Body = template.Replace("{{ResetLink}}", resetLink),
+            };
+
+            var response = await notificationClient.SendEmailAsync(emailRequest);
+
+            if (!response.Success)
+            {
+                throw new Exception("Failed to send reset email.");
+            }
+        }
+
+        public async Task ResetPasswordAsync(string token, string newPassword)
+        {
+            var account = await accountRepo.GetByResetTokenAsync(token);
+            if (account == null || account.PasswordResetTokenExpiresAt < DateTime.UtcNow)
+            {
+                throw new Exception("Invalid or expired token.");
+            }
+
+            account.PasswordHash = HashPassword(newPassword);
+            account.PasswordResetToken = null;
+            account.PasswordResetTokenExpiresAt = null;
+
+            await accountRepo.UpdateAsync(account);
+        }
+
         private async Task ValidateRequestAsync<T>(IValidator<T> validator, T request,
             CancellationToken cancellationToken)
         {
-            _logger.LogDebug("Validating request of type {Type}", typeof(T).Name);
+            logger.LogDebug("Validating request of type {Type}", typeof(T).Name);
             ValidationResult result = await validator.ValidateAsync(request, cancellationToken);
             if (!result.IsValid)
             {
@@ -293,7 +405,7 @@ namespace UserService.BLL.Services
 
         private string HashPassword(string password)
         {
-            _logger.LogDebug("Hashing password");
+            logger.LogDebug("Hashing password");
             using (var sha256 = SHA256.Create())
             {
                 var bytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(password));

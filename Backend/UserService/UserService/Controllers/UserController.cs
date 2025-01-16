@@ -1,13 +1,14 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TransportShop.DAL.Enums;
+using UserService.API.Extensions;
 using UserService.BLL.DTO.Request;
 using UserService.BLL.Interfaces;
 
 namespace UserService.API.Controllers
 {
     [ApiController]
-    [Route("users")]
+    [Route("api/[controller]")]
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
@@ -22,7 +23,7 @@ namespace UserService.API.Controllers
         }
 
         [HttpPost]
-        [Route("/auth/signin")]
+        [Route("signin")]
         public async Task<IActionResult> SignIn([FromBody] SignInRequest request, CancellationToken cancellationToken)
         {
             _logger.LogInformation("User login request with username {Login}", request.Login);
@@ -33,7 +34,7 @@ namespace UserService.API.Controllers
         }
 
         [HttpPost]
-        [Route("/auth/signup")]
+        [Route("signup")]
         public async Task<IActionResult> SignUp([FromBody] SignUpRequest request, CancellationToken cancellationToken)
         {
             var response = await _userService.SignUpAsync(request, cancellationToken);
@@ -45,7 +46,7 @@ namespace UserService.API.Controllers
         }
 
         [HttpPost]
-        [Route("/auth/refreshtoken")]
+        [Route("refreshtoken")]
         [Authorize]
         public async Task<IActionResult> RefreshToken([FromBody] TokenRequest request,
             CancellationToken cancellationToken)
@@ -99,6 +100,42 @@ namespace UserService.API.Controllers
             _logger.LogInformation("User with ID {UserId} successfully deleted", id);
 
             return NoContent();
+        }
+
+        [HttpPost("send-confirmation-email/{userId:guid}")]
+        public async Task<IActionResult> SendConfirmationEmail(Guid userId)
+        {
+            _logger.LogInformation("Received request to send confirmation email to user with ID {UserId}", userId);
+            await _userService.SendConfirmationEmail(userId);
+            _logger.LogInformation("Confirmation email sent to user with ID {UserId}", userId);
+            return Ok(new { Message = "Confirmation email sent." });
+        }
+
+        [HttpGet("confirm-email")]
+        public async Task<IActionResult> ConfirmEmail([FromQuery] string token)
+        {
+            _logger.LogInformation("Received request to confirm email with token {Token}", token);
+            await _userService.ConfirmEmail(token);
+            _logger.LogInformation("Email confirmed successfully for token {Token}", token);
+            return Ok(new { Message = "Email confirmed successfully." });
+        }
+
+        [HttpPost("request-password-reset")]
+        public async Task<IActionResult> RequestPasswordReset([FromBody] PasswordResetRequest request)
+        {
+            _logger.LogInformation("Received request to reset password for email {Email}", request.Email);
+            await _userService.RequestPasswordResetAsync(request.Email);
+            _logger.LogInformation("Password reset email sent successfully to {Email}", request.Email);
+            return Ok(new { Message = "Password reset email sent successfully." });
+        }
+
+        [HttpPost("reset-password")]
+        public async Task<IActionResult> ResetPassword([FromBody] PasswordResetConfirmRequest request)
+        {
+            _logger.LogInformation("Received request to reset password with token {Token}", request.Token);
+            await _userService.ResetPasswordAsync(request.Token, request.NewPassword);
+            _logger.LogInformation("Password successfully reset for token {Token}", request.Token);
+            return Ok(new { Message = "Password has been reset successfully." });
         }
     }
 }

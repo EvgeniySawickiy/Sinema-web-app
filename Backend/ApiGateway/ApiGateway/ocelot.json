@@ -1,7 +1,7 @@
 {
   "Routes": [
     {
-      "DownstreamPathTemplate": "/users/{everything}",
+      "DownstreamPathTemplate": "/api/user/{everything}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
@@ -9,11 +9,11 @@
           "Port": 8080
         }
       ],
-      "UpstreamPathTemplate": "/users/{everything}",
+      "UpstreamPathTemplate": "/user/{everything}",
       "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ]
     },
     {
-      "DownstreamPathTemplate": "/auth/{everything}",
+      "DownstreamPathTemplate": "/api/user/confirm-email",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
@@ -21,9 +21,22 @@
           "Port": 8080
         }
       ],
-      "UpstreamPathTemplate": "/auth/{everything}",
+      "UpstreamPathTemplate": "/confirm-email",
+      "UpstreamHttpMethod": [ "GET" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/user/reset-password",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "user-service",
+          "Port": 8080
+        }
+      ],
+      "UpstreamPathTemplate": "/reset-password",
       "UpstreamHttpMethod": [ "POST" ]
     },
+    
     {
       "DownstreamPathTemplate": "/api/halls/{everything}",
       "DownstreamScheme": "http",
@@ -89,7 +102,7 @@
       }
     },
     {
-      "DownstreamPathTemplate": "/api/Notification/{everything}",
+      "DownstreamPathTemplate": "/api/notification/{everything}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
@@ -97,7 +110,7 @@
           "Port": 8080
         }
       ],
-      "UpstreamPathTemplate": "/Notification/{everything}",
+      "UpstreamPathTemplate": "/notification/{everything}",
       "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer",
