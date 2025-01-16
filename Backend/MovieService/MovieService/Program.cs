@@ -7,8 +7,11 @@ using MovieService.Application.DependencyInjection;
 using MovieService.DataAccess.DependencyInjection;
 using MovieService.DataAccess.Persistence;
 using MovieService.DataAccess.Services;
+using MovieService.Extention;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Host.AddLogs(builder.Configuration);
 
 builder.Services.AddGrpc();
 

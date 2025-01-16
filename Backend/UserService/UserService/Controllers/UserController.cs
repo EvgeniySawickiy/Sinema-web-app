@@ -12,18 +12,23 @@ namespace UserService.API.Controllers
     {
         private readonly IUserService _userService;
         private readonly ITokenService _tokenService;
+        private readonly ILogger<UserController> _logger;
 
-        public UserController(IUserService userService, ITokenService tokenService)
+        public UserController(IUserService userService, ITokenService tokenService, ILogger<UserController> logger)
         {
             _userService = userService;
             _tokenService = tokenService;
+            _logger = logger;
         }
 
         [HttpPost]
         [Route("/auth/signin")]
         public async Task<IActionResult> SignIn([FromBody] SignInRequest request, CancellationToken cancellationToken)
         {
+            _logger.LogInformation("User login request with username {Login}", request.Login);
             var response = await _userService.SignInAsync(request, cancellationToken);
+            _logger.LogInformation("User {Login} successfully signed in", request.Login);
+
             return Ok(response);
         }
 
@@ -32,16 +37,23 @@ namespace UserService.API.Controllers
         public async Task<IActionResult> SignUp([FromBody] SignUpRequest request, CancellationToken cancellationToken)
         {
             var response = await _userService.SignUpAsync(request, cancellationToken);
-            var userId = await _userService.GetMyIdByJwtAsync(_tokenService.GetPrincipalFromExpiredToken(response.AccessToken));
+            var userId =
+                await _userService.GetMyIdByJwtAsync(_tokenService.GetPrincipalFromExpiredToken(response.AccessToken));
+            _logger.LogInformation("User {Login} successfully registered with ID {UserId}", request.Login, userId);
+
             return CreatedAtAction(nameof(GetUserById), new { id = userId }, response);
         }
 
         [HttpPost]
         [Route("/auth/refreshtoken")]
         [Authorize]
-        public async Task<IActionResult> RefreshToken([FromBody] TokenRequest request, CancellationToken cancellationToken)
+        public async Task<IActionResult> RefreshToken([FromBody] TokenRequest request,
+            CancellationToken cancellationToken)
         {
+            _logger.LogInformation("Token refresh request");
             var response = await _userService.RefreshTokenAsync(request, cancellationToken);
+            _logger.LogInformation("Token successfully refreshed");
+
             return Ok(response);
         }
 
@@ -49,7 +61,10 @@ namespace UserService.API.Controllers
         [Authorize(Roles = nameof(Role.User))]
         public async Task<IActionResult> GetMyProfile(CancellationToken cancellationToken)
         {
+            _logger.LogInformation("Request to retrieve the current user's profile");
             var response = await _userService.GetMyProfileByJwtAsync(HttpContext.User);
+            _logger.LogInformation("Current user's profile successfully retrieved");
+
             return Ok(response);
         }
 
@@ -57,7 +72,10 @@ namespace UserService.API.Controllers
         [Authorize(Roles = $"{nameof(Role.Manager)},{nameof(Role.Admin)}")]
         public async Task<IActionResult> GetAllUsers(CancellationToken cancellationToken)
         {
+            _logger.LogInformation("Request to retrieve all users");
             var users = await _userService.GetAllUsersAsync(cancellationToken);
+            _logger.LogInformation("List of all users successfully retrieved");
+
             return Ok(users);
         }
 
@@ -65,7 +83,10 @@ namespace UserService.API.Controllers
         [Authorize(Roles = $"{nameof(Role.Manager)},{nameof(Role.Admin)}")]
         public async Task<IActionResult> GetUserById(Guid id, CancellationToken cancellationToken)
         {
+            _logger.LogInformation("Request to retrieve user with ID {UserId}", id);
             var user = await _userService.GetUserByIdAsync(id, cancellationToken);
+            _logger.LogInformation("User with ID {UserId} successfully retrieved", id);
+
             return Ok(user);
         }
 
@@ -73,7 +94,10 @@ namespace UserService.API.Controllers
         [Authorize(Roles = nameof(Role.Admin))]
         public async Task<IActionResult> DeleteUser(Guid id, CancellationToken cancellationToken)
         {
+            _logger.LogInformation("Request to delete user with ID {UserId}", id);
             await _userService.DeleteUserAsync(id, cancellationToken);
+            _logger.LogInformation("User with ID {UserId} successfully deleted", id);
+
             return NoContent();
         }
     }

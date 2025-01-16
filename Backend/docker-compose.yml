@@ -27,6 +27,7 @@ services:
       - backend
     restart: unless-stopped
     environment:
+      Logstash__Uri: "http://logstash:5044"
       ASPNETCORE_ENVIRONMENT: "Development"
       Kestrel__Endpoints__WebApi__Protocols: "Http1"
       Kestrel__Endpoints__WebApi__Url: "http://user-service:8080"
@@ -46,7 +47,7 @@ services:
       - user_db_data:/var/lib/postgresql/data
     networks:
       - backend
-    restart: unless-stopped   
+    restart: unless-stopped
   
   movie-service:
     build:
@@ -61,6 +62,7 @@ services:
       - backend
     restart: unless-stopped
     environment:
+      Logstash__Uri: "http://logstash:5044"
       ASPNETCORE_ENVIRONMENT: "Development"
       Kestrel__Endpoints__WebApi__Protocols: "Http1"
       Kestrel__Endpoints__WebApi__Url: "http://movie-service:8080"
@@ -71,6 +73,7 @@ services:
     image: postgres:15
     container_name: movie-db
     environment:
+      Logstash__Uri: "http://logstash:5044"
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: 1234
       POSTGRES_DB: moviedb
@@ -92,6 +95,8 @@ services:
     depends_on:
       - redis
       - mongo-booking
+    environment:
+      Logstash__Uri: "http://logstash:5044"
     networks:
       - backend
     restart: unless-stopped
@@ -106,6 +111,8 @@ services:
     depends_on:
       - mongo-booking
       - rabbitmq
+    environment:
+      Logstash__Uri: "http://logstash:5044"
     networks:
       - backend
     restart: unless-stopped
@@ -141,12 +148,51 @@ services:
     networks:
       - backend
     restart: unless-stopped
+  
+  elasticsearch:
+    container_name: elasticsearch
+    image: elasticsearch:8.16.2
+    ports:
+      - 9200:9200
+    volumes:
+      - elasticsearch_data:/usr/share/elasticsearch/data
+    environment:
+      - xpack.security.enabled=false
+      - xpack.watcher.enabled=false
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - discovery.type=single-node
+    networks:
+      - backend
+
+  logstash:
+    image: logstash:8.17.0
+    volumes:
+      - ./logstash/pipeline:/usr/share/logstash/pipeline
+    ports:
+      - 9600:9600
+    depends_on:
+      - elasticsearch
+    networks:
+        - backend
+
+  kibana:
+    container_name: kibana
+    image: kibana:8.14.3
+    ports:
+      - 5601:5601
+    depends_on:
+      - elasticsearch
+    environment:
+      - ELASTICSEARCH_URL=http://elasticsearch:9200
+    networks:
+      - backend
 
 volumes:
   user_db_data:
   movie_db_data:
   mongo_data:
   redis_data:
+  elasticsearch_data:
 
 networks:
   backend:
