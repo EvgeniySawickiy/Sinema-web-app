@@ -45,14 +45,14 @@ namespace MovieService.Controllers
         }
 
         [HttpGet("filter")]
-        public async Task<ActionResult<IEnumerable<MovieDto>>> GetMoviesByGenre([FromQuery] string genre,
+        public async Task<ActionResult<IEnumerable<MovieDto>>> GetMoviesByGenre([FromQuery] Guid genreId,
             CancellationToken cancellationToken)
         {
-            _logger.LogInformation("Fetching movies by genre: {Genre}.", genre);
+            _logger.LogInformation("Fetching movies by genre: {Genre}.", genreId);
 
-            var movies = await _mediator.Send(new GetMoviesByGenreQuery { Genre = genre }, cancellationToken);
+            var movies = await _mediator.Send(new GetMoviesByGenreQuery { GenreId = genreId }, cancellationToken);
 
-            _logger.LogInformation("Fetched {Count} movies for genre: {Genre}.", movies?.Count() ?? 0, genre);
+            _logger.LogInformation("Fetched {Count} movies for genre: {Genre}.", movies?.Count() ?? 0, genreId);
 
             return Ok(movies);
         }

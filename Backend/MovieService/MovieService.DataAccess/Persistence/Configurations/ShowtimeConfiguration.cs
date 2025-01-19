@@ -13,13 +13,20 @@ namespace MovieService.DataAccess.Persistence.Configurations
             builder.Property(s => s.StartTime)
                 .IsRequired();
 
+            builder.Property(s => s.TicketPrice)
+                .HasPrecision(10, 2);
+
             builder.HasOne(s => s.Movie)
                 .WithMany()
-                .HasForeignKey(s => s.MovieId);
+                .HasForeignKey(s => s.MovieId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             builder.HasOne(s => s.Hall)
-                .WithMany()
-                .HasForeignKey(s => s.HallId);
+                .WithMany(h => h.Showtimes) 
+                .HasForeignKey(s => s.HallId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.ToTable("Showtimes");
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using MediatR;
 using MovieService.Application.UseCases.Movies.Commands;
-using MovieService.Core.Enums;
+using MovieService.Core.Entities;
 using MovieService.DataAccess.Interfaces;
 
 namespace MovieService.Application.UseCases.Movies.Handlers
@@ -23,12 +23,12 @@ namespace MovieService.Application.UseCases.Movies.Handlers
                 throw new KeyNotFoundException($"Movie with ID {request.Id} not found.");
             }
 
-            if (!string.IsNullOrEmpty(request.Title))
+            if (!string.IsNullOrWhiteSpace(request.Title))
             {
                 movie.UpdateTitle(request.Title);
             }
 
-            if (!string.IsNullOrEmpty(request.Description))
+            if (!string.IsNullOrWhiteSpace(request.Description))
             {
                 movie.UpdateDescription(request.Description);
             }
@@ -38,14 +38,32 @@ namespace MovieService.Application.UseCases.Movies.Handlers
                 movie.UpdateDuration(request.DurationInMinutes.Value);
             }
 
-            if (!string.IsNullOrEmpty(request.Genre))
-            {
-                movie.UpdateGenre(Enum.Parse<Genre>(request.Genre, true));
-            }
-
             if (request.Rating.HasValue)
             {
                 movie.UpdateRating(request.Rating.Value);
+            }
+
+            if (!string.IsNullOrWhiteSpace(request.ImageUrl))
+            {
+                movie.UpdateImage(request.ImageUrl);
+            }
+
+            if (!string.IsNullOrWhiteSpace(request.TrailerUrl))
+            {
+                movie.UpdateTrailer(request.TrailerUrl);
+            }
+
+            if (request.GenreIds != null)
+            {
+                movie.MovieGenres.Clear();
+
+                var genres = await _unitOfWork.Genres.FindAsync(
+                    g => request.GenreIds.Contains(g.Id), cancellationToken);
+
+                foreach (var genre in genres)
+                {
+                    movie.MovieGenres.Add(new MovieGenre(movie.Id, genre.Id));
+                }
             }
 
             await _unitOfWork.Movies.UpdateAsync(movie, cancellationToken);

@@ -1,7 +1,6 @@
 ﻿using MediatR;
 using MovieService.Application.UseCases.Movies.Commands;
 using MovieService.Core.Entities;
-using MovieService.Core.Enums;
 using MovieService.DataAccess.Interfaces;
 
 namespace MovieService.Application.UseCases.Movies.Handlers
@@ -17,12 +16,26 @@ namespace MovieService.Application.UseCases.Movies.Handlers
 
         public async Task<Guid> Handle(CreateMovieCommand request, CancellationToken cancellationToken)
         {
+            var genres = await _unitOfWork.Genres.FindAsync(
+                g => request.GenreIds.Contains(g.Id), cancellationToken);
+
+            if (!genres.Any())
+            {
+                throw new ArgumentException("Invalid genres provided.");
+            }
+
             var movie = new Movie(
                 title: request.Title,
                 description: request.Description,
                 durationInMinutes: request.DurationInMinutes,
-                genre: Enum.Parse<Genre>(request.Genre, true),
-                rating: request.Rating);
+                rating: request.Rating,
+                imageUrl: request.ImageUrl,
+                trailerUrl: request.TrailerUrl);
+
+            foreach (var genre in genres)
+            {
+                movie.MovieGenres.Add(new MovieGenre(movie.Id, genre.Id));
+            }
 
             await _unitOfWork.Movies.AddAsync(movie, cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);

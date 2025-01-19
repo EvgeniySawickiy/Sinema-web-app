@@ -16,7 +16,8 @@ namespace MovieService.Application.UseCases.Movies.Handlers
 
         public async Task<IEnumerable<MovieDto>> Handle(GetMoviesByGenreQuery request, CancellationToken cancellationToken)
         {
-            var movies = await _unitOfWork.Movies.FindAsync(m => m.Genre.ToString() == request.Genre, cancellationToken);
+            var movies = await _unitOfWork.Movies.FindAsync(
+                m => m.MovieGenres.Any(mg => mg.GenreId == request.GenreId), cancellationToken);
 
             return movies.Select(movie => new MovieDto
             {
@@ -24,8 +25,10 @@ namespace MovieService.Application.UseCases.Movies.Handlers
                 Title = movie.Title,
                 Description = movie.Description,
                 DurationInMinutes = movie.DurationInMinutes,
-                Genre = movie.Genre.ToString(),
                 Rating = movie.Rating,
+                ImageUrl = movie.ImageUrl,
+                TrailerUrl = movie.TrailerUrl,
+                Genres = movie.MovieGenres.Select(mg => mg.Genre.Name).ToList(),
             });
         }
     }

@@ -5,6 +5,6 @@ namespace MovieService.Application.UseCases.Movies.Queries
 {
     public class GetMoviesByGenreQuery : IRequest<IEnumerable<MovieDto>>
     {
-        public string Genre { get; set; }
+        public Guid GenreId { get; set; }
     }
 }
