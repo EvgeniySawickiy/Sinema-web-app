@@ -11,23 +11,34 @@ namespace MovieService.Controllers;
 public class GenresController : ControllerBase
 {
     private readonly IMediator _mediator;
+    private readonly ILogger<GenresController> _logger;
 
-    public GenresController(IMediator mediator)
+    public GenresController(IMediator mediator, ILogger<GenresController> logger)
     {
         _mediator = mediator;
+        _logger = logger;
     }
 
     [HttpGet]
     public async Task<IActionResult> GetAllGenres(CancellationToken cancellationToken)
     {
+        _logger.LogInformation("Получение списка всех жанров.");
+
         var genres = await _mediator.Send(new GetAllGenresQuery(), cancellationToken);
+
+        _logger.LogInformation("Жанры успешно получены.");
+
         return Ok(genres);
     }
 
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetGenreById(Guid id, CancellationToken cancellationToken)
     {
+        _logger.LogInformation("Получение жанра с ID: {GenreId}.", id);
+
         var genre = await _mediator.Send(new GetGenreByIdQuery { Id = id }, cancellationToken);
+
+        _logger.LogInformation("Успешно получен жанр с ID: {GenreId}.", id);
 
         return Ok(genre);
     }
@@ -37,7 +48,12 @@ public class GenresController : ControllerBase
     public async Task<IActionResult> CreateGenre([FromBody] CreateGenreCommand command,
         CancellationToken cancellationToken)
     {
+        _logger.LogInformation("Создание нового жанра с названием: {GenreName}.", command.Name);
+
         var genreId = await _mediator.Send(command, cancellationToken);
+
+        _logger.LogInformation("Жанр успешно создан с ID: {GenreId}.", genreId);
+
         return CreatedAtAction(nameof(GetGenreById), new { id = genreId }, new { id = genreId });
     }
 
@@ -46,12 +62,12 @@ public class GenresController : ControllerBase
     public async Task<IActionResult> UpdateGenre(Guid id, [FromBody] UpdateGenreCommand command,
         CancellationToken cancellationToken)
     {
-        if (id != command.Id)
-        {
-            return BadRequest("Genre ID mismatch.");
-        }
+        _logger.LogInformation("Обновление жанра с ID: {GenreId}.", id);
 
         await _mediator.Send(command, cancellationToken);
+
+        _logger.LogInformation("Жанр с ID: {GenreId} успешно обновлен.", id);
+
         return NoContent();
     }
 
@@ -59,7 +75,12 @@ public class GenresController : ControllerBase
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> DeleteGenre(Guid id, CancellationToken cancellationToken)
     {
+        _logger.LogInformation("Удаление жанра с ID: {GenreId}.", id);
+
         await _mediator.Send(new DeleteGenreCommand { Id = id }, cancellationToken);
+
+        _logger.LogInformation("Жанр с ID: {GenreId} успешно удален.", id);
+
         return NoContent();
     }
 }
