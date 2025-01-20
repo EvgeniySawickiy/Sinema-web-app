@@ -72,15 +72,9 @@ namespace BookingService.Controllers
         }
 
         [Authorize]
-        [HttpGet("user")]
-        public async Task<IActionResult> GetBookingsByUserId(CancellationToken cancellationToken)
+        [HttpGet("user{id:guid}")]
+        public async Task<IActionResult> GetBookingsByUserId(Guid userId, CancellationToken cancellationToken)
         {
-            var userIdFromToken = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (!Guid.TryParse(userIdFromToken, out var userId))
-            {
-                throw new UserNotFoundException(userId);
-            }
-
             _logger.LogInformation("Fetching bookings for user ID: {UserId}.", userId);
 
             var query = new GetBookingsByUserIdQuery
