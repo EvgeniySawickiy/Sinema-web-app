@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using MovieService.Application.DependencyInjection;
+using MovieService.Application.Services;
 using MovieService.DataAccess.DependencyInjection;
 using MovieService.DataAccess.Persistence;
 using MovieService.DataAccess.Services;
@@ -11,7 +12,7 @@ using MovieService.Extention;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Host.AddLogs(builder.Configuration);
+//builder.Host.AddLogs(builder.Configuration);
 
 builder.Services.AddGrpc();
 
@@ -20,6 +21,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddApplicationServices();
+builder.Services.AddScoped<HallService>();
 builder.Services.AddInfrastructureServices(builder.Configuration);
 
 builder.Services.AddAuthentication("Bearer").AddJwtBearer(options =>

@@ -12,10 +12,15 @@ namespace MovieService.DataAccess.Persistence.Configurations
 
             builder.Property(h => h.Name)
                 .IsRequired()
-                .HasMaxLength(50);
+                .HasMaxLength(100);
 
             builder.Property(h => h.TotalSeats)
                 .IsRequired();
+
+            builder.Property(h => h.SeatLayoutJson)
+                .IsRequired();
+
+            builder.ToTable("Halls");
         }
     }
 }

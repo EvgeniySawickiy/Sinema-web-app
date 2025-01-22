@@ -1,7 +1,7 @@
 {
   "Routes": [
     {
-      "DownstreamPathTemplate": "/users/{everything}",
+      "DownstreamPathTemplate": "/api/users/{everything}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
@@ -13,7 +13,7 @@
       "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ]
     },
     {
-      "DownstreamPathTemplate": "/auth/{everything}",
+      "DownstreamPathTemplate": "/api/users/confirm-email",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
@@ -21,7 +21,19 @@
           "Port": 8080
         }
       ],
-      "UpstreamPathTemplate": "/auth/{everything}",
+      "UpstreamPathTemplate": "/users/confirm-email",
+      "UpstreamHttpMethod": [ "GET" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/users/password-reset",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "user-service",
+          "Port": 8080
+        }
+      ],
+      "UpstreamPathTemplate": "/users/password-reset",
       "UpstreamHttpMethod": [ "POST" ]
     },
     {
@@ -73,7 +85,7 @@
       }
     },
     {
-      "DownstreamPathTemplate": "/api/booking/{everything}",
+      "DownstreamPathTemplate": "/api/bookings/{everything}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
@@ -81,7 +93,7 @@
           "Port": 8080
         }
       ],
-      "UpstreamPathTemplate": "/booking/{everything}",
+      "UpstreamPathTemplate": "/bookings/{everything}",
       "UpstreamHttpMethod": [ "GET", "POST", "DELETE" ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer",
@@ -89,7 +101,7 @@
       }
     },
     {
-      "DownstreamPathTemplate": "/api/Notification/{everything}",
+      "DownstreamPathTemplate": "/api/notifications/{everything}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
@@ -97,7 +109,7 @@
           "Port": 8080
         }
       ],
-      "UpstreamPathTemplate": "/Notification/{everything}",
+      "UpstreamPathTemplate": "/notifications/{everything}",
       "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer",

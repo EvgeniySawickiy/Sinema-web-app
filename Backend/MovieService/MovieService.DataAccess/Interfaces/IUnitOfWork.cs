@@ -5,6 +5,7 @@
         IMovieRepository Movies { get; }
         IShowtimeRepository Showtimes { get; }
         IHallRepository Halls { get; }
+        IGenreRepository Genres { get; }
         Task<int> SaveChangesAsync(CancellationToken cancellationToken);
     }
 }

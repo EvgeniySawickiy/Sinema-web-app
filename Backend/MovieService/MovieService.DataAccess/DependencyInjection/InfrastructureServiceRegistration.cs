@@ -17,6 +17,7 @@ namespace MovieService.DataAccess.DependencyInjection
             services.AddScoped<IMovieRepository, MovieRepository>();
             services.AddScoped<IShowtimeRepository, ShowtimeRepository>();
             services.AddScoped<IHallRepository, HallRepository>();
+            services.AddScoped<IGenreRepository, GenreRepository>();
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 

@@ -23,6 +23,7 @@
     </PackageReference>
 
 	<Protobuf Include="External Services\Protos\user.proto" GrpcServices="Server" />
+  <Protobuf Include="External Services\Protos\notification.proto" GrpcServices="Client" />
   </ItemGroup>
 
 </Project>

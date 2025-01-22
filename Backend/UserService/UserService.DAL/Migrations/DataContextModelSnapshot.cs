@@ -36,6 +36,12 @@ namespace UserService.DAL.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("PasswordResetToken")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("PasswordResetTokenExpiresAt")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<int>("Role")
                         .HasColumnType("integer");
 
@@ -74,6 +80,15 @@ namespace UserService.DAL.Migrations
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
+
+                    b.Property<string>("EmailConfirmationToken")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("EmailConfirmationTokenExpiresAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("IsEmailConfirmed")
+                        .HasColumnType("boolean");
 
                     b.Property<string>("Name")
                         .HasMaxLength(50)

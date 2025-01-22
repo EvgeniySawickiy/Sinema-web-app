@@ -4,12 +4,13 @@ namespace MovieService.DataAccess.Persistence.Repositories
 {
     public class UnitOfWork : IUnitOfWork
     {
-        public UnitOfWork(DataContext context, IMovieRepository movieRepository, IShowtimeRepository showtimeRepository, IHallRepository hallRepository)
+        public UnitOfWork(DataContext context, IMovieRepository movieRepository, IShowtimeRepository showtimeRepository, IHallRepository hallRepository, IGenreRepository genreRepository)
         {
             _context = context;
             Movies = movieRepository;
             Showtimes = showtimeRepository;
             Halls = hallRepository;
+            Genres = genreRepository;
         }
 
         private readonly DataContext _context;
@@ -17,6 +18,7 @@ namespace MovieService.DataAccess.Persistence.Repositories
         public IMovieRepository Movies { get; }
         public IShowtimeRepository Showtimes { get; }
         public IHallRepository Halls { get; }
+        public IGenreRepository Genres { get; }
 
         public async Task<int> SaveChangesAsync(CancellationToken cancellationToken)
         {

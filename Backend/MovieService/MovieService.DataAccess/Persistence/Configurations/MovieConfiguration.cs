@@ -12,17 +12,25 @@ namespace MovieService.DataAccess.Persistence.Configurations
 
             builder.Property(m => m.Title)
                 .IsRequired()
-                .HasMaxLength(100);
+                .HasMaxLength(200);
 
             builder.Property(m => m.Description)
-                .IsRequired()
+                .HasMaxLength(1000);
+
+            builder.Property(m => m.Rating)
+                .HasPrecision(3, 2);
+
+            builder.Property(m => m.ImageUrl)
                 .HasMaxLength(500);
 
-            builder.Property(m => m.DurationInMinutes)
-                .IsRequired();
+            builder.Property(m => m.TrailerUrl)
+                .HasMaxLength(500);
 
-            builder.Property(m => m.Genre)
-                .IsRequired();
+            builder.HasMany(m => m.MovieGenres)
+                .WithOne(mg => mg.Movie)
+                .HasForeignKey(mg => mg.MovieId);
+
+            builder.ToTable("Movies");
         }
     }
 }

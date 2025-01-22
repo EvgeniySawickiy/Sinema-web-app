@@ -29,8 +29,10 @@ namespace MovieService.Application.UseCases.Movies.Handlers
                 Title = movie.Title,
                 Description = movie.Description,
                 DurationInMinutes = movie.DurationInMinutes,
-                Genre = movie.Genre.ToString(),
                 Rating = movie.Rating,
+                ImageUrl = movie.ImageUrl,
+                TrailerUrl = movie.TrailerUrl,
+                Genres = movie.MovieGenres.Select(mg => mg.Genre.Name).ToList(),
             };
         }
     }

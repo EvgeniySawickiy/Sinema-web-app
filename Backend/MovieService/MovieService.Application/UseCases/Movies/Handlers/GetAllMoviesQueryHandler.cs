@@ -18,14 +18,16 @@ namespace MovieService.Application.UseCases.Movies.Handlers
         {
             var movies = await _unitOfWork.Movies.GetAllAsync(cancellationToken);
 
-            return movies.Select(m => new MovieDto
+            return movies.Select(movie => new MovieDto
             {
-                Id = m.Id,
-                Title = m.Title,
-                Description = m.Description,
-                DurationInMinutes = m.DurationInMinutes,
-                Genre = m.Genre.ToString(),
-                Rating = m.Rating,
+                Id = movie.Id,
+                Title = movie.Title,
+                Description = movie.Description,
+                DurationInMinutes = movie.DurationInMinutes,
+                Rating = movie.Rating,
+                ImageUrl = movie.ImageUrl,
+                TrailerUrl = movie.TrailerUrl,
+                Genres = movie.MovieGenres.Select(mg => mg.Genre.Name).ToList(),
             });
         }
     }

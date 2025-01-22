@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using MovieService.Application.DTO.Hall;
 using MovieService.Application.UseCases.Halls.Queries;
+using MovieService.Core.Entities;
 using MovieService.DataAccess.Interfaces;
 
 namespace MovieService.Application.UseCases.Halls.Handlers
@@ -18,12 +19,18 @@ namespace MovieService.Application.UseCases.Halls.Handlers
         {
             var halls = await _unitOfWork.Halls.GetAllAsync(cancellationToken);
 
-            return halls.Select(hall => new HallDto
+            return halls.Select(hall => MapToHallDto(hall));
+        }
+
+        private HallDto MapToHallDto(Hall hall)
+        {
+            return new HallDto
             {
                 Id = hall.Id,
                 Name = hall.Name,
                 TotalSeats = hall.TotalSeats,
-            });
+                SeatLayoutJson = hall.SeatLayoutJson,
+            };
         }
     }
 }

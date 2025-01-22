@@ -6,12 +6,14 @@ using NotificationService.Application.Interfaces;
 using NotificationService.Core.Entities;
 using NotificationService.Infrastructure.DependencyInjection;
 using NotificationService.Infrastructure.Hubs;
+using NotificationService.Infrastructure.Protos;
 using NotificationService.Infrastructure.Services;
 using NotificationService.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
+builder.Services.AddGrpc();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -69,6 +71,9 @@ builder.Services.AddSwaggerGen(opt =>
 });
 
 var app = builder.Build();
+
+app.MapGrpcService<NotificationServiceGrpc>();
+app.MapGet("/", () => "NotificationService - use a gRPC client to interact.");
 
 app.MapHub<NotificationHub>("/notificationHub");
 

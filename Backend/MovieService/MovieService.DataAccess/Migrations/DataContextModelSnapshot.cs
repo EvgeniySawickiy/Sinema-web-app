@@ -22,26 +22,7 @@ namespace MovieService.DataAccess.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("MovieService.Core.Entities.Hall", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
-
-                    b.Property<int>("TotalSeats")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Halls");
-                });
-
-            modelBuilder.Entity("MovieService.Core.Entities.Movie", b =>
+            modelBuilder.Entity("MovieService.Core.Entities.Genre", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -52,23 +33,90 @@ namespace MovieService.DataAccess.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("character varying(500)");
 
-                    b.Property<int>("DurationInMinutes")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("Genre")
-                        .HasColumnType("integer");
-
-                    b.Property<decimal>("Rating")
-                        .HasColumnType("numeric");
-
-                    b.Property<string>("Title")
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Movies");
+                    b.ToTable("Genres", (string)null);
+                });
+
+            modelBuilder.Entity("MovieService.Core.Entities.Hall", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("SeatLayoutJson")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("TotalSeats")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Halls", (string)null);
+                });
+
+            modelBuilder.Entity("MovieService.Core.Entities.Movie", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(1000)
+                        .HasColumnType("character varying(1000)");
+
+                    b.Property<int>("DurationInMinutes")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("ImageUrl")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<decimal>("Rating")
+                        .HasPrecision(3, 2)
+                        .HasColumnType("numeric(3,2)");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<string>("TrailerUrl")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Movies", (string)null);
+                });
+
+            modelBuilder.Entity("MovieService.Core.Entities.MovieGenre", b =>
+                {
+                    b.Property<Guid>("MovieId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("GenreId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("MovieId", "GenreId");
+
+                    b.HasIndex("GenreId");
+
+                    b.ToTable("MovieGenres", (string)null);
                 });
 
             modelBuilder.Entity("MovieService.Core.Entities.Showtime", b =>
@@ -87,7 +135,8 @@ namespace MovieService.DataAccess.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<decimal>("TicketPrice")
-                        .HasColumnType("numeric");
+                        .HasPrecision(10, 2)
+                        .HasColumnType("numeric(10,2)");
 
                     b.HasKey("Id");
 
@@ -95,13 +144,32 @@ namespace MovieService.DataAccess.Migrations
 
                     b.HasIndex("MovieId");
 
-                    b.ToTable("Showtimes");
+                    b.ToTable("Showtimes", (string)null);
+                });
+
+            modelBuilder.Entity("MovieService.Core.Entities.MovieGenre", b =>
+                {
+                    b.HasOne("MovieService.Core.Entities.Genre", "Genre")
+                        .WithMany("MovieGenres")
+                        .HasForeignKey("GenreId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("MovieService.Core.Entities.Movie", "Movie")
+                        .WithMany("MovieGenres")
+                        .HasForeignKey("MovieId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Genre");
+
+                    b.Navigation("Movie");
                 });
 
             modelBuilder.Entity("MovieService.Core.Entities.Showtime", b =>
                 {
                     b.HasOne("MovieService.Core.Entities.Hall", "Hall")
-                        .WithMany()
+                        .WithMany("Showtimes")
                         .HasForeignKey("HallId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -115,6 +183,21 @@ namespace MovieService.DataAccess.Migrations
                     b.Navigation("Hall");
 
                     b.Navigation("Movie");
+                });
+
+            modelBuilder.Entity("MovieService.Core.Entities.Genre", b =>
+                {
+                    b.Navigation("MovieGenres");
+                });
+
+            modelBuilder.Entity("MovieService.Core.Entities.Hall", b =>
+                {
+                    b.Navigation("Showtimes");
+                });
+
+            modelBuilder.Entity("MovieService.Core.Entities.Movie", b =>
+                {
+                    b.Navigation("MovieGenres");
                 });
 #pragma warning restore 612, 618
         }

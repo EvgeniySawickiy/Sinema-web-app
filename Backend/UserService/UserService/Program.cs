@@ -1,16 +1,7 @@
-using System.Text;
-using FluentValidation;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
 using UserService.API.Extensions;
-using UserService.BLL.DTO.Validators;
-using UserService.BLL.Interfaces;
-using UserService.BLL.Services;
 using UserService.DAL.EF;
 using UserService.DAL.External_Services;
-using UserService.DAL.Interfaces;
-using UserService.DAL.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 

@@ -1,0 +1,18 @@
+﻿syntax = "proto3";
+
+option csharp_namespace = "NotificationService.Protos";
+
+service Notification {
+  rpc SendEmail (EmailRequest) returns (EmailResponse);
+}
+
+message EmailRequest {
+  string to = 1;
+  string subject = 2;
+  string body = 3;
+}
+
+message EmailResponse {
+  bool success = 1;
+  string message = 2;
+}
