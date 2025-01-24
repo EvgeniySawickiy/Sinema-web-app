@@ -47,9 +47,20 @@ namespace UserService.API.Controllers
             return CreatedAtAction(nameof(GetUserById), new { id = userId }, response);
         }
 
+        [HttpGet("check/login/{login}")]
+        public async Task<IActionResult> CheckLoginExistence(string login)
+        {
+            _logger.LogInformation("Received request to check login existence {Login}", login);
+
+            var userExists = await _userService.CheckLoginExistence(login);
+
+            _logger.LogInformation("Email confirmed successfully for token {Login}", login);
+
+            return Ok(new { available = !userExists });
+        }
+
         [HttpPost]
         [Route("token/refresh")]
-        [Authorize]
         public async Task<IActionResult> RefreshToken([FromBody] TokenRequest request,
             CancellationToken cancellationToken)
         {

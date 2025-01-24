@@ -1,0 +1,42 @@
+@import "fonts";
+:root{
+  --dark-color: #3c0071;
+  --light-color: #8e24aa;
+  --white-color: #ffffff;
+  --primary-color: #6c1487;
+  --disabled: #ccc;
+}
+
+*,
+*:before,
+*:after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body{
+  font-family: 'JetBrains Mono', sans-serif;
+  background-image: url("/assets/imges/background.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+button {
+  width: 100%;
+  padding: 10px;
+  background-color: var(--dark-color);
+  color: var(--white-color);
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+
+  &:disabled {
+    background-color: var(--disabled);
+    cursor: not-allowed;
+  }
+
+  &:hover:not(:disabled) {
+    background-color: var(--primary-color);
+  }
+}

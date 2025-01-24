@@ -17,9 +17,7 @@ namespace MovieService.Application.Mappers
         {
             _seatLayoutSerializer = seatLayoutSerializer;
 
-            CreateMap<Hall, HallDto>()
-                .ForMember(dest => dest.SeatLayout, opt =>
-                    opt.MapFrom(src => DeserializeSeatLayout(src.SeatLayoutJson)));
+            CreateMap<Hall, HallDto>();
 
             CreateMap<Movie, MovieDto>()
                 .ForMember(dest => dest.Genres, opt =>

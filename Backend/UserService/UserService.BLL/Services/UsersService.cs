@@ -113,7 +113,7 @@ namespace UserService.BLL.Services
             };
         }
 
-        public async Task<TokenResponse> SignUpAsync(
+        public async Task<SignUpResponse> SignUpAsync(
             SignUpRequest request,
             CancellationToken cancellationToken = default)
         {
@@ -158,8 +158,9 @@ namespace UserService.BLL.Services
 
             await tokenRepo.AddAsync(newRefreshToken);
 
-            return new TokenResponse
+            return new SignUpResponse
             {
+                UserId = account.Id,
                 AccessToken = newAccessTokenString,
                 RefreshToken = newRefreshTokenString,
             };
@@ -307,7 +308,8 @@ namespace UserService.BLL.Services
 
             await userRepo.UpdateAsync(user);
 
-            var confirmationLink = $"{configuration["AppSettings:ApiGatewayUrl"]}/confirm-email?token={user.EmailConfirmationToken}";
+            var confirmationLink =
+                $"{configuration["AppSettings:FrontendUrl"]}/confirm-email?token={user.EmailConfirmationToken}";
 
             var template = emailTemplateLoader.LoadTemplate("ConfirmEmail.html");
             var emailRequest = new EmailRequest
@@ -358,7 +360,8 @@ namespace UserService.BLL.Services
 
             await accountRepo.UpdateAsync(account);
 
-            var resetLink = $"{configuration["AppSettings:ApiGatewayUrl"]}/reset-password?token={account.PasswordResetToken}";
+            var resetLink =
+                $"{configuration["AppSettings:FrontendUrl"]}/reset-password?token={account.PasswordResetToken}";
 
             var template = emailTemplateLoader.LoadTemplate("ResetPassword.html");
             var emailRequest = new EmailRequest
@@ -379,7 +382,9 @@ namespace UserService.BLL.Services
         public async Task ResetPasswordAsync(string token, string newPassword)
         {
             var account = await accountRepo.GetByResetTokenAsync(token);
-            if (account == null || account.PasswordResetTokenExpiresAt < DateTime.UtcNow)
+
+            var isInvalidAccount = account == null || account.PasswordResetTokenExpiresAt < DateTime.UtcNow;
+            if (isInvalidAccount)
             {
                 throw new Exception("Invalid or expired token.");
             }
@@ -389,6 +394,14 @@ namespace UserService.BLL.Services
             account.PasswordResetTokenExpiresAt = null;
 
             await accountRepo.UpdateAsync(account);
+        }
+
+        public async Task<bool> CheckLoginExistence(string login)
+        {
+            var accounts = await accountRepo.GetAllAsync();
+            bool isExists = accounts.Any(x => x.Login == login);
+
+            return isExists;
         }
 
         private async Task ValidateRequestAsync<T>(IValidator<T> validator, T request,

@@ -1,0 +1,28 @@
+<div class="movie-sessions">
+  <div *ngFor="let group of groupedSessions" class="movie-card">
+
+    <div class="movie-info">
+      <img [src]="group.movie.imageUrl || 'assets/imges/default-movie-portrait.jpg'" alt="Movie poster" />
+        <h2>{{ group.movie.title }}</h2>
+        <p>Жанр: {{ group.movie.genres.join(', ') || 'Не указан' }}</p>
+        <p>Рейтинг: {{ group.movie.rating }}/10</p>
+    </div>
+
+
+    <div class="movie-sessions-list">
+      <h3>Сеансы:</h3>
+      <div *ngIf="group.sessions.length > 0; else noSessions">
+        <div *ngFor="let session of group.sessions" class="session">
+          <button (click)="onSessionClick(session)">
+            <span>Кинозал:<br>{{ session.hallName }}</span><br />
+            <span class="time-span"> {{ session.startTime | date: 'shortTime' }}</span><br />
+            <span>Цена: {{ session.ticketPrice }} руб.</span>
+          </button>
+        </div>
+      </div>
+      <ng-template #noSessions>
+        <p>Сеансов нет.</p>
+      </ng-template>
+    </div>
+  </div>
+</div>

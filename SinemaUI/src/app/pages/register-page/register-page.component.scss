@@ -1,0 +1,60 @@
+.register-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  height: 100vh;
+
+  form {
+    width: 100%;
+    max-width: 400px;
+    padding: 20px;
+    border: 1px solid var(--primary-color);
+    border-radius: 8px;
+    background-color: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      font-weight: 800;
+      color: var(--dark-color);
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+
+      label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+        color: var(--dark-color);
+      }
+
+      input {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid var(--primary-color);
+        border-radius: 4px;
+        color: var(--dark-color);
+
+        &:focus {
+          border-color: var(--dark-color);
+          outline: none;
+        }
+      }
+
+      .success {
+        color: green;
+        font-size: 12px;
+      }
+
+      .error {
+        color: red;
+        font-size: 12px;
+      }
+    }
+
+
+  }
+}

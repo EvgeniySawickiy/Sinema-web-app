@@ -1,0 +1,30 @@
+<header class="site-header">
+  <div class="container">
+    <div class="logo">
+      <img src="assets/imges/header-logo.png" alt="Cinema Logo" />
+    </div>
+
+    <nav class="navigation">
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/movies">Movies</a></li>
+        <li><a href="/about">About Us</a></li>
+        <li><a href="/contact">Contact</a></li>
+      </ul>
+    </nav>
+
+
+    <div class="auth-buttons">
+      <ng-container *ngIf="!isAuthenticated">
+        <button routerLink="login" class="login-btn">Login</button>
+        <button routerLink="register" class ="register-btn">Register</button>
+      </ng-container>
+      <ng-container *ngIf="isAuthenticated">
+        <button routerLink="profile" class="profile-btn">
+          <img src="assets/imges/user.svg" alt="Profile"/>
+        </button>
+        <button (click)="logout()" class="logout-btn">Logout</button>
+      </ng-container>
+    </div>
+  </div>
+</header>

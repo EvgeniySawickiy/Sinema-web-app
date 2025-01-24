@@ -1,0 +1,30 @@
+<div class="home-page">
+
+  <section class="banner">
+    <h1>Добро пожаловать в наш кинотеатр!</h1>
+    <p>Лучшие фильмы и уютная атмосфера ждут вас!</p>
+  </section>
+
+
+  <section class="schedule">
+    <h2>Расписание сеансов</h2>
+    <label for="session-date">Выберите дату:</label>
+    <input id="session-date" type="date" />
+  </section>
+
+
+  <section class="filter">
+    <h2>Поиск и фильтрация</h2>
+    <input type="text" placeholder="Введите название фильма" />
+    <button>Поиск</button>
+  </section>
+
+
+  <section class="sessions">
+    <app-sessions-card
+      [showTimes]="showTimes"
+      [movies]="movies"
+      [halls]="halls"
+    ></app-sessions-card>
+  </section>
+</div>
