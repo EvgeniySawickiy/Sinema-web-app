@@ -1,28 +1,58 @@
 <div class="movie-sessions">
   <div *ngFor="let group of groupedSessions" class="movie-card">
+    <!-- Левая часть: постер -->
+    <div class="movie-image-info">
+      <div class="movie-image">
+        <a [routerLink]="['/movie', group.movie.id]">
+          <img
+            [src]="group.movie.imageUrl || 'assets/imges/default-movie-portrait.jpg'"
+            alt="Movie poster"
+            class="movie-poster"
+          />
+        </a>
+      </div>
 
-    <div class="movie-info">
-      <img [src]="group.movie.imageUrl || 'assets/imges/default-movie-portrait.jpg'" alt="Movie poster" />
-        <h2>{{ group.movie.title }}</h2>
-        <p>Жанр: {{ group.movie.genres.join(', ') || 'Не указан' }}</p>
-        <p>Рейтинг: {{ group.movie.rating }}/10</p>
+      <!-- Правая часть: информация о фильме -->
+      <div class="movie-info">
+        <div class="movie-header">
+          <h2>
+            <a [routerLink]="['/movie', group.movie.id]">{{ group.movie.title }}</a>
+          </h2>
+        </div>
+        <p class="genres">{{ group.movie.genres.join(', ') || 'Не указан' }}</p>
+
+        <div class="movie-details">
+          <div class="movie-detail">
+            <span class="age-rating">12+</span>
+          </div>
+          <div class="movie-detail">
+            <img src="assets/icons/clock-icon.svg" alt="Duration" class="icon" />
+            <span>{{ group.movie.durationInMinutes }} мин</span>
+          </div>
+          <div class="movie-detail">
+            <img src="assets/icons/2d-label-icon.svg" alt="2D" class="icon" />
+          </div>
+          <div class="movie-detail">
+            <img src="assets/icons/calendar-icon.svg" alt="Date" class="icon" />
+          </div>
+        </div>
+      </div>
     </div>
 
 
     <div class="movie-sessions-list">
-      <h3>Сеансы:</h3>
-      <div *ngIf="group.sessions.length > 0; else noSessions">
-        <div *ngFor="let session of group.sessions" class="session">
-          <button (click)="onSessionClick(session)">
-            <span>Кинозал:<br>{{ session.hallName }}</span><br />
-            <span class="time-span"> {{ session.startTime | date: 'shortTime' }}</span><br />
-            <span>Цена: {{ session.ticketPrice }} руб.</span>
-          </button>
-        </div>
+      <div *ngFor="let session of group.sessions" class="session-card">
+        <app-session-button [session]="session" (sessionClick)="onSessionClick($event)"></app-session-button>
       </div>
-      <ng-template #noSessions>
-        <p>Сеансов нет.</p>
-      </ng-template>
     </div>
+
   </div>
 </div>
+
+<app-seat-selection
+  *ngIf="isSeatSelectionOpen && selectedSession"
+  [session]="selectedSession"
+  [hall]="selectedHall"
+  [isOpen]="isSeatSelectionOpen"
+  (close)="closeSeatSelection()"
+></app-seat-selection>

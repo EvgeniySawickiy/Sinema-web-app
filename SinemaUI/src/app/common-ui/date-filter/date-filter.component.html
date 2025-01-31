@@ -1,0 +1,33 @@
+<div class="date-filter">
+  <h2>Расписание сеансов</h2>
+  <div class="date-list">
+    <div
+      *ngFor="let date of dates; let i = index"
+      class="date-item"
+      [class.active]="i === selectedDateIndex"
+      (click)="selectDate(i)"
+    >
+      <div class="date-day">{{ date.day }}</div>
+      <div class="date-month">{{ date.month }}, {{ date.weekday }}</div>
+      <div *ngIf="i === selectedDateIndex" class="underline"></div>
+    </div>
+    <div class="date-item calendar-icon" (click)="openCalendar()">
+      <div class="icon">
+        <img src="assets/icons/calendar-icon.svg" alt="Calendar" />
+      </div>
+    </div>
+  </div>
+
+
+
+  <div *ngIf="calendarVisible">
+    <div class="calendar-backdrop" (click)="closeCalendar()"></div>
+    <div class="calendar-popup">
+      <mat-calendar
+        [(selected)]="selectedDate"
+        (selectedChange)="onDateChange($event)"
+      ></mat-calendar>
+    </div>
+  </div>
+
+</div>

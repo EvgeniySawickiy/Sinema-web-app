@@ -1,0 +1,36 @@
+.session-button {
+  width: 100px;
+  height: 100px;
+  background: linear-gradient(145deg, #b181ea, #8319dc);
+  border: none;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  }
+
+  .hall-info {
+    font-size: 0.8rem;
+    color: var(--white-color);
+    font-weight: bold;
+    text-transform: uppercase;
+  }
+
+  .time-info {
+    .session-time {
+      font-size: 1.4rem;
+      font-weight: bold;
+      color: #000;
+    }
+    .price {
+      font-size: 0.75rem;
+      color: var(--white-color);
+      font-weight: 500;
+    }
+  }
+}

@@ -1,0 +1,44 @@
+<div class="session-filter">
+  <h2 (click)="toggleFilters()">
+    Подобрать сеанс
+    <span class="toggle-icon" [class.rotated]="filterVisible">▲</span>
+  </h2>
+
+  <div *ngIf="filterVisible" class="filter-options">
+    <!-- Фильтр по времени -->
+    <div class="filter-group">
+      <h3>Время сеанса</h3>
+      <div class="filter-buttons">
+        <button *ngFor="let time of timeOptions"
+                [class.active]="selectedTime === time"
+                (click)="selectFilter('time', time)">
+          {{ time }}
+        </button>
+      </div>
+    </div>
+
+    <!-- Фильтр по кинозалу -->
+    <div class="filter-group">
+      <h3>Кинозал</h3>
+      <div class="filter-buttons">
+        <button *ngFor="let hall of hallOptions"
+                [class.active]="selectedHall === hall"
+                (click)="selectFilter('hall', hall)">
+          {{ hall }}
+        </button>
+      </div>
+    </div>
+
+    <!-- Фильтр по жанру -->
+    <div class="filter-group">
+      <h3>Жанр</h3>
+      <div class="filter-buttons">
+        <button *ngFor="let genre of genreOptions"
+                [class.active]="selectedGenre === genre"
+                (click)="selectFilter('genre', genre)">
+          {{ genre }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

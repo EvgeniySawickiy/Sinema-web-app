@@ -13,4 +13,8 @@ export class HallService {
   getHalls(): Observable<Hall[]> {
     return this.http.get<Hall[]>(this.apiUrl);
   }
+
+  getHallById(hallId : string): Observable<Hall> {
+    return this.http.get<Hall>(`${this.apiUrl}/${hallId}`);
+  }
 }

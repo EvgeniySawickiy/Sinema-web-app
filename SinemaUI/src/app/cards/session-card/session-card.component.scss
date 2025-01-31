@@ -1,86 +1,197 @@
 .movie-sessions {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* 2 столбца */
+  display: flex;
+  flex-wrap: wrap;
   gap: 20px;
+  justify-content: center;
 
   .movie-card {
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    overflow: hidden;
+    width: 520px;
+    height: 560px;
     background-color: #fff;
+    border-radius: 16px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    text-align: center;
-    width: 100%;
-    height: 100%;
+    overflow: hidden;
+    padding: 20px;
+    justify-content: space-between;
+    transition: transform 0.3s ease-in-out;
 
-    .movie-info {
-      padding: 15px;
+    &:hover {
+      transform: scale(1.02);
+    }
 
-      img {
-        width: 100%;
-        height: 200px;
-        object-fit: cover;
-        border-bottom: 1px solid #ddd;
+    .movie-image-info {
+      display: flex;
+
+      .movie-image {
+        width: 260px;
+        height: 370px;
+        flex-shrink: 0;
+        overflow: hidden;
+        border-radius: 12px;
+        transition: transform 0.4s ease-in-out;
+
+        &:hover {
+          transform: rotateY(10deg);
+        }
+
+        a {
+          display: block;
+          width: 100%;
+          height: 100%;
+        }
+
+        .movie-poster {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          border-radius: 12px;
+          transition: transform 0.3s ease;
+
+          &:hover {
+            transform: rotateY(5deg);
+          }
+        }
       }
 
-      h2 {
-        margin: 10px 0;
-        font-size: 1.5rem;
-        color: #6a1b9a;
-      }
+      .movie-info {
+        flex: 1;
+        padding-left: 20px;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
 
-      p {
-        margin: 5px 0;
-        font-size: 0.9rem;
-        color: #555;
+        .movie-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          text-align: center;
+
+          h2 {
+            font-size: 1.4rem;
+            color: var(--primary-color);
+            margin: 0;
+            flex: 1;
+
+            a {
+              text-decoration: none;
+              color: inherit;
+              transition: color 0.3s ease;
+
+              &:hover {
+                color: #ff9800;
+              }
+            }
+          }
+        }
+
+        .genres {
+          font-size: 1rem;
+          color: var(--primary-color);
+          margin-top: 300px;
+          position: absolute;
+          line-height: 1.3;
+          word-wrap: break-word;
+          white-space: normal;
+          max-width: 240px;
+          overflow-wrap: break-word;
+        }
+
+        .movie-details {
+          display: flex;
+          flex-direction: column;
+          gap: 8px;
+          margin-top: 16px;
+          margin-bottom: 20px;
+          align-items: flex-end;
+
+          .movie-detail {
+            display: flex;
+            align-items: center;
+            font-size: 1rem;
+            color: var(--primary-color);
+
+            .icon {
+              width: 30px;
+              height: 30px;
+              margin-right: 5px;
+            }
+
+            .age-rating {
+              font-size: 1.2rem;
+              font-weight: bold;
+              color: #000;
+              border: 2px solid #000;
+              border-radius: 50%;
+              width: 40px;
+              height: 40px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+            }
+          }
+        }
       }
     }
 
     .movie-sessions-list {
-      padding: 15px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: space-around;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.5s ease, transform 0.3s ease;
 
-      h3 {
-        margin-bottom: 10px;
-        font-size: 1.2rem;
-        color: #333;
-      }
-
-      .session {
-        margin: 10px 0;
-
-        button {
-          display: block;
-          width: 125px;
-          height: 100%;
-          padding: 5px;
-          font-size: 0.9rem;
-          font-weight: 400;
-          background-color: var(--dark-color);
-          color: white;
+      .session-card {
+        .session-button {
+          width: 100px;
+          height: 100px;
+          background: linear-gradient(145deg, #b181ea, #8319dc);
           border: none;
-          border-radius: 6px;
-          cursor: pointer;
+          border-radius: 12px;
+          box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
           text-align: center;
-          transition: background-color 0.3s;
-
-          span {
-            display: block;
-            font-size: 0.9rem;
-          }
+          cursor: pointer;
+          font-family: Arial, sans-serif;
+          transition: transform 0.2s ease, box-shadow 0.2s ease;
 
           &:hover {
-            background-color: var(--light-color);
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+          }
+
+          .hall-info {
+            font-size: 0.8rem;
+            color: var(--white-color);
+            font-weight: bold;
+            text-transform: uppercase;
+          }
+
+          .time-info {
+            text-align: center;
+            margin-top: 5px;
+
+            .session-time {
+              font-size: 1.4rem;
+              font-weight: bold;
+              color: #000;
+            }
+
+            .price {
+              font-size: 0.75rem;
+              color: var(--white-color);
+              font-weight: 500;
+            }
           }
         }
-        .time-span{
-          font-size: 2rem;
-          font-weight: 800;
-          margin: 0;
-        }
       }
+    }
+
+    &:hover .movie-sessions-list {
+      opacity: 1;
+      transform: translateY(0);
     }
   }
 }

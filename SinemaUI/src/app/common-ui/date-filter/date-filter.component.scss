@@ -1,0 +1,155 @@
+.date-filter {
+  text-align: center;
+  margin-top: 120px;
+
+  h2 {
+    font-size: 1.8rem;
+    margin-bottom: 20px;
+    color: var(--primary-color);
+  }
+
+  .date-list {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+
+    .date-item {
+      text-align: center;
+      margin-bottom: 10px;
+      margin-right: 10px;
+      cursor: pointer;
+      transition: transform 0.3s;
+
+      &.active {
+        font-weight: bold;
+        color: black;
+
+        .underline {
+          margin: 5px auto;
+
+          height: 2px;
+          background-color: var(--dark-color);
+        }
+      }
+
+      &:hover {
+        transform: scale(1.1);
+      }
+
+      .date-day {
+        font-size: 1.25rem;
+        color: black;
+      }
+
+      .date-month {
+        font-size: 0.9rem;
+        color: #888;
+      }
+    }
+
+    .calendar-icon {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 50px;
+      height: 50px;
+      background-color: var(--light-color);
+      border-radius: 50%;
+      cursor: pointer;
+
+      .icon {
+        width: 24px;
+        height: 24px;
+
+        img {
+          width: 100%;
+          height: 100%;
+        }
+      }
+
+      &:hover {
+        transform: scale(1.1);
+      }
+    }
+  }
+}
+
+.calendar-popup {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 100;
+  background: rgba(156, 132, 236, 0.67);
+  border-radius: 16px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  padding: 20px;
+  width: 350px;
+  text-align: center;
+  animation: fadeIn 0.3s ease-in-out;
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translate(-50%, -40%);
+    }
+    to {
+      opacity: 1;
+      transform: translate(-50%, -50%);
+    }
+  }
+
+  .mat-calendar {
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .mat-calendar-table-header {
+    font-weight: bold;
+    color: #6a1b9a;
+  }
+
+  .mat-calendar-body {
+    .mat-calendar-body-cell {
+      font-size: 1rem;
+      color: #1c1a1a; /* Цвет текста по умолчанию — серый */
+      border-radius: 4px;
+      transition: background-color 0.3s, transform 0.2s;
+
+      &:hover {
+        background-color: rgba(106, 27, 154, 0.1);
+        transform: scale(1.1);
+      }
+
+      &.mat-calendar-body-today {
+        border: 2px solid #6a1b9a;
+        background-color: rgba(106, 27, 154, 0.05);
+        color: #6a1b9a; /* Цвет текста для сегодняшней даты */
+      }
+
+      &.mat-calendar-body-selected {
+        background-color: #6a1b9a;
+        color: white; /* Белый текст на выбранной дате */
+        transform: scale(1.1);
+      }
+
+      &.mat-calendar-body-disabled {
+        color: #ccc; /* Цвет для недоступных дат */
+      }
+    }
+  }
+}
+
+/* Затемнение фона */
+.calendar-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 99;
+  animation: fadeIn 0.3s ease-in-out;
+}

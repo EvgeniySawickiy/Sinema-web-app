@@ -1,0 +1,63 @@
+<div class="movie-detail-page">
+  <div *ngIf="loading">Загрузка...</div>
+  <div *ngIf="error">{{ error }}</div>
+
+  <div *ngIf="movie" class="movie-container">
+
+    <div class="movie-image">
+      <img [src]="movie.imageUrl || 'assets/imges/default-movie-portrait.jpg'" alt="Movie poster" />
+    </div>
+
+    <div class="movie-info">
+      <h1>{{ movie.title }}</h1>
+      <p class="genres">{{ movie.genres.join(', ') || 'Не указан' }}</p>
+      <p class="description">{{ movie.description }}</p>
+      <div class="movie-details">
+        <div class="movie-detail">
+          <span class="label">Рейтинг:</span>
+          <span class="value">{{ movie.rating }}/10</span>
+        </div>
+        <div class="movie-detail">
+          <span class="label">Длительность:</span>
+          <span class="value">{{ movie.durationInMinutes }} мин</span>
+        </div>
+      </div>
+
+            <div *ngIf="safeTrailerUrl" class="trailer-container">
+              <p> Трейлер:</p>
+              <iframe
+                width="560"
+                height="315"
+                [src]="safeTrailerUrl"
+                frameborder="0"
+                allowfullscreen
+              ></iframe>
+            </div>
+          </div>
+        </div>
+
+        <div class="movie-sessions">
+          <h2>Доступные сеансы</h2>
+          <div *ngIf="showTimes.length > 0; else noSessions">
+            <div *ngFor="let date of Object.keys(groupedShowTimes)" class="session-date-group">
+              <h3>{{ date | date: 'fullDate' }}</h3>
+              <div class="sessions-list">
+                <div *ngFor="let session of groupedShowTimes[date]" class="session-card">
+                  <app-session-button [session]="session" (sessionClick)="onSessionClick($event)"></app-session-button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <ng-template #noSessions>
+            <p>Извините, на этот фильм пока нет доступных сеансов.</p>
+          </ng-template>
+        </div>
+      </div>
+
+<app-seat-selection
+  *ngIf="isSeatSelectionOpen && selectedSession"
+  [session]="selectedSession"
+  [hall]="selectedHall"
+  [isOpen]="isSeatSelectionOpen"
+  (close)="closeSeatSelection()"
+></app-seat-selection>

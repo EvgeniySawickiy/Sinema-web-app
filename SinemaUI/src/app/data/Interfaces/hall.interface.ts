@@ -4,3 +4,8 @@
   totalSeats: number;
   seatLayoutJson: string;
 }
+
+export interface SeatRow {
+  RowNumber: number;
+  Seats: number[];
+}

@@ -1,7 +1,7 @@
 @import "fonts";
 :root{
   --dark-color: #3c0071;
-  --light-color: #8e24aa;
+  --light-color: #ae50c5;
   --white-color: #ffffff;
   --primary-color: #6c1487;
   --disabled: #ccc;
@@ -40,3 +40,6 @@ button {
     background-color: var(--primary-color);
   }
 }
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }

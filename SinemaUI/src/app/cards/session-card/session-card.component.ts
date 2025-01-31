@@ -1,8 +1,11 @@
-import {Component, Input, Output, SimpleChanges} from '@angular/core';
+import {Component, Input, SimpleChanges} from '@angular/core';
 import {ShowTime} from '../../data/Interfaces/showtime.interface';
 import {Movie} from '../../data/Interfaces/movie.interface';
 import {Hall} from '../../data/Interfaces/hall.interface';
-import {DatePipe, JsonPipe, NgFor, NgIf} from '@angular/common';
+import {RouterLink} from '@angular/router';
+import {SessionButtonComponent} from '../../common-ui/session-button/session-button.component';
+import {NgFor, NgIf} from '@angular/common';
+import {SeatSelectionComponent} from '../../common-ui/seat-selection/seat-selection.component';
 
 
 @Component({
@@ -10,9 +13,10 @@ import {DatePipe, JsonPipe, NgFor, NgIf} from '@angular/common';
   standalone: true,
   imports: [
     NgFor,
-    DatePipe,
+    RouterLink,
+    SessionButtonComponent,
+    SeatSelectionComponent,
     NgIf,
-    JsonPipe,
   ],
   templateUrl: './session-card.component.html',
   styleUrl: './session-card.component.scss'
@@ -23,6 +27,11 @@ export class SessionCardComponent {
   @Input() halls: Hall[] = [];
 
   groupedSessions: { movie: Movie; sessions: ShowTime[] }[] = [];
+
+  selectedSession: ShowTime | null = null;
+  selectedHall!: Hall ;
+  isSeatSelectionOpen = false;
+
 
   ngOnInit(): void {
     this.groupSessionsByMovie();
@@ -39,18 +48,21 @@ export class SessionCardComponent {
       return;
     }
 
-    this.groupedSessions = this.movies.map((movie) => ({
-      movie,
-      sessions: this.showTimes.filter((showTime) => showTime.movieId === movie.id),
-    }));
+    this.groupedSessions = this.movies
+      .map((movie) => ({
+        movie,
+        sessions: this.showTimes.filter((showTime) => showTime.movieId === movie.id),
+      }))
+      .filter((group) => group.sessions.length > 0);
   }
 
-
   onSessionClick(session: ShowTime) {
-    alert(
-      `Вы выбрали сеанс:\nФильм: ${session.movieTitle}\nЗал: ${session.hallName}\nВремя: ${new Date(
-        session.startTime
-      ).toLocaleTimeString()}`
-    );
+    this.selectedSession = session;
+    this.selectedHall = this.halls.find(hall=>hall.id === session.hallId) as Hall;
+    this.isSeatSelectionOpen = true;
+  }
+
+  closeSeatSelection() {
+    this.isSeatSelectionOpen = false;
   }
 }
