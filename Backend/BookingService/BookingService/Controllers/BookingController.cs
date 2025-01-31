@@ -46,9 +46,18 @@ namespace BookingService.Controllers
             var query = new GetBookingByIdQuery { BookingId = id };
             var booking = await _mediator.Send(query, cancellationToken);
 
-            _logger.LogWarning("Booking with ID: {BookingId} not found.", id);
-
             return Ok(booking);
+        }
+
+        [HttpGet("seats/showtime/{id:guid}")]
+        public async Task<IActionResult> GetBookedSeats(Guid id, CancellationToken cancellationToken)
+        {
+            _logger.LogInformation("Fetching booked seats of showtime ID: {BookingId}.", id);
+
+            var query = new GetAllBookedSeatsQuery() { ShowtimeId = id };
+            var bookedSeats = await _mediator.Send(query, cancellationToken);
+
+            return Ok(bookedSeats);
         }
 
         [Authorize(Roles = "Admin")]
@@ -72,18 +81,18 @@ namespace BookingService.Controllers
         }
 
         [Authorize]
-        [HttpGet("user{id:guid}")]
-        public async Task<IActionResult> GetBookingsByUserId(Guid userId, CancellationToken cancellationToken)
+        [HttpGet("user/{id:guid}")]
+        public async Task<IActionResult> GetBookingsByUserId(Guid id, CancellationToken cancellationToken)
         {
-            _logger.LogInformation("Fetching bookings for user ID: {UserId}.", userId);
+            _logger.LogInformation("Fetching bookings for user ID: {UserId}.", id);
 
             var query = new GetBookingsByUserIdQuery
             {
-                UserId = userId,
+                UserId = id,
             };
             var bookings = await _mediator.Send(query, cancellationToken);
 
-            _logger.LogInformation("Fetched {Count} bookings for user ID: {UserId}.", bookings.Count(), userId);
+            _logger.LogInformation("Fetched {Count} bookings for user ID: {UserId}.", bookings.Count(), id);
 
             return Ok(bookings);
         }

@@ -37,6 +37,58 @@
       "UpstreamHttpMethod": [ "POST" ]
     },
     {
+      "DownstreamPathTemplate": "/api/genres",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "movie-service",
+          "Port": 8080
+        }
+      ],
+      "UpstreamPathTemplate": "/genres",
+      "UpstreamHttpMethod": [ "GET"]
+    },
+    {
+      "DownstreamPathTemplate": "/api/genres/{id}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "movie-service",
+          "Port": 8080
+        }
+      ],
+      "UpstreamPathTemplate": "/genres/{id}",
+      "UpstreamHttpMethod": [ "GET"]
+    },
+    {
+      "DownstreamPathTemplate": "/api/genres/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "movie-service",
+          "Port": 8080
+        }
+      ],
+      "UpstreamPathTemplate": "/genres/{everything}",
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      }
+    },
+    {
+      "DownstreamPathTemplate": "/api/halls",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "movie-service",
+          "Port": 8080
+        }
+      ],
+      "UpstreamPathTemplate": "/halls",
+      "UpstreamHttpMethod": [ "GET"]
+    },
+    {
       "DownstreamPathTemplate": "/api/halls/{everything}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
@@ -53,6 +105,30 @@
       }
     },
     {
+      "DownstreamPathTemplate": "/api/movies",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "movie-service",
+          "Port": 8080
+        }
+      ],
+      "UpstreamPathTemplate": "/movies",
+      "UpstreamHttpMethod": [ "GET"]
+    },
+    {
+      "DownstreamPathTemplate": "/api/movies/{id}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "movie-service",
+          "Port": 8080
+        }
+      ],
+      "UpstreamPathTemplate": "/movies/{id}",
+      "UpstreamHttpMethod": [ "GET"]
+    },
+    {
       "DownstreamPathTemplate": "/api/movies/{everything}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
@@ -67,6 +143,18 @@
         "AuthenticationProviderKey": "Bearer",
         "AllowedScopes": []
       }
+    },
+    {
+      "DownstreamPathTemplate": "/api/showtimes",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "movie-service",
+          "Port": 8080
+        }
+      ],
+      "UpstreamPathTemplate": "/showtimes",
+      "UpstreamHttpMethod": [ "GET"]
     },
     {
       "DownstreamPathTemplate": "/api/showtimes/{everything}",

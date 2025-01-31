@@ -19,5 +19,6 @@ namespace UserService.BLL.Interfaces
         public Task RequestPasswordResetAsync(string email);
         public Task ResetPasswordAsync(string token, string newPassword);
         public Task<bool> CheckLoginExistence(string login);
+        public Task UpdateUserAsync(UserResponse user, UpdateUserDto updateUserDto);
     }
 }

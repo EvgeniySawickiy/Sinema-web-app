@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TransportShop.DAL.Enums;
-using UserService.API.Extensions;
 using UserService.BLL.DTO.Request;
 using UserService.BLL.Interfaces;
 
@@ -15,7 +14,10 @@ namespace UserService.API.Controllers
         private readonly ITokenService _tokenService;
         private readonly ILogger<UserController> _logger;
 
-        public UserController(IUserService userService, ITokenService tokenService, ILogger<UserController> logger)
+        public UserController(
+            IUserService userService,
+            ITokenService tokenService,
+            ILogger<UserController> logger)
         {
             _userService = userService;
             _tokenService = tokenService;
@@ -24,7 +26,9 @@ namespace UserService.API.Controllers
 
         [HttpPost]
         [Route("login")]
-        public async Task<IActionResult> SignIn([FromBody] SignInRequest request, CancellationToken cancellationToken)
+        public async Task<IActionResult> SignIn(
+            [FromBody] SignInRequest request,
+            CancellationToken cancellationToken)
         {
             _logger.LogInformation("User login request with username {Login}", request.Login);
 
@@ -37,7 +41,9 @@ namespace UserService.API.Controllers
 
         [HttpPost]
         [Route("register")]
-        public async Task<IActionResult> SignUp([FromBody] SignUpRequest request, CancellationToken cancellationToken)
+        public async Task<IActionResult> SignUp(
+            [FromBody] SignUpRequest request,
+            CancellationToken cancellationToken)
         {
             var response = await _userService.SignUpAsync(request, cancellationToken);
             var userId =
@@ -61,7 +67,8 @@ namespace UserService.API.Controllers
 
         [HttpPost]
         [Route("token/refresh")]
-        public async Task<IActionResult> RefreshToken([FromBody] TokenRequest request,
+        public async Task<IActionResult> RefreshToken(
+            [FromBody] TokenRequest request,
             CancellationToken cancellationToken)
         {
             _logger.LogInformation("Token refresh request");
@@ -82,6 +89,17 @@ namespace UserService.API.Controllers
             _logger.LogInformation("Current user's profile successfully retrieved");
 
             return Ok(response);
+        }
+
+        [HttpPut("me")]
+        public async Task<IActionResult> UpdateCurrentUser([FromBody] UpdateUserDto updateUserDto)
+        {
+            var user = _userService.GetMyProfileByJwtAsync(HttpContext.User);
+
+            await _userService.UpdateUserAsync(user.Result, updateUserDto);
+
+            var updatedUser = await _userService.GetMyProfileByJwtAsync(HttpContext.User);
+            return Ok(updatedUser);
         }
 
         [HttpGet]

@@ -4,6 +4,7 @@ using System.Text;
 using AutoMapper;
 using FluentValidation;
 using FluentValidation.Results;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using NotificationService.Protos;
@@ -108,6 +109,7 @@ namespace UserService.BLL.Services
 
             return new TokenResponse
             {
+                UserId = account.Id,
                 AccessToken = newAccessTokenString,
                 RefreshToken = newRefreshTokenString,
             };
@@ -202,6 +204,7 @@ namespace UserService.BLL.Services
 
             return new TokenResponse()
             {
+                UserId = account.Id,
                 AccessToken = newAccessToken,
                 RefreshToken = newRefreshToken,
             };
@@ -402,6 +405,22 @@ namespace UserService.BLL.Services
             bool isExists = accounts.Any(x => x.Login == login);
 
             return isExists;
+        }
+
+        public async Task UpdateUserAsync(UserResponse editableUser, UpdateUserDto updateUserDto)
+        {
+            var user = await userRepo.GetByIdAsync(editableUser.Id);
+            if (user == null)
+            {
+                throw new NotFoundException("Пользователь не найден");
+            }
+
+            if (!string.IsNullOrWhiteSpace(updateUserDto.Name)) user.Name = updateUserDto.Name;
+            if (!string.IsNullOrWhiteSpace(updateUserDto.Surname)) user.Surname = updateUserDto.Surname;
+            if (!string.IsNullOrWhiteSpace(updateUserDto.Email)) user.Email = updateUserDto.Email;
+            if (!string.IsNullOrWhiteSpace(updateUserDto.PhoneNumber)) user.PhoneNumber = updateUserDto.PhoneNumber;
+
+            await userRepo.UpdateAsync(user);
         }
 
         private async Task ValidateRequestAsync<T>(IValidator<T> validator, T request,
