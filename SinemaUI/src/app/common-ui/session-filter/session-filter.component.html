@@ -5,7 +5,6 @@
   </h2>
 
   <div *ngIf="filterVisible" class="filter-options">
-    <!-- Фильтр по времени -->
     <div class="filter-group">
       <h3>Время сеанса</h3>
       <div class="filter-buttons">
@@ -17,7 +16,6 @@
       </div>
     </div>
 
-    <!-- Фильтр по кинозалу -->
     <div class="filter-group">
       <h3>Кинозал</h3>
       <div class="filter-buttons">
@@ -29,12 +27,11 @@
       </div>
     </div>
 
-    <!-- Фильтр по жанру -->
     <div class="filter-group">
       <h3>Жанр</h3>
       <div class="filter-buttons">
         <button *ngFor="let genre of genreOptions"
-                [class.active]="selectedGenre === genre"
+                [class.active]="selectedGenres.includes(genre)"
                 (click)="selectFilter('genre', genre)">
           {{ genre }}
         </button>

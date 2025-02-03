@@ -33,4 +33,10 @@
       font-weight: 500;
     }
   }
+  &:disabled {
+    background: gray !important;
+    color: white !important;
+    cursor: not-allowed !important;
+    transform: none;
+  }
 }

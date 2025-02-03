@@ -173,6 +173,18 @@
       }
     },
     {
+      "DownstreamPathTemplate": "/api/bookings/seats/showtime/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "booking-service",
+          "Port": 8080
+        }
+      ],
+      "UpstreamPathTemplate": "/bookings/seats/showtime/{everything}",
+      "UpstreamHttpMethod": [ "GET", "POST", "DELETE" ]
+    },
+    {
       "DownstreamPathTemplate": "/api/bookings/{everything}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [

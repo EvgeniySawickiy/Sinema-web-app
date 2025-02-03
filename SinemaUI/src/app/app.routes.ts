@@ -8,6 +8,8 @@ import {ConfirmEmailComponent} from './common-ui/confirm-email/confirm-email.com
 import {ResetPasswordComponent} from './common-ui/reset-password/reset-password.component';
 import {RequestPasswordComponent} from './common-ui/request-password/request-password.component';
 import {MoviePageInfoComponent} from './pages/movie-page-info/movie-page-info.component';
+import {AboutUsComponent} from './pages/about-us/about-us.component';
+import {MoviesPageComponent} from './pages/movies-page/movies-page.component';
 
 export const routes: Routes = [
   {path:"",
@@ -22,6 +24,8 @@ export const routes: Routes = [
       { path: 'request-password-reset', component: RequestPasswordComponent },
       { path: 'reset-password', component: ResetPasswordComponent },
       { path: 'movie/:id', component: MoviePageInfoComponent },
+      { path: "about", component: AboutUsComponent},
+      { path: "movies", component: MoviesPageComponent },
     ]
   },
   { path: '**', redirectTo: '' },

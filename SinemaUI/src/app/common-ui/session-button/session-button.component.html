@@ -1,4 +1,4 @@
-<button (click)="onClick()" class="session-button">
+<button (click)="onClick()" class="session-button" [disabled]="isPastSession()">
   <div class="hall-info">
     <span class="hall-name">КИНОЗАЛ {{ session.hallName }}</span>
   </div>

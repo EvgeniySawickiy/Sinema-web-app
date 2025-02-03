@@ -14,7 +14,14 @@ export class SessionButtonComponent {
   @Input() session!: ShowTime;
   @Output() sessionClick = new EventEmitter<ShowTime>();
 
+  isPastSession(): boolean {
+    const now = new Date();
+    const sessionTime = new Date(this.session.startTime);
+    return sessionTime < now;
+  }
   onClick() {
-    this.sessionClick.emit(this.session);
+    if (!this.isPastSession()) {
+      this.sessionClick.emit(this.session);
+    }
   }
 }

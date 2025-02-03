@@ -12,12 +12,12 @@
     flex-direction: row;
     gap: 20px;
     width: 100%;
-    max-width: 1200px; // Ограничиваем максимальную ширину
+    max-width: 1200px;
     background: #fff;
     padding: 20px;
     border-radius: 12px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    overflow: hidden; // Предотвращает выход элементов за границы
+    overflow: hidden;
 
     .movie-image {
       width: 300px;
@@ -32,11 +32,11 @@
 
     .movie-info {
       flex: 1;
-      max-width: 800px; // Ограничиваем максимальную ширину, чтобы не выходило за границы
+      max-width: 800px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      padding-right: 20px; // Добавляем отступ справа
+      padding-right: 20px;
 
       h1 {
         font-size: 1.8rem;
@@ -48,14 +48,14 @@
         font-size: 1rem;
         color: #666;
         margin: 10px 0;
-        word-wrap: break-word; // Позволяет перенос строк
+        word-wrap: break-word;
         white-space: normal;
       }
 
       .description {
         font-size: 1rem;
         color: #444;
-        word-wrap: break-word; // Перенос длинного текста
+        word-wrap: break-word;
         white-space: normal;
       }
 
@@ -83,8 +83,8 @@
         iframe {
           border-radius: 12px;
           box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-          width: 100%; // Сделает трейлер адаптивным
-          max-width: 560px; // Ограничиваем максимальную ширину
+          width: 100%;
+          max-width: 560px;
           height: 315px;
         }
       }

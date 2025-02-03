@@ -6,6 +6,7 @@ import {Hall} from '../../data/Interfaces/hall.interface';
 import {BookingService} from '../../data/services/booking.service';
 import {AuthService} from '../../auth/auth.service';
 import { v4 as uuidv4 } from 'uuid';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-seat-selection',
@@ -33,9 +34,11 @@ export class SeatSelectionComponent {
   reservedSeats: Seat[] = [];
   tooltipX: number = 0;
   tooltipY: number = 0;
+  showLoginModal = false;
 
   private bookingService = inject(BookingService);
   private authService = inject(AuthService);
+  private router = inject(Router);
 
   ngOnInit() {
     this.loadSeatLayout();
@@ -117,8 +120,9 @@ export class SeatSelectionComponent {
 
   confirmSelection() {
     const userId = this.authService.getUserId();
+    console.log(userId);
     if (!userId) {
-      alert("Ошибка: Не удалось получить ID пользователя");
+      this.showLoginModal = true;
       return;
     }
     this.isBooking = true;
@@ -142,6 +146,11 @@ export class SeatSelectionComponent {
         this.isBooking = false;
       }
     );
+  }
+
+  navigateToLogin() {
+    this.showLoginModal = false;
+    this.router.navigateByUrl('login');
   }
 
   getTotalPrice(): number {

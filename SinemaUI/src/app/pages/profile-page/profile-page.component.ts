@@ -50,7 +50,7 @@ export class ProfilePageComponent {
   loadUserBookings(): void {
     this.bookingService.getUserBookings().subscribe(
       (data) => {
-        this.bookings = data.filter(booking => booking.status === 0);
+        this.bookings = data.filter(booking => booking.status === 0).reverse();
       },
       (error) => {
         console.error('Ошибка загрузки бронирований:', error);

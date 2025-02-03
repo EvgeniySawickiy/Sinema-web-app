@@ -3,7 +3,7 @@
   <div *ngIf="error" class="error-message">{{ error }}</div>
 
   <div *ngIf="user" class="profile-container">
-    <!-- Левая колонка: информация о пользователе -->
+
     <div class="profile-info">
       <h2>Личный кабинет</h2>
       <img src="assets/imges/user.svg" alt="User Avatar" class="avatar" />
@@ -41,7 +41,7 @@
       <button class="logout-btn" (click)="logout()">Выйти</button>
     </div>
 
-    <!-- Правая колонка: бронирования -->
+
     <div class="bookings">
       <h2>История бронирований</h2>
       <div *ngIf="bookings.length > 0; else noBookings">
@@ -57,7 +57,6 @@
           <p><strong>Места:</strong> {{ booking.seats.join(', ') }}</p>
           <p><strong>Сумма:</strong> {{ booking.totalAmount }} руб.</p>
 
-          <!-- Кнопка отмены -->
           <button *ngIf="canCancelBooking(booking.startTime)" (click)="cancelBooking(booking.id)" class="cancel-btn">
             Отменить бронирование
           </button>
@@ -67,3 +66,5 @@
         <p class="no-bookings">Вы пока не забронировали ни одного сеанса.</p>
       </ng-template>
     </div>
+  </div>
+</div>

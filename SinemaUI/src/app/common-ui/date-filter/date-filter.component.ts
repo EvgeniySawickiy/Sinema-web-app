@@ -12,7 +12,6 @@ import {MatNativeDateModule} from '@angular/material/core';
     NgForOf,
     NgIf,
     MatNativeDateModule,
-    MatDatepickerInput,
     MatDatepickerModule,
     MatNativeDateModule,
     MatInputModule,
@@ -26,6 +25,7 @@ export class DateFilterComponent {
   selectedDateIndex: number = 0;
   calendarVisible: boolean = false;
   selectedDate: Date = new Date();
+  minDate: Date = new Date();
 
   @Output() dateSelected = new EventEmitter<Date>();
 
@@ -60,7 +60,7 @@ export class DateFilterComponent {
     this.calendarVisible = false;
   }
 
-  onDateChange(selectedDate: Date): void {
+  onDateChange(selectedDate: Date | null): void {
     if (selectedDate) {
       this.selectedDate = selectedDate;
       this.dateSelected.emit(selectedDate);

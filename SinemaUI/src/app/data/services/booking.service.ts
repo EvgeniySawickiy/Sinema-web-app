@@ -11,6 +11,7 @@ import {Seat} from '../Interfaces/seat.interface';
 @Injectable({
   providedIn: 'root'
 })
+
 export class BookingService {
   private apiUrl = 'http://localhost:7000/bookings';
   private showtimesUrl = 'http://localhost:7000/showtimes';

@@ -95,9 +95,11 @@ export class AuthService {
   logout(){
     this.cookieService.delete('access_token');
     this.cookieService.delete('refresh_token');
+    this.cookieService.delete('userId');
 
     this.accessToken = null;
     this.refreshToken = null;
+    this.userId = null;
     this.isAuthenticatedSubject.next(false);
     this.router.navigate(['/login']);
   }

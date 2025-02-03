@@ -1,13 +1,11 @@
 <div class="seat-selection-overlay" *ngIf="isOpen">
   <div class="seat-selection-modal">
-    <!-- Информация о фильме -->
     <div class="movie-info">
       <h2>{{ session.movieTitle }}</h2>
       <p class="genres">{{ session.movieGenres?.join(', ') || 'Не указан' }}</p>
       <p class="age-rating">Возраст: 12+</p>
     </div>
 
-    <!-- Дата и время -->
     <div class="session-info">
       <p><strong>Дата:</strong> {{ session.startTime | date: 'dd MMMM yyyy' }}</p>
       <p><strong>Время:</strong> {{ session.startTime | date: 'HH:mm' }}</p>
@@ -15,12 +13,10 @@
       <p><strong>Цена билета:</strong> {{ session.ticketPrice }} руб.</p>
     </div>
 
-    <!-- Всплывающая подсказка -->
     <div class="seat-tooltip" *ngIf="hoveredSeat" [style.top.px]="tooltipY" [style.left.px]="tooltipX">
       Ряд {{ hoveredSeat.row }}, Место {{ hoveredSeat.number }}
     </div>
 
-    <!-- Схема зала -->
     <div class="seat-map" *ngIf="seatRows.length > 0">
       <div class="screen">Экран</div>
 
@@ -46,8 +42,6 @@
       </div>
     </div>
 
-
-    <!-- Выбранные места -->
     <div class="selected-seats" *ngIf="selectedSeats.length > 0">
       <h3>Выбранные места:</h3>
       <p *ngFor="let seatInfo of getFormattedSelectedSeats()">
@@ -60,14 +54,12 @@
         Выбрано максимальное количество мест (5). Снимите одно, чтобы выбрать другое.
       </p>
 
-    <!-- Легенда -->
     <div class="seat-legend">
       <span class="seat available"></span> Свободно
       <span class="seat reserved"></span> Занято
       <span class="seat selected"></span> Ваш выбор
     </div>
 
-    <!-- Кнопки -->
     <div class="action-buttons">
       <button class="confirm-btn" (click)="confirmSelection()" [disabled]="selectedSeats.length === 0 || selectedSeats.length > 5">
         <span *ngIf="!isBooking">Подтвердить ({{ getTotalPrice() }} руб.)</span>
@@ -77,3 +69,15 @@
     </div>
   </div>
 </div>
+
+<div class="login-modal-overlay" *ngIf="showLoginModal">
+  <div class="login-modal">
+    <h2>Вы не авторизованы</h2>
+    <p>Для бронирования мест необходимо войти в систему.</p>
+    <div class="modal-buttons">
+      <button class="login-btn" (click)="navigateToLogin()">Войти</button>
+      <button class="close-btn" (click)="showLoginModal = false">Отмена</button>
+    </div>
+  </div>
+</div>
+

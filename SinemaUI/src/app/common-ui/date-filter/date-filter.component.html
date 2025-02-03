@@ -26,6 +26,7 @@
       <mat-calendar
         [(selected)]="selectedDate"
         (selectedChange)="onDateChange($event)"
+        [minDate]="minDate"
       ></mat-calendar>
     </div>
   </div>

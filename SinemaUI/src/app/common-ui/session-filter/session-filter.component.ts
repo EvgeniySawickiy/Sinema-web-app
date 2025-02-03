@@ -14,11 +14,11 @@ import {GenreService} from '../../data/services/genre.service';
   styleUrl: './session-filter.component.scss'
 })
 export class SessionFilterComponent {
-  @Output() filterChanged = new EventEmitter<{ time: string, hall: string, genre: string }>();
+  @Output() filterChanged = new EventEmitter<{ time: string, hall: string, genres: string[] }>();
 
   selectedTime: string = '';
   selectedHall: string = '';
-  selectedGenre: string = '';
+  selectedGenres: string[] = [];
   filterVisible: boolean = true;
 
   timeOptions = ['Утренние', 'Дневные', 'Вечерние', 'Ночные'];
@@ -55,14 +55,18 @@ export class SessionFilterComponent {
       this.selectedTime = this.selectedTime === value ? '' : value;
     } else if (type === 'hall') {
       this.selectedHall = this.selectedHall === value ? '' : value;
-    } else if (type === 'genre') {
-      this.selectedGenre = this.selectedGenre === value ? '' : value;
+    }else if (type === 'genre') {
+      if (this.selectedGenres.includes(value)) {
+        this.selectedGenres = this.selectedGenres.filter(genre => genre !== value);
+      } else {
+        this.selectedGenres.push(value);
+      }
     }
 
     this.filterChanged.emit({
       time: this.selectedTime,
       hall: this.selectedHall,
-      genre: this.selectedGenre
+      genres: this.selectedGenres
     });
   }
 

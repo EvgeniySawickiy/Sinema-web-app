@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {Observable, tap} from 'rxjs';
+import {Observable} from 'rxjs';
 import {ShowTime} from '../Interfaces/showtime.interface';
 
 @Injectable({
@@ -12,8 +12,6 @@ export class ShowtimeService {
   constructor(private http: HttpClient) { }
 
   getShowTimes(): Observable<ShowTime[]> {
-    return this.http.get<ShowTime[]>(this.apiUrl).pipe(
-      tap((data) => console.log('Полученные данные:', data))
-    );
+    return this.http.get<ShowTime[]>(this.apiUrl);
   }
 }
