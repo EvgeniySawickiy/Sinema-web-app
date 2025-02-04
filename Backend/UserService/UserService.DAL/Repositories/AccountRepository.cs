@@ -16,7 +16,9 @@ namespace UserService.DAL.Repositories
 
         public async Task<Account> GetAccountByUserAsync(Guid userId, CancellationToken cancellationToken = default)
         {
-            return await _context.Accounts.AsNoTracking().FirstOrDefaultAsync(a => a.Id == userId, cancellationToken);
+            return await _context.Accounts
+                .AsNoTracking()
+                .FirstOrDefaultAsync(a => a.Id == userId, cancellationToken);
         }
 
         public async Task<Account?> GetByEmailAsync(string email)

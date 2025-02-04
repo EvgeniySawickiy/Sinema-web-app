@@ -4,7 +4,6 @@ using System.Text;
 using AutoMapper;
 using FluentValidation;
 using FluentValidation.Results;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using NotificationService.Protos;
@@ -270,6 +269,7 @@ namespace UserService.BLL.Services
             }
 
             IEnumerable<UserResponse> response = mapper.Map<IEnumerable<UserResponse>>(users);
+
             return response;
         }
 
@@ -283,6 +283,7 @@ namespace UserService.BLL.Services
             }
 
             UserResponse response = mapper.Map<UserResponse>(user);
+
             return response;
         }
 
@@ -415,15 +416,14 @@ namespace UserService.BLL.Services
                 throw new NotFoundException("Пользователь не найден");
             }
 
-            if (!string.IsNullOrWhiteSpace(updateUserDto.Name)) user.Name = updateUserDto.Name;
-            if (!string.IsNullOrWhiteSpace(updateUserDto.Surname)) user.Surname = updateUserDto.Surname;
-            if (!string.IsNullOrWhiteSpace(updateUserDto.Email)) user.Email = updateUserDto.Email;
-            if (!string.IsNullOrWhiteSpace(updateUserDto.PhoneNumber)) user.PhoneNumber = updateUserDto.PhoneNumber;
+            user = mapper.Map(updateUserDto, user);
 
             await userRepo.UpdateAsync(user);
         }
 
-        private async Task ValidateRequestAsync<T>(IValidator<T> validator, T request,
+        private async Task ValidateRequestAsync<T>(
+            IValidator<T> validator,
+            T request,
             CancellationToken cancellationToken)
         {
             logger.LogDebug("Validating request of type {Type}", typeof(T).Name);
@@ -438,6 +438,7 @@ namespace UserService.BLL.Services
         private string HashPassword(string password)
         {
             logger.LogDebug("Hashing password");
+
             using (var sha256 = SHA256.Create())
             {
                 var bytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(password));

@@ -28,12 +28,15 @@ namespace UserService.BLL.Services
             var secretKey =
                 new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["AppSettings:JwtSecretKey"]));
             var signinCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
+
             var tokeOptions = new JwtSecurityToken(
                 issuer: _configuration["AppSettings:JwtIssuer"],
                 audience: _configuration["AppSettings:JwtAudience"],
                 claims: claims,
-                expires: DateTime.Now.AddMinutes(double.Parse(_configuration["AppSettings:JwtAccessTokenExpirationMinutes"])),
+                expires: DateTime.Now.AddMinutes(
+                    double.Parse(_configuration["AppSettings:JwtAccessTokenExpirationMinutes"])),
                 signingCredentials: signinCredentials);
+
             var tokenString = new JwtSecurityTokenHandler().WriteToken(tokeOptions);
 
             _logger.LogInformation("AccessToken successfully generated. Valid until {Expiration}",
@@ -45,10 +48,13 @@ namespace UserService.BLL.Services
         public string GenerateRefreshToken()
         {
             _logger.LogInformation("RefreshToken generation started");
+
             var randomNumber = new byte[32];
             var rng = System.Security.Cryptography.RandomNumberGenerator.Create();
             rng.GetBytes(randomNumber);
+
             _logger.LogInformation("RefreshToken successfully generated");
+
             return Convert.ToBase64String(randomNumber);
         }
 
@@ -67,8 +73,10 @@ namespace UserService.BLL.Services
 
             var tokenHandler = new JwtSecurityTokenHandler();
             SecurityToken securityToken;
+
             var principal = tokenHandler.ValidateToken(token, tokenValidationParameters, out securityToken);
             var jwtSecurityToken = securityToken as JwtSecurityToken;
+
             if (jwtSecurityToken == null || !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256,
                     StringComparison.InvariantCultureIgnoreCase))
             {

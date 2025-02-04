@@ -46,8 +46,8 @@ namespace UserService.API.Controllers
             CancellationToken cancellationToken)
         {
             var response = await _userService.SignUpAsync(request, cancellationToken);
-            var userId =
-                await _userService.GetMyIdByJwtAsync(_tokenService.GetPrincipalFromExpiredToken(response.AccessToken));
+            var userId = await _userService.GetMyIdByJwtAsync(_tokenService.GetPrincipalFromExpiredToken(response.AccessToken));
+            
             _logger.LogInformation("User {Login} successfully registered with ID {UserId}", request.Login, userId);
 
             return CreatedAtAction(nameof(GetUserById), new { id = userId }, response);
@@ -72,7 +72,9 @@ namespace UserService.API.Controllers
             CancellationToken cancellationToken)
         {
             _logger.LogInformation("Token refresh request");
+            
             var response = await _userService.RefreshTokenAsync(request, cancellationToken);
+            
             _logger.LogInformation("Token successfully refreshed");
 
             return Ok(response);
@@ -99,6 +101,7 @@ namespace UserService.API.Controllers
             await _userService.UpdateUserAsync(user.Result, updateUserDto);
 
             var updatedUser = await _userService.GetMyProfileByJwtAsync(HttpContext.User);
+            
             return Ok(updatedUser);
         }
 
