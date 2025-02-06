@@ -1,5 +1,4 @@
 using System.Text;
-using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -10,9 +9,10 @@ using MovieService.DataAccess.Persistence;
 using MovieService.DataAccess.Services;
 using MovieService.Extention;
 
+
 var builder = WebApplication.CreateBuilder(args);
 
-//builder.Host.AddLogs(builder.Configuration);
+builder.Host.AddLogs(builder.Configuration);
 
 builder.Services.AddGrpc();
 

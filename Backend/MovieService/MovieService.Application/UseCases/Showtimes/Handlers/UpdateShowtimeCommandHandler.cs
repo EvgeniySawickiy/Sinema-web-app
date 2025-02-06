@@ -1,5 +1,8 @@
-﻿using MediatR;
+﻿using AutoMapper;
+using MediatR;
+using MovieService.Application.Mappers;
 using MovieService.Application.UseCases.Showtimes.Commands;
+using MovieService.Core.Entities;
 using MovieService.DataAccess.Interfaces;
 
 namespace MovieService.Application.UseCases.Showtimes.Handlers
@@ -7,35 +10,20 @@ namespace MovieService.Application.UseCases.Showtimes.Handlers
     internal class UpdateShowtimeCommandHandler : IRequestHandler<UpdateShowtimeCommand, Unit>
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IMapper _mapper;
 
-        public UpdateShowtimeCommandHandler(IUnitOfWork unitOfWork)
+        public UpdateShowtimeCommandHandler(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
+            _mapper = mapper;
         }
 
         public async Task<Unit> Handle(UpdateShowtimeCommand request, CancellationToken cancellationToken)
         {
             var showTime = await _unitOfWork.Showtimes.GetByIdAsync(request.Id, cancellationToken);
 
-            if (showTime == null)
-            {
-                throw new KeyNotFoundException($"Hall with ID {request.Id} not found.");
-            }
-
-            if (request.MovieId != null)
-            {
-                showTime.UpdateMovieId(request.MovieId.Value);
-            }
-
-            if (request.HallId != null)
-            {
-                showTime.UpdateHallId(request.HallId.Value);
-            }
-
-            if (request.StartTime.HasValue)
-            {
-                showTime.UpdateStartTime(request.StartTime.Value);
-            }
+            _mapper.Map(request, showTime);
+            Console.WriteLine(showTime);
 
             await _unitOfWork.Showtimes.UpdateAsync(showTime, cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
