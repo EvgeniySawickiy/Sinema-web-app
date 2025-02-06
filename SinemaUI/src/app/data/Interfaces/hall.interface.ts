@@ -3,6 +3,8 @@
   name: string;
   totalSeats: number;
   seatLayoutJson: string;
+  numberOfRows: number;
+  seatsPerRow: number[];
 }
 
 export interface SeatRow {

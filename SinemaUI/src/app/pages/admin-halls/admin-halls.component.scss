@@ -1,0 +1,166 @@
+.admin-halls {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px;
+  max-width: 900px;
+  margin: auto;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+
+  h2 {
+    font-size: 1.8rem;
+    color: var(--primary-color);
+    margin-bottom: 20px;
+  }
+
+  form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    background: #f9f9f9;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+    label {
+      font-size: 1rem;
+      font-weight: bold;
+      color: #555;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      border: 2px solid var(--primary-color);
+      border-radius: 6px;
+      font-size: 1rem;
+      transition: border 0.3s;
+
+      &:focus {
+        border-color: #007bff;
+        outline: none;
+      }
+    }
+
+    .error {
+      color: red;
+      font-size: 0.9rem;
+    }
+
+    .form-buttons {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      margin-top: 15px;
+
+      button {
+        padding: 12px;
+        border-radius: 6px;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: background 0.3s ease;
+      }
+
+      button:disabled {
+        background: gray;
+        cursor: not-allowed;
+      }
+
+      .save-btn {
+        background: #28a745;
+        color: white;
+
+        &:hover {
+          background: #218838;
+        }
+      }
+
+      .cancel-btn {
+        background: #dc3545;
+        color: white;
+
+        &:hover {
+          background: #c82333;
+        }
+      }
+
+      .edit-btn {
+        background: #007bff;
+        color: white;
+
+        &:hover {
+          background: #0056b3;
+        }
+      }
+    }
+  }
+
+  .halls-list {
+    width: 100%;
+    margin-top: 20px;
+    text-align: center;
+
+    .no-halls {
+      font-size: 1.1rem;
+      color: #777;
+    }
+
+    .hall-card {
+      background: #f9f9f9;
+      padding: 15px;
+      border-radius: 10px;
+      margin-bottom: 10px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      text-align: left;
+      position: relative;
+
+      h3 {
+        font-size: 1.5rem;
+        color: var(--primary-color);
+        margin-bottom: 5px;
+      }
+
+      p {
+        font-size: 1rem;
+        color: #555;
+        margin: 5px 0;
+      }
+
+      .buttons {
+        display: flex;
+        gap: 10px;
+        margin-top: 10px;
+        justify-content: flex-end;
+
+        button {
+          padding: 8px 12px;
+          border-radius: 6px;
+          font-size: 1rem;
+          cursor: pointer;
+          transition: background 0.3s ease;
+        }
+
+        .edit-btn {
+          background: #ffc107;
+          color: black;
+
+          &:hover {
+            background: #e0a800;
+          }
+        }
+
+        .delete-btn {
+          background: #dc3545;
+          color: white;
+
+          &:hover {
+            background: #c82333;
+          }
+        }
+      }
+    }
+  }
+}

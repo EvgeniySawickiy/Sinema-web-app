@@ -1,0 +1,92 @@
+.admin-bookings {
+  max-width: 1000px;
+  margin: auto;
+  padding: 20px;
+
+  h2 {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+  .movies-list {
+    background: #f9f9f9;
+    padding: 15px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+
+    .movie-card {
+      background: white;
+      padding: 15px;
+      border-radius: 10px;
+      margin-bottom: 10px;
+      cursor: pointer;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+
+      .movie-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 1.2rem;
+        font-weight: bold;
+        cursor: pointer;
+
+        span {
+          transition: transform 0.2s ease-in-out;
+        }
+
+        .expanded {
+          transform: rotate(180deg);
+        }
+      }
+
+      .showtimes-container {
+        margin-top: 10px;
+        padding: 10px;
+        border-top: 1px solid #ddd;
+
+        .showtime-card {
+          background: #eef;
+          padding: 10px;
+          border-radius: 8px;
+          margin-bottom: 5px;
+          transition: background 0.2s ease-in-out;
+          cursor: pointer;
+
+          &:hover {
+            background: #d3f4ff;
+          }
+        }
+      }
+    }
+  }
+
+  .booked-seats {
+    background: #fff;
+    padding: 15px;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+    h3 {
+      margin-bottom: 10px;
+    }
+
+    .seats-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+
+      .seat-card {
+        background: #ffeb3b;
+        padding: 8px 12px;
+        border-radius: 5px;
+        font-weight: bold;
+      }
+    }
+
+    .no-bookings {
+      text-align: center;
+      color: gray;
+      font-style: italic;
+    }
+  }
+}

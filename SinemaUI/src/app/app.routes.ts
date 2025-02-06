@@ -10,6 +10,12 @@ import {RequestPasswordComponent} from './common-ui/request-password/request-pas
 import {MoviePageInfoComponent} from './pages/movie-page-info/movie-page-info.component';
 import {AboutUsComponent} from './pages/about-us/about-us.component';
 import {MoviesPageComponent} from './pages/movies-page/movies-page.component';
+import {AdminGuard} from "./auth/access.guard";
+import {AdminPageComponent} from "./pages/admin-page/admin-page.component";
+import {AdminMoviesComponent} from "./pages/admin-movies/admin-movies.component";
+import {AdminShowtimesComponent} from "./pages/admin-showtimes/admin-showtimes.component";
+import {AdminHallsComponent} from './pages/admin-halls/admin-halls.component';
+import {AdminBookingsComponent} from './pages/admin-bookings/admin-bookings.component';
 
 export const routes: Routes = [
   {path:"",
@@ -26,6 +32,11 @@ export const routes: Routes = [
       { path: 'movie/:id', component: MoviePageInfoComponent },
       { path: "about", component: AboutUsComponent},
       { path: "movies", component: MoviesPageComponent },
+      { path: 'admin', component: AdminPageComponent, canActivate: [AdminGuard] },
+      { path: 'admin/movies', component: AdminMoviesComponent, canActivate: [AdminGuard] },
+      { path: 'admin/showtimes', component: AdminShowtimesComponent, canActivate: [AdminGuard] },
+      { path: 'admin/halls', component: AdminHallsComponent, canActivate: [AdminGuard] },
+      { path: 'admin/bookings', component: AdminBookingsComponent, canActivate: [AdminGuard] }
     ]
   },
   { path: '**', redirectTo: '' },

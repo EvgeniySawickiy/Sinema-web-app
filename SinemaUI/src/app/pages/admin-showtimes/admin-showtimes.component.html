@@ -1,0 +1,49 @@
+<div class="admin-showtimes">
+  <h2>🎟 Управление сеансами</h2>
+
+  <form #showtimeFormElement [formGroup]="showtimeForm">
+    <label>Фильм:</label>
+    <select formControlName="movieId">
+      <option *ngFor="let movie of movies" [value]="movie.id">{{ movie.title }}</option>
+    </select>
+
+    <label>Кинозал:</label>
+    <select formControlName="hallId">
+      <option *ngFor="let hall of halls" [value]="hall.id">{{ hall.name }}</option>
+    </select>
+
+    <label>Дата и время:</label>
+    <input type="datetime-local" formControlName="startTime" />
+
+    <label>Цена билета:</label>
+    <input type="number" formControlName="ticketPrice" />
+
+    <div class="form-buttons">
+      <button *ngIf="!isEditing" (click)="addShowtime()" [disabled]="showtimeForm.invalid">➕ Добавить сеанс</button>
+      <button *ngIf="isEditing" (click)="updateShowtime()" [disabled]="showtimeForm.invalid">💾 Сохранить</button>
+      <button *ngIf="isEditing" (click)="cancelEdit()">❌ Отмена</button>
+    </div>
+  </form>
+
+  <div class="showtimes-list">
+    <h2>📅 Список сеансов</h2>
+    <div *ngIf="groupedShowtimes.length === 0" class="no-showtimes">Сеансов пока нет.</div>
+
+    <div *ngFor="let group of groupedShowtimes" class="movie-group">
+      <h3 class="movie-title">🎬 {{ group.movie.title }}</h3>
+
+      <div class="showtime-grid">
+        <div *ngFor="let showtime of group.sessions" class="showtime-card">
+          <p><strong>Кинозал:</strong> {{ getHallName(showtime.hallId) }}</p>
+          <p><strong>Дата:</strong> {{ showtime.startTime | date: 'dd MMMM yyyy, HH:mm' }}</p>
+          <p><strong>Цена:</strong> {{ showtime.ticketPrice }} руб.</p>
+
+          <div class="buttons">
+            <button class="edit-btn" (click)="editShowtime(showtime)">✏ Редактировать</button>
+            <button class="delete-btn" (click)="deleteShowtime(showtime.id)">🗑 Удалить</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -17,4 +17,20 @@ export class MovieService {
   getMovieById(movieId: string): Observable<Movie> {
     return this.http.get<Movie>(`${this.apiUrl}/${movieId}`);
   }
+
+  addMovie(movie: Movie): Observable<Movie> {
+    const payload = { ...movie, genres: undefined };
+    return this.http.post<Movie>(`${this.apiUrl}`, payload);
+  }
+
+
+  updateMovie(movie: Movie): Observable<Movie> {
+    const payload = { ...movie, genres: undefined };
+    return this.http.put<Movie>(`${this.apiUrl}/${movie.id}`, payload);
+  }
+
+
+  deleteMovie(id: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  }
 }

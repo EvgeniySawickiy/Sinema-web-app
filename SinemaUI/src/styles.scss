@@ -20,6 +20,14 @@ body{
   background-image: url("/assets/imges/background.jpg");
   background-repeat: no-repeat;
   background-size: cover;
+  height: 100%;
+  min-height: 100vh;
+}
+
+app-root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 }
 
 button {

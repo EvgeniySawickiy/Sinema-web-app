@@ -17,4 +17,16 @@ export class HallService {
   getHallById(hallId : string): Observable<Hall> {
     return this.http.get<Hall>(`${this.apiUrl}/${hallId}`);
   }
+
+  addHall(hall: Partial<Hall>): Observable<Hall> {
+    return this.http.post<Hall>(`${this.apiUrl}`, hall);
+  }
+
+  updateHall(id: string, hall: Partial<Hall>): Observable<void> {
+    return this.http.put<void>(`${this.apiUrl}/${id}`, hall);
+  }
+
+  deleteHall(id: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  }
 }
