@@ -1,0 +1,70 @@
+<div class="profile-page">
+  <div *ngIf="loading" class="loading">Загрузка...</div>
+  <div *ngIf="error" class="error-message">{{ error }}</div>
+
+  <div *ngIf="user" class="profile-container">
+
+    <div class="profile-info">
+      <h2>Личный кабинет</h2>
+      <img src="assets/imges/user.svg" alt="User Avatar" class="avatar" />
+
+      <div class="editable-field">
+        <label>Имя:</label>
+        <input *ngIf="isEditing" [(ngModel)]="editedUser.name" placeholder="Введите имя" />
+        <p *ngIf="!isEditing">{{ user.name }}</p>
+      </div>
+
+      <div class="editable-field">
+        <label>Фамилия:</label>
+        <input *ngIf="isEditing" [(ngModel)]="editedUser.surname" placeholder="Введите фамилию" />
+        <p *ngIf="!isEditing">{{ user.surname }}</p>
+      </div>
+
+      <div class="editable-field">
+        <label>Email:</label>
+        <input *ngIf="isEditing" [(ngModel)]="editedUser.email" placeholder="Введите email" />
+        <p *ngIf="!isEditing">{{ user.email }}</p>
+      </div>
+
+      <div class="editable-field">
+        <label>Телефон:</label>
+        <input *ngIf="isEditing" [(ngModel)]="editedUser.phoneNumber" placeholder="Введите телефон" />
+        <p *ngIf="!isEditing">{{ user.phoneNumber }}</p>
+      </div>
+
+      <div class="button-group">
+        <button *ngIf="isEditing" (click)="saveChanges()" class="save-btn">Сохранить</button>
+        <button *ngIf="isEditing" (click)="toggleEdit()" class="cancel-btn">Отмена</button>
+        <button *ngIf="!isEditing" (click)="toggleEdit()" class="edit-btn">Редактировать</button>
+      </div>
+
+      <button class="logout-btn" (click)="logout()">Выйти</button>
+    </div>
+
+
+    <div class="bookings">
+      <h2>История бронирований</h2>
+      <div *ngIf="bookings.length > 0; else noBookings">
+        <div *ngFor="let booking of bookings" class="booking-card">
+          <div class="booking-header">
+            <img [src]="booking.movieImage || 'assets/imges/default-movie.jpg'" alt="Movie poster" class="movie-poster" />
+            <div>
+              <h3>{{ booking.movieTitle }}</h3>
+              <p><strong>Дата:</strong> {{ booking.startTime | date: 'dd MMMM yyyy, HH:mm' }}</p>
+              <p><strong>Зал:</strong> {{ booking.hallName }}</p>
+            </div>
+          </div>
+          <p><strong>Места:</strong> {{ booking.seats.join(', ') }}</p>
+          <p><strong>Сумма:</strong> {{ booking.totalAmount }} руб.</p>
+
+          <button *ngIf="canCancelBooking(booking.startTime)" (click)="cancelBooking(booking.id)" class="cancel-btn">
+            Отменить бронирование
+          </button>
+        </div>
+      </div>
+      <ng-template #noBookings>
+        <p class="no-bookings">Вы пока не забронировали ни одного сеанса.</p>
+      </ng-template>
+    </div>
+  </div>
+</div>

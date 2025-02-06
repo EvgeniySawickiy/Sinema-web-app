@@ -108,12 +108,13 @@ namespace UserService.BLL.Services
 
             return new TokenResponse
             {
+                UserId = account.Id,
                 AccessToken = newAccessTokenString,
                 RefreshToken = newRefreshTokenString,
             };
         }
 
-        public async Task<TokenResponse> SignUpAsync(
+        public async Task<SignUpResponse> SignUpAsync(
             SignUpRequest request,
             CancellationToken cancellationToken = default)
         {
@@ -158,8 +159,9 @@ namespace UserService.BLL.Services
 
             await tokenRepo.AddAsync(newRefreshToken);
 
-            return new TokenResponse
+            return new SignUpResponse
             {
+                UserId = account.Id,
                 AccessToken = newAccessTokenString,
                 RefreshToken = newRefreshTokenString,
             };
@@ -201,6 +203,7 @@ namespace UserService.BLL.Services
 
             return new TokenResponse()
             {
+                UserId = account.Id,
                 AccessToken = newAccessToken,
                 RefreshToken = newRefreshToken,
             };
@@ -266,6 +269,7 @@ namespace UserService.BLL.Services
             }
 
             IEnumerable<UserResponse> response = mapper.Map<IEnumerable<UserResponse>>(users);
+
             return response;
         }
 
@@ -279,6 +283,7 @@ namespace UserService.BLL.Services
             }
 
             UserResponse response = mapper.Map<UserResponse>(user);
+
             return response;
         }
 
@@ -307,7 +312,8 @@ namespace UserService.BLL.Services
 
             await userRepo.UpdateAsync(user);
 
-            var confirmationLink = $"{configuration["AppSettings:ApiGatewayUrl"]}/confirm-email?token={user.EmailConfirmationToken}";
+            var confirmationLink =
+                $"{configuration["AppSettings:FrontendUrl"]}/confirm-email?token={user.EmailConfirmationToken}";
 
             var template = emailTemplateLoader.LoadTemplate("ConfirmEmail.html");
             var emailRequest = new EmailRequest
@@ -358,7 +364,8 @@ namespace UserService.BLL.Services
 
             await accountRepo.UpdateAsync(account);
 
-            var resetLink = $"{configuration["AppSettings:ApiGatewayUrl"]}/reset-password?token={account.PasswordResetToken}";
+            var resetLink =
+                $"{configuration["AppSettings:FrontendUrl"]}/reset-password?token={account.PasswordResetToken}";
 
             var template = emailTemplateLoader.LoadTemplate("ResetPassword.html");
             var emailRequest = new EmailRequest
@@ -379,7 +386,9 @@ namespace UserService.BLL.Services
         public async Task ResetPasswordAsync(string token, string newPassword)
         {
             var account = await accountRepo.GetByResetTokenAsync(token);
-            if (account == null || account.PasswordResetTokenExpiresAt < DateTime.UtcNow)
+
+            var isInvalidAccount = account == null || account.PasswordResetTokenExpiresAt < DateTime.UtcNow;
+            if (isInvalidAccount)
             {
                 throw new Exception("Invalid or expired token.");
             }
@@ -391,7 +400,30 @@ namespace UserService.BLL.Services
             await accountRepo.UpdateAsync(account);
         }
 
-        private async Task ValidateRequestAsync<T>(IValidator<T> validator, T request,
+        public async Task<bool> CheckLoginExistence(string login)
+        {
+            var accounts = await accountRepo.GetAllAsync();
+            bool isExists = accounts.Any(x => x.Login == login);
+
+            return isExists;
+        }
+
+        public async Task UpdateUserAsync(UserResponse editableUser, UpdateUserDto updateUserDto)
+        {
+            var user = await userRepo.GetByIdAsync(editableUser.Id);
+            if (user == null)
+            {
+                throw new NotFoundException("Пользователь не найден");
+            }
+
+            user = mapper.Map(updateUserDto, user);
+
+            await userRepo.UpdateAsync(user);
+        }
+
+        private async Task ValidateRequestAsync<T>(
+            IValidator<T> validator,
+            T request,
             CancellationToken cancellationToken)
         {
             logger.LogDebug("Validating request of type {Type}", typeof(T).Name);
@@ -406,6 +438,7 @@ namespace UserService.BLL.Services
         private string HashPassword(string password)
         {
             logger.LogDebug("Hashing password");
+
             using (var sha256 = SHA256.Create())
             {
                 var bytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(password));

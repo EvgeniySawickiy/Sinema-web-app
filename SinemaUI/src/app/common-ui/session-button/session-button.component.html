@@ -1,0 +1,9 @@
+<button (click)="onClick()" class="session-button" [disabled]="isPastSession()">
+  <div class="hall-info">
+    <span class="hall-name">КИНОЗАЛ {{ session.hallName }}</span>
+  </div>
+  <div class="time-info">
+    <span class="session-time">{{ session.startTime | date: 'HH:mm' }}</span><br />
+    <span class="price">ЦЕНА <b>{{ session.ticketPrice }}</b> РУБ</span>
+  </div>
+</button>

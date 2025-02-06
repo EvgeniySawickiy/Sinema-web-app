@@ -32,7 +32,6 @@ namespace BookingService.Application.Features.Bookings.Queries.Handlers
             }
             else
             {
-
                 var bookings = await _bookingRepository.GetAllAsync();
                 var bookingDtos = _mapper.Map<List<BookingResponseDTO>>(bookings);
 

@@ -7,7 +7,7 @@ using MovieService.Application.UseCases.Genres.Queries;
 namespace MovieService.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/genres")]
 public class GenresController : ControllerBase
 {
     private readonly IMediator _mediator;

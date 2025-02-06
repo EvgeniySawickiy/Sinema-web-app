@@ -1,0 +1,48 @@
+<div class="login-page">
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+        <h2>Login</h2>
+
+        <div class="form-group">
+            <label for="login">Email or Username</label>
+            <input
+                    id="login"
+                    type="text"
+                    formControlName="login"
+                    placeholder="Enter email or username"
+            />
+            <div *ngIf="loginForm.get('login')?.invalid && loginForm.get('login')?.touched"
+                    class="error">
+                    Email or Username is required.
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input
+                    id="password"
+                    type="password"
+                    formControlName="password"
+                    placeholder="Enter password"
+            />
+            <div *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched"
+                    class="error">
+                Password must be at least 6 characters long.
+            </div>
+        </div>
+
+      <div *ngIf="errorMessage" class="error-message">
+        {{ errorMessage }}
+      </div>
+
+        <button type="submit" [disabled]="loginForm.invalid">Login</button>
+      <div class="auth-links">
+        <a routerLink="/register" class="link-btn">Register</a><br>
+        <a routerLink="/request-password-reset" class="link-btn">Forgot Password?</a>
+      </div>
+    </form>
+
+    <div class="logo-container">
+        <img src="assets/imges/big-logo.png" alt="Cinema Logo" class="logo" />
+    </div>
+</div>
+

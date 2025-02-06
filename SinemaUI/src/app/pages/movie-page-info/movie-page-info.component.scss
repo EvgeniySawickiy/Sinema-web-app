@@ -1,0 +1,118 @@
+.movie-detail-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  padding: 40px;
+  max-width: 1200px;
+  margin: auto;
+
+  .movie-container {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    width: 100%;
+    max-width: 1200px;
+    background: #fff;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+
+    .movie-image {
+      width: 300px;
+      flex-shrink: 0;
+
+      img {
+        width: 100%;
+        border-radius: 12px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      }
+    }
+
+    .movie-info {
+      flex: 1;
+      max-width: 800px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding-right: 20px;
+
+      h1 {
+        font-size: 1.8rem;
+        color: var(--primary-color);
+        margin: 0;
+      }
+
+      .genres {
+        font-size: 1rem;
+        color: #666;
+        margin: 10px 0;
+        word-wrap: break-word;
+        white-space: normal;
+      }
+
+      .description {
+        font-size: 1rem;
+        color: #444;
+        word-wrap: break-word;
+        white-space: normal;
+      }
+
+      .movie-details {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+
+        .movie-detail {
+          display: flex;
+          justify-content: space-between;
+          font-size: 1rem;
+          color: #222;
+          margin: 10px 0;
+
+          .label {
+            font-weight: bold;
+          }
+        }
+      }
+
+      .trailer-container {
+        margin-top: 20px;
+
+        iframe {
+          border-radius: 12px;
+          box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+          width: 100%;
+          max-width: 560px;
+          height: 315px;
+        }
+      }
+    }
+  }
+
+  .movie-sessions{
+    display: flex;
+    text-align: center;
+    flex-direction: column;
+
+    .session-date-group {
+      margin-bottom: 20px;
+      margin-top: 10px;
+      text-align: center;
+
+      h3 {
+        font-size: 1.3rem;
+        color: var(--primary-color);
+        margin-bottom: 10px;
+      }
+
+      .sessions-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+    }
+  }
+}
+

@@ -1,0 +1,121 @@
+  @media (max-width: 1600px) {
+    .site-header .container {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .navigation ul {
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .auth-buttons {
+      margin-top: 10px;
+    }
+  }
+
+  .site-header {
+  background-color: var(--dark-color);
+  color: var(--white-color);
+  padding: 10px 20px;
+
+    .container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      max-width: 2400px;
+      margin: 0 auto;
+      flex-direction: row;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+
+      img {
+        width: 150px;
+        height: auto;
+      }
+    }
+
+    .navigation {
+      ul {
+        display: flex;
+        gap: 20px;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        flex-direction: row;
+
+        li a {
+          text-decoration: none;
+          color: var(--white-color);
+          font-size: 1rem;
+          transition: color 0.3s;
+
+          &:hover {
+            color: #d1c4e9; // Светло-фиолетовый при наведении
+          }
+        }
+      }
+    }
+
+    .auth-buttons {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+
+      button {
+        padding: 8px 16px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 1rem;
+        transition:  background-color 0.3s, color 0.3s;
+
+        &.login-btn {
+          background-color: var(--light-color);
+          color: var(--white-color);
+
+          &:hover {
+            background-color: var(--white-color);
+            color: var(--dark-color);
+          }
+        }
+
+        &.register-btn {
+          background-color: var(--white-color);
+          color: var(--dark-color);
+          border: 1px solid var(--primary-color);
+
+          &:hover {
+            background-color: var(--light-color);
+            color: var(--white-color);
+          }
+        }
+
+        &.profile-btn {
+          padding: 15px 15px;
+          border-radius: 50%;
+          background-size: cover;
+          border: 3px solid var(--white-color);
+          display: flex;
+          justify-content: center;
+          align-items: center;
+
+          img {
+            width: 35px;
+            height: 100%;
+            border-radius: 50%;
+          }
+
+          &:hover {
+            border-color: var(--light-color);
+            transform: scale(1.2);
+          }
+        }
+
+      }
+    }
+  }
+

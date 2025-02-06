@@ -1,0 +1,34 @@
+<div class="home-page">
+
+  <section class="banner">
+    <h1>Добро пожаловать в наш кинотеатр!</h1>
+    <p>Лучшие фильмы и уютная атмосфера ждут вас!</p>
+  </section>
+
+
+  <section class="schedule">
+    <app-date-filter (dateSelected)="onDateSelected($event)"></app-date-filter>
+  </section>
+
+
+  <section class="filter">
+    <app-session-filter (filterChanged)="onFilterChanged($event)"></app-session-filter>
+  </section>
+
+
+  <section class="sessions">
+    <ng-container *ngIf="filteredShowTimes.length > 0; else noSessions">
+      <app-sessions-card
+        [showTimes]="filteredShowTimes"
+        [movies]="movies"
+        [halls]="halls"
+      ></app-sessions-card>
+    </ng-container>
+
+    <ng-template #noSessions>
+      <div class="no-sessions">
+        <p>Извините, но на выбранную дату пока сеансов нет :(</p>
+      </div>
+    </ng-template>
+  </section>
+</div>

@@ -1,0 +1,25 @@
+<div class="movies-page">
+  <h1>🎬 Фильмы в прокате</h1>
+
+  <div *ngIf="loading" class="loading">Загрузка...</div>
+  <div *ngIf="error" class="error-message">{{ error }}</div>
+
+  <div *ngIf="movies.length === 0 && !loading" class="no-movies">
+    <p>Сейчас нет доступных фильмов.</p>
+  </div>
+
+  <div class="movies-list">
+    <div *ngFor="let movie of movies" class="movie-card">
+      <img
+        [src]="movie.imageUrl || 'assets/imges/default-movie.jpg'"
+        alt="{{ movie.title }}"
+        class="movie-poster"
+      />
+      <div class="movie-info">
+        <h2>{{ movie.title }}</h2>
+        <p class="genres">{{ movie.genres.join(', ') || 'Жанр не указан' }}</p>
+        <button class="buy-ticket-btn" [routerLink]="['/movie', movie.id]">🎟 Купить билет</button>
+      </div>
+    </div>
+  </div>
+</div>

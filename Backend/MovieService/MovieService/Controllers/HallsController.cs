@@ -20,7 +20,6 @@ namespace MovieService.Controllers
             _logger = logger;
         }
 
-        [Authorize]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<HallDto>>> GetAllHalls(CancellationToken cancellationToken)
         {
@@ -33,7 +32,7 @@ namespace MovieService.Controllers
             return Ok(halls);
         }
 
-        [Authorize]
+
         [HttpGet("{id:guid}")]
         public async Task<ActionResult<HallDto>> GetHallById(Guid id, CancellationToken cancellationToken)
         {

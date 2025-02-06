@@ -21,10 +21,22 @@ builder.Services.AddAuthentication("Bearer").AddJwtBearer(options =>
     options.SaveToken = true;
 });
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAngularApp", policy =>
+    {
+        policy.WithOrigins("http://localhost:4200")
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
+
 builder.Configuration.AddJsonFile("ocelot.json", optional: false, reloadOnChange: true);
 builder.Services.AddOcelot();
 
 var app = builder.Build();
+
+app.UseCors("AllowAngularApp");
 app.UseAuthentication();
 app.UseAuthorization();
 

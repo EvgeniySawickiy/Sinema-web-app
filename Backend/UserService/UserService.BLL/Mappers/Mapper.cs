@@ -12,6 +12,8 @@ namespace UserService.BLL.Mappers
         {
             CreateMap<User, UserResponse>();
 
+            CreateMap<UpdateUserDto, User>();
+
             CreateMap<SignUpRequest, User>()
                 .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => DateTime.UtcNow));
 
