@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
 import {NgForOf, NgIf} from '@angular/common';
 import {RouterLink} from '@angular/router';
-import {Movie} from '../../data/Interfaces/movie.interface';
-import { ShowTime } from '../../data/Interfaces/showtime.interface';
-import {MovieService} from '../../data/services/movie.service';
-import {ShowtimeService} from '../../data/services/showtime.service';
+import {Movie} from '../../../data/Interfaces/movie.interface';
+import { ShowTime } from '../../../data/Interfaces/showtime.interface';
+import {MovieService} from '../../../data/services/movie.service';
+import {ShowtimeService} from '../../../data/services/showtime.service';
 
 @Component({
   selector: 'app-movies-page',

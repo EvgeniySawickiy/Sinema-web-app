@@ -2,6 +2,7 @@
 using BookingService.Core.Entities;
 using BookingService.DataAccess.Cache;
 using BookingService.DataAccess.Persistence.Interfaces;
+using MongoDB.Bson;
 using MongoDB.Driver;
 
 namespace BookingService.DataAccess.Persistence.Repositories
@@ -68,6 +69,44 @@ namespace BookingService.DataAccess.Persistence.Repositories
         public async Task<int> GetTotalCountAsync()
         {
             return (int)await _collection.CountDocumentsAsync(FilterDefinition<Booking>.Empty);
+        }
+
+        public async Task<decimal> GetTotalRevenueAsync()
+        {
+            var result = await _collection.Aggregate()
+                .Group(x => 1, g => new { Total = g.Sum(x => x.TotalAmount) })
+                .FirstOrDefaultAsync();
+
+            return result?.Total ?? 0;
+        }
+
+        public async Task<List<BookingByDay>> GetBookingsByDayAsync()
+        {
+            var pipeline = new[]
+            {
+                new BsonDocument("$group", new BsonDocument
+                {
+                    {
+                        "_id", new BsonDocument("$dateToString", new BsonDocument
+                        {
+                            { "format", "%Y-%m-%d" },
+                            { "date", "$BookingTime" },
+                        })
+                    },
+                    {
+                        "count", new BsonDocument("$sum", 1)
+                    },
+                }),
+                new BsonDocument("$sort", new BsonDocument("_id", 1)),
+            };
+
+            var results = await _collection.Aggregate<BookingByDayResult>(pipeline).ToListAsync();
+            Console.WriteLine(results);
+            return results.Select(r => new BookingByDay
+            {
+                Date = DateTime.Parse(r.Id).ToString("yyyy-MM-dd"),
+                Count = r.Count,
+            }).ToList();
         }
 
         public async Task<IEnumerable<Booking>> GetPagedAsync(int pageNumber, int pageSize)

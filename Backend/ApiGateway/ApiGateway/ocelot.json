@@ -157,6 +157,22 @@
       "UpstreamHttpMethod": [ "GET"]
     },
     {
+      "DownstreamPathTemplate": "/api/statistics",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "movie-service",
+          "Port": 8080
+        }
+      ],
+      "UpstreamPathTemplate": "/statistics",
+      "UpstreamHttpMethod": [ "GET"],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      }
+    },
+    {
       "DownstreamPathTemplate": "/api/showtimes/{everything}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [

@@ -1,12 +1,12 @@
 import { Component } from '@angular/core';
-import {Movie} from '../../data/Interfaces/movie.interface';
-import { ShowTime } from '../../data/Interfaces/showtime.interface';
-import {Hall} from '../../data/Interfaces/hall.interface';
-import {Seat} from '../../data/Interfaces/seat.interface';
-import {ShowtimeService} from '../../data/services/showtime.service';
-import {BookingService} from '../../data/services/booking.service';
-import {MovieService} from '../../data/services/movie.service';
-import {HallService} from '../../data/services/hall.service';
+import {Movie} from '../../../data/Interfaces/movie.interface';
+import { ShowTime } from '../../../data/Interfaces/showtime.interface';
+import {Hall} from '../../../data/Interfaces/hall.interface';
+import {Seat} from '../../../data/Interfaces/seat.interface';
+import {ShowtimeService} from '../../../data/services/showtime.service';
+import {BookingService} from '../../../data/services/booking.service';
+import {MovieService} from '../../../data/services/movie.service';
+import {HallService} from '../../../data/services/hall.service';
 import {DatePipe, NgForOf, NgIf} from '@angular/common';
 
 @Component({
@@ -65,7 +65,7 @@ export class AdminBookingsComponent {
         movie,
         sessions: this.showtimes
           .filter(st => st.movieId === movie.id)
-          .sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime())
+          .sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime()).reverse()
       }))
       .filter(group => group.sessions.length > 0);
   }

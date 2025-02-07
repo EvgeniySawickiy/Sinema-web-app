@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
 import {NgForOf, NgIf} from '@angular/common';
 import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
-import {Movie} from '../../data/Interfaces/movie.interface';
-import {Genre} from '../../data/Interfaces/genre.interface';
-import {MovieService} from '../../data/services/movie.service';
-import {GenreService} from '../../data/services/genre.service';
+import {Movie} from '../../../data/Interfaces/movie.interface';
+import {Genre} from '../../../data/Interfaces/genre.interface';
+import {MovieService} from '../../../data/services/movie.service';
+import {GenreService} from '../../../data/services/genre.service';
 
 @Component({
   selector: 'app-admin-movies',

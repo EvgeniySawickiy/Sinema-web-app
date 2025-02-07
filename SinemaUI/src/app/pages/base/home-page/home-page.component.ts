@@ -1,14 +1,14 @@
 import { Component} from '@angular/core';
-import {ShowTime} from '../../data/Interfaces/showtime.interface';
-import {Movie} from '../../data/Interfaces/movie.interface';
-import {Hall} from '../../data/Interfaces/hall.interface';
-import {SessionCardComponent} from '../../cards/session-card/session-card.component';
-import {ShowtimeService} from '../../data/services/showtime.service';
-import {MovieService} from '../../data/services/movie.service';
-import {HallService} from '../../data/services/hall.service';
+import {ShowTime} from '../../../data/Interfaces/showtime.interface';
+import {Movie} from '../../../data/Interfaces/movie.interface';
+import {Hall} from '../../../data/Interfaces/hall.interface';
+import {SessionCardComponent} from '../../../cards/session-card/session-card.component';
+import {ShowtimeService} from '../../../data/services/showtime.service';
+import {MovieService} from '../../../data/services/movie.service';
+import {HallService} from '../../../data/services/hall.service';
 import {NgIf} from '@angular/common';
-import {DateFilterComponent} from '../../common-ui/date-filter/date-filter.component';
-import {SessionFilterComponent} from '../../common-ui/session-filter/session-filter.component';
+import {DateFilterComponent} from '../../../common-ui/date-filter/date-filter.component';
+import {SessionFilterComponent} from '../../../common-ui/session-filter/session-filter.component';
 
 @Component({
   selector: 'app-home-page',

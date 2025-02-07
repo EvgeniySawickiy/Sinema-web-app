@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using BookingServiceGrpc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MovieService.DataAccess.Interfaces;
@@ -14,6 +15,11 @@ namespace MovieService.DataAccess.DependencyInjection
             services.AddDbContext<DataContext>(options =>
                 options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
 
+            services.AddGrpcClient<BookingStatisticsService.BookingStatisticsServiceClient>(o =>
+            {
+                o.Address = new Uri(configuration["Grpc:BookingService"]);
+            });
+
             services.AddScoped<IMovieRepository, MovieRepository>();
             services.AddScoped<IShowtimeRepository, ShowtimeRepository>();
             services.AddScoped<IHallRepository, HallRepository>();
@@ -22,7 +28,6 @@ namespace MovieService.DataAccess.DependencyInjection
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             services.AddGrpc();
-
             return services;
         }
     }

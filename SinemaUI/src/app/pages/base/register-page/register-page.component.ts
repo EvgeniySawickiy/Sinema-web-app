@@ -8,7 +8,7 @@ import {
   Validators
 } from '@angular/forms';
 import {NgIf} from '@angular/common';
-import {AuthService} from '../../auth/auth.service';
+import {AuthService} from '../../../auth/auth.service';
 import {Router} from '@angular/router';
 import {debounceTime, switchMap} from 'rxjs';
 

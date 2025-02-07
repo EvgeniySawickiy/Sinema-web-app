@@ -1,15 +1,15 @@
 import { Component } from '@angular/core';
 import {DatePipe, NgForOf, NgIf} from '@angular/common';
-import {Movie} from '../../data/Interfaces/movie.interface';
+import {Movie} from '../../../data/Interfaces/movie.interface';
 import {ActivatedRoute} from '@angular/router';
-import {MovieService} from '../../data/services/movie.service';
-import {ShowTime} from '../../data/Interfaces/showtime.interface';
-import {ShowtimeService} from '../../data/services/showtime.service';
-import {SessionButtonComponent} from '../../common-ui/session-button/session-button.component';
+import {MovieService} from '../../../data/services/movie.service';
+import {ShowTime} from '../../../data/Interfaces/showtime.interface';
+import {ShowtimeService} from '../../../data/services/showtime.service';
+import {SessionButtonComponent} from '../../../common-ui/session-button/session-button.component';
 import {DomSanitizer, SafeResourceUrl} from '@angular/platform-browser';
-import {Hall} from '../../data/Interfaces/hall.interface';
-import {HallService} from '../../data/services/hall.service';
-import {SeatSelectionComponent} from '../../common-ui/seat-selection/seat-selection.component';
+import {Hall} from '../../../data/Interfaces/hall.interface';
+import {HallService} from '../../../data/services/hall.service';
+import {SeatSelectionComponent} from '../../../common-ui/seat-selection/seat-selection.component';
 
 @Component({
   selector: 'app-movie-page-info',

@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
 import {DatePipe, NgForOf, NgIf} from '@angular/common';
-import {AuthService} from '../../auth/auth.service';
-import {User} from '../../data/Interfaces/user.interface';
-import {BookingService} from '../../data/services/booking.service';
-import {DetailedBooking} from '../../data/Interfaces/detailed-booking.interface';
+import {AuthService} from '../../../auth/auth.service';
+import {User} from '../../../data/Interfaces/user.interface';
+import {BookingService} from '../../../data/services/booking.service';
+import {DetailedBooking} from '../../../data/Interfaces/detailed-booking.interface';
 import {FormsModule} from '@angular/forms';
 
 @Component({

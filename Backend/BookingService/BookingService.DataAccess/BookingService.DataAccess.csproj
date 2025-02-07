@@ -26,8 +26,9 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <ProjectReference Include="..\BookingService.Core\BookingService.Core.csproj" />
-	<Protobuf Include="ExternalServices\Contracts\MovieService.proto" GrpcServices="Client" />
+	  <Protobuf Include="ExternalServices\Contracts\MovieService.proto" GrpcServices="Client" />
     <Protobuf Include="ExternalServices\Contracts\UserService.proto" GrpcServices="Client" />
+    <Protobuf Include="ExternalServices\Contracts\BookingService.proto" GrpcServices="Server" />
   </ItemGroup>
 
 </Project>

@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import {FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import {NgForOf, NgIf} from '@angular/common';
-import {Hall} from '../../data/Interfaces/hall.interface';
-import {HallService} from '../../data/services/hall.service';
+import {Hall} from '../../../data/Interfaces/hall.interface';
+import {HallService} from '../../../data/services/hall.service';
 
 
 @Component({

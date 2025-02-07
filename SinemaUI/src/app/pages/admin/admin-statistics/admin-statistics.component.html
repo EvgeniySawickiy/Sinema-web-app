@@ -1,0 +1,35 @@
+<div class="admin-statistics">
+  <h2>📊 Статистика</h2>
+
+  <div class="stats-grid">
+    <div class="stat-card">
+      <h3>📅 Количество сеансов</h3>
+      <p>{{ statistics.totalShowtimes }}</p>
+    </div>
+
+    <div class="stat-card">
+      <h3>🎬 Количество фильмов</h3>
+      <p>{{ statistics.totalMovies }}</p>
+    </div>
+
+    <div class="stat-card">
+      <h3>🏛 Количество залов</h3>
+      <p>{{ statistics.totalHalls }}</p>
+    </div>
+
+    <div class="stat-card">
+      <h3>🎟 Количество бронирований</h3>
+      <p>{{ statistics.totalBookings }}</p>
+    </div>
+
+    <div class="stat-card">
+      <h3>💰 Общая сумма продаж</h3>
+      <p>{{ statistics.totalRevenue }} руб.</p>
+    </div>
+  </div>
+
+  <div class="chart-container">
+    <h3>📈 Бронирования по дням</h3>
+    <canvas id="bookingsChart"></canvas>
+  </div>
+</div>

@@ -1,11 +1,11 @@
 import {Component, ElementRef, ViewChild} from '@angular/core';
-import {ShowTime} from '../../data/Interfaces/showtime.interface';
+import {ShowTime} from '../../../data/Interfaces/showtime.interface';
 import {AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
-import {ShowtimeService} from '../../data/services/showtime.service';
-import {MovieService} from '../../data/services/movie.service';
-import {HallService} from '../../data/services/hall.service';
-import {Movie} from '../../data/Interfaces/movie.interface';
-import {Hall} from '../../data/Interfaces/hall.interface';
+import {ShowtimeService} from '../../../data/services/showtime.service';
+import {MovieService} from '../../../data/services/movie.service';
+import {HallService} from '../../../data/services/hall.service';
+import {Movie} from '../../../data/Interfaces/movie.interface';
+import {Hall} from '../../../data/Interfaces/hall.interface';
 import {DatePipe, NgForOf, NgIf} from '@angular/common';
 
 @Component({
@@ -52,7 +52,6 @@ export class AdminShowtimesComponent {
     return selectedDate > now ? null : { pastDate: true };
   }
 
-
   ngOnInit(): void {
     this.fetchData();
   }
@@ -70,11 +69,10 @@ export class AdminShowtimesComponent {
 
   loadShowtimes() {
     this.showtimeService.getShowTimes().subscribe(showtimes => {
-      // Преобразуем дату из UTC в локальное время
       this.showtimes = showtimes.map(st => ({
         ...st,
         startTime: new Date(st.startTime).toISOString()
-      }));
+      })).reverse();
 
       this.groupSessionsByMovie();
     });
@@ -88,7 +86,7 @@ export class AdminShowtimesComponent {
         movie,
         sessions: this.showtimes
           .filter(st => st.movieId === movie.id)
-          .sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime())
+          .sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime()).reverse()
       }))
       .filter(group => group.sessions.length > 0);
   }
@@ -135,7 +133,7 @@ export class AdminShowtimesComponent {
     const updatedShowtime: ShowTime = {
       id: this.editingShowtimeId,
       ...formData,
-      startTime: new Date(formData.startTime).toISOString() // Преобразуем в UTC
+      startTime: new Date(formData.startTime).toISOString()
     };
 
     this.showtimeService.updateShowtime(this.editingShowtimeId!, updatedShowtime).subscribe(() => {

@@ -7,5 +7,7 @@ namespace BookingService.DataAccess.Persistence.Interfaces
         Task<IEnumerable<Booking>> GetByUserIdAsync(Guid userId);
         Task<int> GetTotalCountAsync();
         Task<IEnumerable<Booking>> GetPagedAsync(int pageNumber, int pageSize);
+        Task<decimal> GetTotalRevenueAsync();
+        Task<List<BookingByDay>> GetBookingsByDayAsync();
     }
 }
