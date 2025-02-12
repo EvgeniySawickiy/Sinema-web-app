@@ -1,4 +1,4 @@
-import { Component} from '@angular/core';
+import {ChangeDetectorRef, Component} from '@angular/core';
 import {ShowTime} from '../../../data/Interfaces/showtime.interface';
 import {Movie} from '../../../data/Interfaces/movie.interface';
 import {Hall} from '../../../data/Interfaces/hall.interface';
@@ -22,20 +22,19 @@ import {SessionFilterComponent} from '../../../common-ui/session-filter/session-
   styleUrl: './home-page.component.scss'
 })
 export class HomePageComponent {
-  selectedDate: string = new Date().toISOString().split('T')[0];
-
   showTimes: ShowTime[] = [];
   movies: Movie[] = [];
   halls: Hall[] = [];
   filteredByDateShowTimes: ShowTime[] = [];
   filteredShowTimes: ShowTime[] = [];
 
-  selectedFilters = { time: '', hall: '', genres: [''] };
+  selectedFilters: { time: string; hall: string; genres: string[] } = { time: '', hall: '', genres: [] };
 
   constructor(
     private showTimeService: ShowtimeService,
     private movieService: MovieService,
-    private hallService: HallService
+    private hallService: HallService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -46,7 +45,6 @@ export class HomePageComponent {
     let moviesLoaded = false;
     let showTimesLoaded = false;
     let hallsLoaded = false;
-
 
     this.movieService.getMovies().subscribe(
       (data) => {
@@ -89,7 +87,6 @@ export class HomePageComponent {
   }
 
   onDateSelected(selectedDate: Date): void {
-
     this.filteredByDateShowTimes = this.showTimes.filter((showTime) => {
       const showDate = new Date(showTime.startTime);
       return (
@@ -103,27 +100,29 @@ export class HomePageComponent {
   }
 
   applyFilters() {
-    this.filteredShowTimes = this.filteredByDateShowTimes.filter((session) => {
+    this.filteredShowTimes = [...this.filteredByDateShowTimes.filter((session) => {
       const matchesTime =
         !this.selectedFilters.time || this.filterByTime(session.startTime);
       const matchesHall =
         !this.selectedFilters.hall || session.hallName === this.selectedFilters.hall;
 
-      // Проверяем, есть ли хотя бы один жанр из выбранных
       const movie = this.movies.find((m) => m.id === session.movieId);
+      const movieGenres = movie?.genres ?? [];
+
       const matchesGenres =
         this.selectedFilters.genres.length === 0 ||
-        (movie && this.selectedFilters.genres.some(genre => movie.genres.includes(genre)));
+        this.selectedFilters.genres.every(genre => movieGenres.includes(genre));
 
       return matchesTime && matchesHall && matchesGenres;
-    });
+    })];
+
+    this.cdr.detectChanges();
   }
 
   onFilterChanged(filters: { time: string; hall: string; genres: string[] }) {
     this.selectedFilters = filters;
     this.applyFilters();
   }
-
 
   filterByTime(startTime: string): boolean {
     const sessionHour = new Date(startTime).getHours();

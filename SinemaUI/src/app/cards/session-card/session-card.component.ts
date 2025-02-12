@@ -36,6 +36,12 @@ export class SessionCardComponent {
     this.groupSessionsByMovie();
   }
 
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['showTimes'] || changes['movies']) {
+      this.groupSessionsByMovie();
+    }
+  }
+
   groupSessionsByMovie() {
     if (this.movies.length === 0 || this.showTimes.length === 0) {
       this.groupedSessions = [];
