@@ -1,7 +1,6 @@
 import {Component, EventEmitter, Output} from '@angular/core';
 import {NgForOf, NgIf} from '@angular/common';
 import {HallService} from '../../data/services/hall.service';
-import {MovieService} from '../../data/services/movie.service';
 import {GenreService} from '../../data/services/genre.service';
 
 @Component({

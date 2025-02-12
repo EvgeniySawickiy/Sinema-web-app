@@ -4,7 +4,6 @@ import {NgForOf, NgIf} from '@angular/common';
 import {Hall} from '../../../data/Interfaces/hall.interface';
 import {HallService} from '../../../data/services/hall.service';
 
-
 @Component({
   selector: 'app-admin-halls',
   imports: [
@@ -26,7 +25,7 @@ export class AdminHallsComponent {
       name: ['', Validators.required],
       totalSeats: [0, [Validators.required, Validators.min(1)]],
       numberOfRows: [0, [Validators.required, Validators.min(1)]],
-      seatsPerRow: this.fb.array([]), // Массив контролов для мест в ряду
+      seatsPerRow: this.fb.array([]),
     });
 
     this.loadHalls();

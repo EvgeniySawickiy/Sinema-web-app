@@ -17,6 +17,7 @@ import {GenreService} from '../../../data/services/genre.service';
   templateUrl: './admin-movies.component.html',
   styleUrl: './admin-movies.component.scss'
 })
+
 export class AdminMoviesComponent {
   movies: Movie[] = [];
   genres: Genre[] = [];

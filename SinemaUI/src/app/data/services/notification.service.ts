@@ -39,19 +39,16 @@ export class NotificationService {
       });
 
     this.hubConnection.onclose(error => {
-      console.warn("🔴 Соединение закрыто. Ошибка:", error);
       this.isConnected = false;
     });
 
     this.hubConnection.on('ReceiveNotification', (message: string) => {
-      console.log('📢 Уведомление:', message);
       this.toastr.info(message, '📢 Новое уведомление', { disableTimeOut: true });
     });
   }
 
   sendNotification(userId: string, message: string): void {
     if (!this.isConnected) {
-      console.warn("⚠ Невозможно отправить уведомление: нет подключения.");
       return;
     }
     this.hubConnection.invoke('SendNotification', userId, message)
@@ -60,7 +57,6 @@ export class NotificationService {
 
   broadcastNotification(message: string): void {
     if (!this.isConnected) {
-      console.warn("⚠ Невозможно отправить уведомление: нет подключения.");
       return;
     }
     this.hubConnection.invoke('BroadcastNotification', message)

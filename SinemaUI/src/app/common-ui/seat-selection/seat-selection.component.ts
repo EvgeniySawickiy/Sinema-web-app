@@ -171,6 +171,7 @@ export class SeatSelectionComponent {
       }
     }
   }
+
   getFormattedSelectedSeats(): string[] {
     const groupedSeats: { [row: number]: number[] } = {};
 

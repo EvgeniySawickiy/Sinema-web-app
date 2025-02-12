@@ -1,6 +1,5 @@
 <div class="movie-sessions">
   <div *ngFor="let group of groupedSessions" class="movie-card">
-    <!-- Левая часть: постер -->
     <div class="movie-image-info">
       <div class="movie-image">
         <a [routerLink]="['/movie', group.movie.id]">
@@ -12,7 +11,6 @@
         </a>
       </div>
 
-      <!-- Правая часть: информация о фильме -->
       <div class="movie-info">
         <div class="movie-header">
           <h2>
@@ -38,7 +36,6 @@
         </div>
       </div>
     </div>
-
 
     <div class="movie-sessions-list">
       <div *ngFor="let session of group.sessions" class="session-card">

@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import {StatisticsService} from '../../../data/services/statistics.service';
 import Chart from 'chart.js/auto';
 
-
 @Component({
   selector: 'app-admin-statistics',
   imports: [],

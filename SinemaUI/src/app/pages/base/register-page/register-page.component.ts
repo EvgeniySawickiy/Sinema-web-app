@@ -39,7 +39,7 @@ export class RegisterPageComponent {
       surname: ['', [Validators.required]],
     },
     {
-      validators: [this.passwordsMatchValidator] // Добавляем валидатор на уровне формы
+      validators: [this.passwordsMatchValidator]
     }
     );
 

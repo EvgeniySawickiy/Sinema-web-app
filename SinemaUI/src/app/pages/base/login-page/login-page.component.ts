@@ -4,8 +4,6 @@ import {CommonModule, NgIf} from "@angular/common";
 import {AuthService} from "../../../auth/auth.service";
 import {Router, RouterLink} from '@angular/router';
 
-
-
 @Component({
   selector: 'app-login-page',
   imports: [

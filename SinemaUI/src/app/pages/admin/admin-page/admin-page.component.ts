@@ -10,5 +10,4 @@ import {RouterLink} from '@angular/router';
   styleUrl: './admin-page.component.scss'
 })
 export class AdminPageComponent {
-
 }
