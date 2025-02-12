@@ -8,4 +8,6 @@ public class BookingCreatedEvent
     public List<(int, int)> SeatNumbers { get; set; }
     public decimal TotalPrice { get; set; }
     public DateTime CreatedAt { get; set; }
+    public string ShowtimeDateTime { get; set; }
+    public string MovieTitle { get; set; }
 }

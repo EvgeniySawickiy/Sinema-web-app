@@ -17,6 +17,7 @@ import {AdminShowtimesComponent} from "./pages/admin/admin-showtimes/admin-showt
 import {AdminHallsComponent} from './pages/admin/admin-halls/admin-halls.component';
 import {AdminBookingsComponent} from './pages/admin/admin-bookings/admin-bookings.component';
 import {AdminStatisticsComponent} from './pages/admin/admin-statistics/admin-statistics.component';
+import {AdminNotificationsComponent} from './pages/admin/admin-notifications/admin-notifications.component';
 
 export const routes: Routes = [
   {path:"",
@@ -38,7 +39,8 @@ export const routes: Routes = [
       { path: 'admin/showtimes', component: AdminShowtimesComponent, canActivate: [AdminGuard] },
       { path: 'admin/halls', component: AdminHallsComponent, canActivate: [AdminGuard] },
       { path: 'admin/bookings', component: AdminBookingsComponent, canActivate: [AdminGuard] },
-      { path: 'admin/statistics', component: AdminStatisticsComponent, canActivate: [AdminGuard] }
+      { path: 'admin/statistics', component: AdminStatisticsComponent, canActivate: [AdminGuard] },
+      { path: 'admin/notifications', component: AdminNotificationsComponent , canActivate: [AdminGuard]}
     ]
   },
   { path: '**', redirectTo: '' },

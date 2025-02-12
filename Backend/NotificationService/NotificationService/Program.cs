@@ -9,11 +9,28 @@ using NotificationService.Infrastructure.Hubs;
 using NotificationService.Infrastructure.Protos;
 using NotificationService.Infrastructure.Services;
 using NotificationService.Middleware;
+using Hangfire;
+using Hangfire.Dashboard.BasicAuthorization;
+using Hangfire.PostgreSql;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddGrpc();
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", policy =>
+    {
+        policy.WithOrigins("http://localhost:4200")
+            .AllowAnyMethod()
+            .AllowAnyHeader()
+            .AllowCredentials()
+            .SetIsOriginAllowed(origin => true);
+    });
+});
+
+builder.Services.AddSignalR();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -70,12 +87,50 @@ builder.Services.AddSwaggerGen(opt =>
     });
 });
 
+builder.Services.AddHangfire(
+    config =>
+        config.SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
+            .UseSimpleAssemblyNameTypeSerializer()
+            .UseRecommendedSerializerSettings()
+            .UsePostgreSqlStorage(builder.Configuration.GetConnectionString("HangfireConnection")));
+
+builder.Services.AddHangfireServer();
+
 var app = builder.Build();
+
+app.UseHangfireDashboard("/hangfire", new DashboardOptions
+{
+    Authorization = new[]
+    {
+        new BasicAuthAuthorizationFilter(new BasicAuthAuthorizationFilterOptions
+        {
+            SslRedirect = false,
+            RequireSsl = false,
+            LoginCaseSensitive = true,
+            Users = new[]
+            {
+                new BasicAuthAuthorizationUser
+                {
+                    Login = "admin",
+                    PasswordClear = "password123",
+                },
+            },
+        }),
+    },
+});
 
 app.MapGrpcService<NotificationServiceGrpc>();
 app.MapGet("/", () => "NotificationService - use a gRPC client to interact.");
+app.UseRouting();
 
-app.MapHub<NotificationHub>("/notificationHub");
+app.UseCors("AllowAll");
+app.UseWebSockets();
+app.UseAuthorization();
+
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapHub<NotificationHub>("/notificationHub");
+});
 
 app.UseMiddleware<ExceptionHandlerMiddleware>();
 
@@ -84,10 +139,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
-app.UseHttpsRedirection();
-
-app.UseAuthorization();
 
 app.MapControllers();
 

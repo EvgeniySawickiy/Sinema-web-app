@@ -38,8 +38,9 @@ public class BookingEventConsumer : BackgroundService
 
         try
         {
-            _channel.ExchangeDeclarePassive(_exchangeName);
-            _channel.QueueDeclarePassive(_queueName);
+            _channel.ExchangeDeclare(exchange: _exchangeName, type: ExchangeType.Topic);
+            _channel.QueueDeclare(queue: _queueName, durable: true, exclusive: false, autoDelete: false,
+                arguments: null);
             _channel.QueueBind(queue: _queueName, exchange: _exchangeName, routingKey: $"{_exchangeName}.*");
         }
         catch (RabbitMQ.Client.Exceptions.OperationInterruptedException ex)
@@ -77,6 +78,8 @@ public class BookingEventConsumer : BackgroundService
                 if (bookingCreatedEvent != null)
                 {
                     await notificationService.HandleBookingCreatedAsync(bookingCreatedEvent);
+
+                    notificationService.ScheduleEmailReminders(bookingCreatedEvent);
                 }
             }
             else if (routingKey == _bookingCancelledRoutingKey)
@@ -85,6 +88,8 @@ public class BookingEventConsumer : BackgroundService
                 if (bookingCancelledEvent != null)
                 {
                     await notificationService.HandleBookingCancelledAsync(bookingCancelledEvent);
+
+                    notificationService.DeleteScheduleEmailReminders(bookingCancelledEvent);
                 }
             }
 

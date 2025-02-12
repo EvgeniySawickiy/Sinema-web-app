@@ -20,10 +20,8 @@ namespace BookingService.DataAccess.Messaging
             channel.ExchangeDeclare(exchange: exchange, type: ExchangeType.Topic);
 
             channel.QueueDeclare(queue: "NotificationQueue", durable: true, exclusive: false, autoDelete: false, arguments: null);
-            channel.QueueDeclare(queue: "PaymentQueue", durable: true, exclusive: false, autoDelete: false, arguments: null);
 
             channel.QueueBind(queue: "NotificationQueue", exchange: "BookingExchange", routingKey: "booking.*");
-            channel.QueueBind(queue: "PaymentQueue", exchange: "BookingExchange", routingKey: "booking.created");
             var body = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(message));
 
             channel.BasicPublish(

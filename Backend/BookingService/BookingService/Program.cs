@@ -1,4 +1,3 @@
-using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using BookingService.Application.DependencyInjection;
 using BookingService.DataAccess.DependencyInjection;
@@ -59,7 +58,6 @@ builder.Services.AddSwaggerGen(opt =>
         },
     });
 });
-
 
 var app = builder.Build();
 
