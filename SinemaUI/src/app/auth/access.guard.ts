@@ -1,13 +1,21 @@
-﻿import {inject} from '@angular/core';
-import {AuthService} from './auth.service';
-import {Router} from 'express';
+import {inject, Injectable} from "@angular/core";
+import {CanActivate, Router} from "@angular/router";
+import {AuthService} from "./auth.service";
 
-export const canActivateAuth =() =>{
-  const isLoggedIn = inject(AuthService).isAuthenticated;
+@Injectable({
+  providedIn: 'root'
+})
+export class AdminGuard implements CanActivate {
+  private authService = inject(AuthService);
+  private router = inject(Router);
 
-  if (isLoggedIn){
-    return true;
+  canActivate(): boolean {
+    if (this.authService.isAdmin()) {
+      return true;
+    } else {
+      this.router.navigate(['/']);
+      alert('У вас нет доступа к админ-панели!');
+      return false;
+    }
   }
-
-    return inject(Router).createUrlTree('/login');
 }

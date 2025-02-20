@@ -1,0 +1,50 @@
+<div class="admin-notifications">
+  <h2>📢 Управление уведомлениями</h2>
+
+  <form [formGroup]="notificationForm">
+    <label>Тип уведомления:</label>
+    <select formControlName="notificationType">
+      <option value="push">📲 Push-уведомление</option>
+      <option value="email">📧 Email</option>
+    </select>
+
+    <label>Вид рассылки:</label>
+    <select formControlName="deliveryType">
+      <option value="broadcast">📣 Всем пользователям</option>
+      <option value="user">👤 Конкретному пользователю</option>
+      <option value="bulk">📨 Массовая email-рассылка</option>
+    </select>
+
+    <div *ngIf="notificationForm.get('notificationType')?.value === 'push' && notificationForm.get('deliveryType')?.value === 'user'">
+      <label>ID пользователя:</label>
+      <input type="text" formControlName="userId" placeholder="Введите ID пользователя" />
+    </div>
+    
+    <div *ngIf="notificationForm.get('notificationType')?.value === 'email' && notificationForm.get('deliveryType')?.value === 'user'">
+      <label>Email пользователя:</label>
+      <input type="email" formControlName="email" placeholder="Введите Email" />
+    </div>
+
+    <div *ngIf="notificationForm.get('notificationType')?.value === 'email' && notificationForm.get('deliveryType')?.value === 'bulk'">
+      <label>Список Email (через запятую):</label>
+      <input type="text" formControlName="bulkEmails" placeholder="Введите список Email-адресов" />
+    </div>
+
+    <div *ngIf="notificationForm.get('notificationType')?.value === 'email'">
+      <label>Тема сообщения:</label>
+      <input type="text" formControlName="subject" placeholder="Введите тему сообщения" />
+
+      <label>Сообщение:</label>
+      <textarea formControlName="message" placeholder="Введите текст сообщения"></textarea>
+    </div>
+
+    <div *ngIf="notificationForm.get('notificationType')?.value === 'push'">
+      <label>Сообщение:</label>
+      <textarea formControlName="message" placeholder="Введите текст уведомления"></textarea>
+    </div>
+
+    <button (click)="sendNotification()" [disabled]="notificationForm.invalid">🚀 Отправить</button>
+  </form>
+
+  <div *ngIf="statusMessage" class="status">{{ statusMessage }}</div>
+</div>

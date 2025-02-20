@@ -1,0 +1,38 @@
+<div class="admin-bookings">
+  <h2>🎟 Управление бронированиями</h2>
+  <div *ngIf="selectedShowtime" class="booked-seats">
+    <h3>🪑 Забронированные места</h3>
+    <p><strong>Фильм:</strong> {{ selectedShowtime.movieTitle }}</p>
+    <p><strong>Кинозал:</strong> {{ getHallName(selectedShowtime.hallId) }}</p>
+    <p><strong>Дата:</strong> {{ selectedShowtime.startTime | date: 'dd MMMM yyyy, HH:mm' }}</p>
+
+    <div *ngIf="bookedSeats.length > 0; else noBookings">
+      <div class="seats-grid">
+        <span *ngFor="let seat of bookedSeats" class="seat-card">
+          Ряд {{ seat.row }}, Место {{ seat.number }}
+        </span>
+      </div>
+    </div>
+
+    <ng-template #noBookings>
+      <p class="no-bookings">На этот сеанс пока нет бронирований.</p>
+    </ng-template>
+  </div>
+
+  <div class="movies-list">
+    <div *ngFor="let group of groupedShowtimes" class="movie-card">
+      <div class="movie-header" (click)="toggleMovie(group.movie.id)">
+        <h3>🎬 {{ group.movie.title }}</h3>
+        <span [class.expanded]="expandedMovieId === group.movie.id">▼</span>
+      </div>
+
+      <div *ngIf="expandedMovieId === group.movie.id" class="showtimes-container">
+        <div *ngFor="let showtime of group.sessions" class="showtime-card" (click)="loadBookings(showtime)">
+          <p><strong>Кинозал:</strong> {{ getHallName(showtime.hallId) }}</p>
+          <p><strong>Дата:</strong> {{ showtime.startTime | date: 'dd MMMM yyyy, HH:mm' }}</p>
+          <p><strong>Цена:</strong> {{ showtime.ticketPrice }} руб.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

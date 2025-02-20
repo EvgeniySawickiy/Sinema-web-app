@@ -157,6 +157,22 @@
       "UpstreamHttpMethod": [ "GET"]
     },
     {
+      "DownstreamPathTemplate": "/api/statistics",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "movie-service",
+          "Port": 8080
+        }
+      ],
+      "UpstreamPathTemplate": "/statistics",
+      "UpstreamHttpMethod": [ "GET"],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      }
+    },
+    {
       "DownstreamPathTemplate": "/api/showtimes/{everything}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
@@ -166,11 +182,23 @@
         }
       ],
       "UpstreamPathTemplate": "/showtimes/{everything}",
-      "UpstreamHttpMethod": [ "GET", "POST", "DELETE" ],
+      "UpstreamHttpMethod": [ "GET","PUT", "POST", "DELETE" ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer",
         "AllowedScopes": []
       }
+    },
+    {
+      "DownstreamPathTemplate": "/api/bookings/hangfire",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "booking-service",
+          "Port": 8080
+        }
+      ],
+      "UpstreamPathTemplate": "/bookings/hangfire",
+      "UpstreamHttpMethod": ["GET"]
     },
     {
       "DownstreamPathTemplate": "/api/bookings/seats/showtime/{everything}",
@@ -199,6 +227,19 @@
         "AuthenticationProviderKey": "Bearer",
         "AllowedScopes": []
       }
+    },
+    {
+      "DownstreamPathTemplate": "/notificationHub",
+      "DownstreamScheme": "ws",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "notification-service",
+          "Port": 8080
+        }
+      ],
+      "UpstreamPathTemplate": "/notificationHub",
+      "UpstreamHttpMethod": ["GET", "POST", "PUT"],
+      "EnableWebSockets": true
     },
     {
       "DownstreamPathTemplate": "/api/notifications/{everything}",

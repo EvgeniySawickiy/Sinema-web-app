@@ -95,8 +95,13 @@ services:
     depends_on:
       - redis
       - mongo-booking
+      - hangfire-postgres
     environment:
       Logstash__Uri: "http://logstash:5044"
+      Kestrel__Endpoints__WebApi__Protocols: "Http1"
+      Kestrel__Endpoints__WebApi__Url: "http://booking-service:8080"
+      Kestrel__Endpoints__Grpc__Protocols: "Http2"
+      Kestrel__Endpoints__Grpc__Url: "http://booking-service:8085"
     networks:
       - backend
     restart: unless-stopped
@@ -120,6 +125,21 @@ services:
     networks:
       - backend
     restart: unless-stopped
+    
+  hangfire-postgres:
+      image: postgres:15
+      container_name: postgres_hangfire
+      restart: always
+      environment:
+        POSTGRES_DB: hangfiredb
+        POSTGRES_USER: hangfire_user
+        POSTGRES_PASSWORD: hangfire_pass
+      ports:
+        - "5436:5432"
+      networks:
+        - backend
+      volumes:
+        - postgres_data:/var/lib/postgresql/data
   
   mongo-booking:
     image: mongo:latest
@@ -197,6 +217,7 @@ volumes:
   mongo_data:
   redis_data:
   elasticsearch_data:
+  postgres_data:
 
 networks:
   backend:

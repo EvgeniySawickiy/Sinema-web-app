@@ -13,6 +13,23 @@
       margin-top: 10px;
     }
   }
+  .logout-btn {
+    background-color: #f44336;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+
+    font-size: 14px;
+    padding: 10px 16px;
+    cursor: pointer;
+
+    transition: background-color 0.2s ease-in-out;
+  }
+
+  .logout-btn:hover,
+  .logout-btn:focus {
+    background-color: #5c0100;
+  }
 
   .site-header {
   background-color: var(--dark-color);
@@ -54,7 +71,7 @@
           transition: color 0.3s;
 
           &:hover {
-            color: #d1c4e9; // Светло-фиолетовый при наведении
+            color: #d1c4e9;
           }
         }
       }

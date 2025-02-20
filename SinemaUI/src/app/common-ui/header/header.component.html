@@ -9,7 +9,7 @@
         <li><a href="/">Home</a></li>
         <li><a routerLink="movies">Movies</a></li>
         <li><a href="about">About Us</a></li>
-        <li><a href="/contact">Contact</a></li>
+          <li *ngIf="authService.isAdmin()"><a routerLink="/admin">Admin panel</a></li>
       </ul>
     </nav>
 
@@ -20,9 +20,14 @@
         <button routerLink="register" class ="register-btn">Register</button>
       </ng-container>
       <ng-container *ngIf="isAuthenticated">
-        <button routerLink="profile" class="profile-btn">
-          <img src="assets/imges/user.svg" alt="Profile"/>
-        </button>
+        <ng-container *ngIf="authService.isAdmin(); else userProfile">
+          <button (click)="logout()" class="logout-btn">Logout</button>
+        </ng-container>
+        <ng-template #userProfile>
+          <button routerLink="profile" class="profile-btn">
+            <img src="assets/imges/user.svg" alt="Profile" />
+          </button>
+        </ng-template>
       </ng-container>
     </div>
   </div>

@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
 using BookingService.Application.Features.Bookings.Commands.Handlers;
+using BookingService.Application.Features.Bookings.Handlers;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace BookingService.Application.DependencyInjection

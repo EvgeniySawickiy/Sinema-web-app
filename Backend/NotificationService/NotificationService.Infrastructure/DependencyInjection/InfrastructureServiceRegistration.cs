@@ -1,6 +1,4 @@
-﻿using Microsoft.Extensions.Options;
-using NotificationService.Core.Entities;
-using NotificationService.Infrastructure.Protos;
+﻿using NotificationService.Infrastructure.Protos;
 
 namespace NotificationService.Infrastructure.DependencyInjection
 {
@@ -38,7 +36,6 @@ namespace NotificationService.Infrastructure.DependencyInjection
 
             services.AddSignalR();
             services.AddSingleton<IConnectionFactory>(connectionFactory);
-            services.AddSingleton<IMessagePublisher, RabbitMQPublisher>();
             services.AddHostedService<BookingEventConsumer>();
 
             services.AddScoped<INotificationRepository, NotificationRepository>();

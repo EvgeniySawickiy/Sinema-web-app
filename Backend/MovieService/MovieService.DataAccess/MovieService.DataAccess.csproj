@@ -22,6 +22,7 @@
   <ItemGroup>
     <ProjectReference Include="..\MovieService.Core\MovieService.Core.csproj" />
 	<Protobuf Include="Protos\movie.proto" GrpcServices="Server" />
+  <Protobuf Include="Protos\booking.proto" GrpcServices="Client" />
   </ItemGroup>
 
 </Project>

@@ -3,8 +3,9 @@
   title: string;
   description: string;
   durationInMinutes: number;
+  genres: string[];
+  genreIds: string[];
   imageUrl: string;
   trailerUrl: string;
-  genres: string[];
   rating: number;
 }

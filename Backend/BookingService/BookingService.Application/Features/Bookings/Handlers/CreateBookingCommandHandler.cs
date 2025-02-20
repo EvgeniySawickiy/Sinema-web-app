@@ -1,23 +1,31 @@
-﻿using BookingService.Core.Entities;
+﻿using BookingService.Application.Features.Bookings.Commands;
+using BookingService.Core.Entities;
 using BookingService.Core.Events;
 using BookingService.Core.Interfaces;
+using BookingService.DataAccess.ExternalServices;
 using BookingService.DataAccess.Messaging;
 using BookingService.DataAccess.Persistence.Interfaces;
 using MediatR;
 
-namespace BookingService.Application.Features.Bookings.Commands.Handlers
+namespace BookingService.Application.Features.Bookings.Handlers
 {
     public class CreateBookingCommandHandler : IRequestHandler<CreateBookingCommand, Guid>
     {
         private readonly IBookingRepository _bookingRepository;
         private readonly ISeatReservationService _seatReservationService;
         private readonly IEventPublisher _eventPublisher;
+        private readonly MovieServiceGrpcClient _movieServiceClient;
 
-        public CreateBookingCommandHandler(IBookingRepository bookingRepository, ISeatReservationService seatReservationService, IEventPublisher eventPublisher)
+        public CreateBookingCommandHandler(
+            IBookingRepository bookingRepository,
+            ISeatReservationService seatReservationService,
+            IEventPublisher eventPublisher,
+            MovieServiceGrpcClient movieServiceClient)
         {
             _bookingRepository = bookingRepository;
             _seatReservationService = seatReservationService;
             _eventPublisher = eventPublisher;
+            _movieServiceClient = movieServiceClient;
         }
 
         public async Task<Guid> Handle(CreateBookingCommand request, CancellationToken cancellationToken)
@@ -38,6 +46,7 @@ namespace BookingService.Application.Features.Bookings.Commands.Handlers
 
             await _bookingRepository.AddAsync(booking);
 
+            var showtime = await _movieServiceClient.GetShowtimeInfoAsync(booking.ShowtimeId.ToString());
             var bookingCreatedEvent = new BookingCreatedEvent
             {
                 BookingId = booking.Id,
@@ -46,6 +55,8 @@ namespace BookingService.Application.Features.Bookings.Commands.Handlers
                 SeatNumbers = booking.Seats.Select(seat => (seat.Row, seat.Number)).ToList(),
                 TotalPrice = price,
                 CreatedAt = DateTime.UtcNow,
+                ShowtimeDateTime = showtime.StartTime,
+                MovieTitle = showtime.MovieTitle,
             };
 
             _eventPublisher.Publish(

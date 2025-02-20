@@ -1,7 +1,6 @@
 ﻿import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
 import {HttpClient} from '@angular/common/http';
-import {Hall} from '../Interfaces/hall.interface';
 import {Genre} from '../Interfaces/genre.interface';
 
 @Injectable({

@@ -4,7 +4,7 @@ using Ocelot.Middleware;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
-
+builder.Services.AddSignalR();
 builder.Services.AddAuthentication("Bearer").AddJwtBearer(options =>
 {
     var configuration = builder.Configuration.GetSection("AppSettings");
@@ -27,7 +27,9 @@ builder.Services.AddCors(options =>
     {
         policy.WithOrigins("http://localhost:4200")
             .AllowAnyHeader()
-            .AllowAnyMethod();
+            .AllowAnyMethod()
+            .AllowCredentials()
+            .SetIsOriginAllowed(origin => true);
     });
 });
 
@@ -37,6 +39,7 @@ builder.Services.AddOcelot();
 var app = builder.Build();
 
 app.UseCors("AllowAngularApp");
+app.UseWebSockets();
 app.UseAuthentication();
 app.UseAuthorization();
 

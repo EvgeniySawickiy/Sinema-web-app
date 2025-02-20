@@ -26,6 +26,11 @@ namespace MovieService.DataAccess.Persistence.Repositories
             return await _dbSet.FindAsync(new object[] { id }, cancellationToken);
         }
 
+        public async Task<int> CountAsync(CancellationToken cancellationToken)
+        {
+            return await _dbSet.CountAsync(cancellationToken);
+        }
+
         public async Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> predicate, CancellationToken cancellationToken)
         {
             return await _dbSet.Where(predicate).ToListAsync(cancellationToken);

@@ -1,12 +1,13 @@
-using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using BookingService.Application.DependencyInjection;
 using BookingService.DataAccess.DependencyInjection;
+using BookingService.DataAccess.ExternalServices;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddGrpc();
 builder.Services.AddControllers();
 builder.Services.AddApplicationServices();
 builder.Services.AddEndpointsApiExplorer();
@@ -58,7 +59,6 @@ builder.Services.AddSwaggerGen(opt =>
     });
 });
 
-
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -66,6 +66,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.MapGrpcService<BookingStatisticsService>();
 
 app.UseHttpsRedirection();
 

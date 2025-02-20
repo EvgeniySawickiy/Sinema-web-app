@@ -70,5 +70,19 @@ namespace MovieService.Controllers
 
             return NoContent();
         }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPut("{id:guid}")]
+        public async Task<IActionResult> UpdateShowtime(Guid id, [FromBody] UpdateShowtimeCommand command,
+            CancellationToken cancellationToken)
+        {
+            _logger.LogInformation("Updating showtime with ID: {ShowtimeId}.", id);
+            
+            await _mediator.Send(command, cancellationToken);
+
+            _logger.LogInformation("Updated showtime with ID: {ShowtimeId}.", id);
+
+            return NoContent();
+        }
     }
 }

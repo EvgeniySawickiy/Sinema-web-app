@@ -6,6 +6,7 @@ import {CookieService} from 'ngx-cookie-service';
 import {Router} from '@angular/router';
 import {SignUpResponse} from '../data/Interfaces/sign-up-response';
 import {User} from '../data/Interfaces/user.interface';
+import {jwtDecode} from 'jwt-decode';
 
 @Injectable({
   providedIn: 'root'
@@ -37,6 +38,14 @@ export class AuthService {
     this.loadTokens()
     }
     return this.isAuthenticatedSubject.value;
+  }
+
+  getUserRole(): string | null {
+    return this.cookieService.get('user_role') || null;
+  }
+
+  isAdmin(): boolean {
+    return this.getUserRole() === 'Admin';
   }
 
   login(payload:{login: string, password: string}) {
@@ -96,6 +105,7 @@ export class AuthService {
     this.cookieService.delete('access_token');
     this.cookieService.delete('refresh_token');
     this.cookieService.delete('userId');
+    this.cookieService.delete('user_role');
 
     this.accessToken = null;
     this.refreshToken = null;
@@ -112,6 +122,18 @@ export class AuthService {
     this.cookieService.set('access_token', this.accessToken);
     this.cookieService.set('refresh_token', this.refreshToken);
     this.cookieService.set('userId', this.userId);
+
+    try {
+      const decodedToken: any = jwtDecode(this.accessToken);
+
+      const userRole =
+          decodedToken["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"] || "User";
+
+      this.cookieService.set('user_role', userRole);
+    } catch (error) {
+      console.error("Ошибка декодирования токена:", error);
+    }
+
     this.isAuthenticatedSubject.next(true);
   }
 

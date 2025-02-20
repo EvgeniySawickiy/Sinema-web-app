@@ -1,4 +1,5 @@
-﻿using NotificationService.Application.Interfaces;
+﻿using Hangfire;
+using NotificationService.Application.Interfaces;
 using NotificationService.Core.Entities;
 using NotificationService.Core.Enums;
 using NotificationService.Core.Events;
@@ -24,6 +25,80 @@ public class NotificationService : INotificationService
         _userNotificationRepository = userNotificationRepository;
         _emailService = emailService;
         _userService = userService;
+    }
+
+    private static readonly Dictionary<Guid, List<string>> _scheduledJobs = new();
+
+    public async void ScheduleEmailReminders(BookingCreatedEvent bookingEvent)
+    {
+        var user = await _userService.GetUserByIdAsync(bookingEvent.UserId);
+        if (user == null)
+        {
+            throw new UserNotFoundException(bookingEvent.UserId);
+        }
+
+        var reminder1 = DateTime.Parse(bookingEvent.ShowtimeDateTime).AddDays(-1);
+        var reminder2 = DateTime.Parse(bookingEvent.ShowtimeDateTime).AddHours(-1);
+
+        var jobIds = new List<string>();
+
+        if (reminder1 > DateTime.UtcNow)
+        {
+            var notification = new Notification
+            {
+                Title = "Напоминание о киносеансе",
+                Message =
+                    $"Ваш сеанс на фильм {bookingEvent.MovieTitle} состоится завтра {bookingEvent.ShowtimeDateTime}.",
+                Recipient = user.Email,
+                Type = NotificationType.Email,
+                CreatedAt = DateTime.UtcNow,
+                Status = NotificationStatus.Pending,
+            };
+
+            string jobId1 = BackgroundJob.Schedule(
+                () => SendNotificationAsync(notification),
+                reminder1 - DateTime.UtcNow);
+
+            jobIds.Add(jobId1);
+        }
+
+        if (reminder2 > DateTime.UtcNow)
+        {
+            var notification = new Notification
+            {
+                Title = "Напоминание о киносеансе",
+                Message =
+                    $"Ваш сеанс на фильм {bookingEvent.MovieTitle} состоится через один час в {bookingEvent.ShowtimeDateTime:HH:mm}.",
+                Recipient = user.Email,
+                Type = NotificationType.Email,
+                CreatedAt = DateTime.UtcNow,
+                Status = NotificationStatus.Pending,
+            };
+
+            string jobId2 = BackgroundJob.Schedule(
+                () => SendNotificationAsync(notification),
+                reminder2 - DateTime.UtcNow);
+
+            jobIds.Add(jobId2);
+        }
+
+        if (jobIds.Count > 0)
+        {
+            _scheduledJobs[bookingEvent.BookingId] = jobIds;
+        }
+    }
+
+    public void DeleteScheduleEmailReminders(BookingCancelledEvent bookingCancelledEvent)
+    {
+        if (_scheduledJobs.TryGetValue(bookingCancelledEvent.BookingId, out var jobIds))
+        {
+            foreach (var jobId in jobIds)
+            {
+                BackgroundJob.Delete(jobId);
+            }
+
+            _scheduledJobs.Remove(bookingCancelledEvent.BookingId);
+        }
     }
 
     public async Task HandleBookingCreatedAsync(BookingCreatedEvent bookingCreatedEvent)
@@ -95,7 +170,7 @@ public class NotificationService : INotificationService
         await SendNotificationAsync(notification);
     }
 
-    private async Task SendNotificationAsync(Notification notification)
+    public async Task SendNotificationAsync(Notification notification)
     {
         try
         {

@@ -14,4 +14,16 @@ export class ShowtimeService {
   getShowTimes(): Observable<ShowTime[]> {
     return this.http.get<ShowTime[]>(this.apiUrl);
   }
+
+  addShowtime(showtime: Partial<ShowTime>): Observable<ShowTime> {
+    return this.http.post<ShowTime>(this.apiUrl, showtime);
+  }
+
+  updateShowtime(id: string, showtime: Partial<ShowTime>): Observable<void> {
+    return this.http.put<void>(`${this.apiUrl}/${id}`, showtime);
+  }
+
+  deleteShowtime(id: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  }
 }

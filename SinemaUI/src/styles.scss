@@ -1,4 +1,6 @@
 @import "fonts";
+@import 'ngx-toastr/toastr';
+
 :root{
   --dark-color: #3c0071;
   --light-color: #ae50c5;
@@ -20,6 +22,14 @@ body{
   background-image: url("/assets/imges/background.jpg");
   background-repeat: no-repeat;
   background-size: cover;
+  height: 100%;
+  min-height: 100vh;
+}
+
+app-root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 }
 
 button {
@@ -40,6 +50,3 @@ button {
     background-color: var(--primary-color);
   }
 }
-
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }

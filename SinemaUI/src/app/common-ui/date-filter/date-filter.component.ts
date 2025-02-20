@@ -64,8 +64,6 @@ export class DateFilterComponent {
     if (selectedDate) {
       this.selectedDate = selectedDate;
       this.dateSelected.emit(selectedDate);
-    } else {
-      console.log('Дата не выбрана');
     }
   }
 

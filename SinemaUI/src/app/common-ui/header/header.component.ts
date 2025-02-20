@@ -15,7 +15,7 @@ import {NgIf} from '@angular/common';
 export class HeaderComponent {
   isAuthenticated = false;
 
-  constructor(private authService: AuthService) {}
+  constructor(protected authService: AuthService) {}
 
   ngOnInit(): void {
     this.authService.isAuthenticated$.subscribe(authStatus => {

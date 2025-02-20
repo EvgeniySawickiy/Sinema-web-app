@@ -1,0 +1,71 @@
+<div class="admin-movies">
+  <form [formGroup]="movieForm">
+    <label>Название:</label>
+    <input type="text" formControlName="title" placeholder="Введите название фильма" />
+    <div *ngIf="movieForm.get('title')?.invalid && movieForm.get('title')?.touched" class="error">
+      Название обязательно (мин. 2 символа)
+    </div>
+
+    <label>Описание:</label>
+    <textarea formControlName="description" placeholder="Введите описание"></textarea>
+    <div *ngIf="movieForm.get('description')?.invalid && movieForm.get('description')?.touched" class="error">
+      Описание обязательно (мин. 10 символов)
+    </div>
+
+    <label>Длительность (минуты):</label>
+    <input type="number" formControlName="durationInMinutes" />
+    <div *ngIf="movieForm.get('durationInMinutes')?.invalid && movieForm.get('durationInMinutes')?.touched" class="error">
+      Длительность должна быть не менее 1 минуты
+    </div>
+
+    <label>Жанры:</label>
+    <select multiple formControlName="genreIds">
+      <option *ngFor="let genre of genres" [value]="genre.id">{{ genre.name }}</option>
+    </select>
+    <div *ngIf="movieForm.get('genreIds')?.invalid && movieForm.get('genreIds')?.touched" class="error">
+      Выберите хотя бы один жанр
+    </div>
+
+    <label>Рейтинг:</label>
+    <input type="number" formControlName="rating" />
+    <div *ngIf="movieForm.get('rating')?.invalid && movieForm.get('rating')?.touched" class="error">
+      Рейтинг должен быть от 0 до 10
+    </div>
+
+    <label>Ссылка на изображение:</label>
+    <input type="text" formControlName="imageUrl" placeholder="URL постера" />
+    <div *ngIf="movieForm.get('imageUrl')?.invalid && movieForm.get('imageUrl')?.touched" class="error">
+      Укажите корректный URL
+    </div>
+
+    <label>Ссылка на трейлер:</label>
+    <input type="text" formControlName="trailerUrl" placeholder="URL трейлера" />
+    <div *ngIf="movieForm.get('trailerUrl')?.invalid && movieForm.get('trailerUrl')?.touched" class="error">
+      Укажите корректный URL
+    </div>
+
+    <div class="form-buttons">
+      <button *ngIf="!isEditing" (click)="addMovie()" [disabled]="movieForm.invalid">➕ Добавить фильм</button>
+      <button *ngIf="isEditing" (click)="updateMovie()" [disabled]="movieForm.invalid">💾 Сохранить изменения</button>
+      <button *ngIf="isEditing" (click)="cancelEdit()">❌ Отмена</button>
+    </div>
+  </form>
+
+  <div class="movies-list">
+    <h2>📜 Список фильмов</h2>
+    <div *ngIf="movies.length === 0" class="no-movies">Фильмов пока нет.</div>
+
+    <div *ngFor="let movie of movies" class="movie-card">
+      <img [src]="movie.imageUrl || 'assets/imges/default-movie-portrait.jpg'" alt="{{ movie.title }}" />
+      <div class="movie-info">
+        <h3>{{ movie.title }}</h3>
+        <p><strong>Жанры:</strong> {{ getGenreNames(movie.genreIds) }}</p>
+        <p><strong>Рейтинг:</strong> {{ movie.rating }}/10</p>
+        <div class="buttons">
+          <button class="edit-btn" (click)="editMovie(movie)">✏ Редактировать</button>
+          <button class="delete-btn" (click)="deleteMovie(movie.id)">🗑 Удалить</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

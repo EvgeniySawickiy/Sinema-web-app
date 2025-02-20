@@ -1,0 +1,20 @@
+﻿syntax = "proto3";
+
+package BookingServiceGrpc;
+
+service BookingStatisticsService {
+  rpc GetBookingStatistics (BookingStatisticsRequest) returns (BookingStatisticsResponse);
+}
+
+message BookingStatisticsRequest {}
+
+message BookingStatisticsResponse {
+  int32 totalBookings = 1;
+  double totalRevenue = 2;
+  repeated BookingByDay bookingsByDay = 3;  
+}
+
+message BookingByDay {
+  string date = 1;
+  int32 count = 2;
+}

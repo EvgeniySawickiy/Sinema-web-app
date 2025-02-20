@@ -3,7 +3,6 @@ import {AuthService} from './auth.service';
 import {inject} from '@angular/core';
 import {catchError, switchMap, throwError} from 'rxjs';
 
-
 let isRefreshing = false;
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const authService: AuthService = inject(AuthService);

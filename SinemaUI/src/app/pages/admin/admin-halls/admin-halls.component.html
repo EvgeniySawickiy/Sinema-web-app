@@ -1,0 +1,54 @@
+<div class="admin-halls">
+  <h2>🏛 Управление залами</h2>
+
+  <form [formGroup]="hallForm">
+    <label>Название зала:</label>
+    <input type="text" formControlName="name" placeholder="Введите название зала" />
+    <div *ngIf="hallForm.get('name')?.invalid && hallForm.get('name')?.touched" class="error">
+      Название обязательно.
+    </div>
+
+    <label>Общее количество мест:</label>
+    <input type="number" formControlName="totalSeats" (input)="updateSeatsPerRow()" />
+    <div *ngIf="hallForm.get('totalSeats')?.invalid && hallForm.get('totalSeats')?.touched" class="error">
+      Количество мест должно быть больше 0.
+    </div>
+
+    <label>Количество рядов:</label>
+    <input type="number" formControlName="numberOfRows" (input)="updateSeatsPerRow()" />
+    <div *ngIf="hallForm.get('numberOfRows')?.invalid && hallForm.get('numberOfRows')?.touched" class="error">
+      Количество рядов должно быть больше 0.
+    </div>
+
+    <label>Количество мест в каждом ряду:</label>
+    <div formArrayName="seatsPerRow">
+      <div *ngFor="let row of seatsPerRow.controls; let i = index">
+        <input type="number" [formControlName]="i" placeholder="Ряд {{ i + 1 }}" />
+      </div>
+    </div>
+
+
+    <div class="form-buttons">
+      <button *ngIf="!isEditing" (click)="addHall()" [disabled]="hallForm.invalid">➕ Добавить зал</button>
+      <button *ngIf="isEditing" (click)="updateHall()" [disabled]="hallForm.invalid">💾 Сохранить</button>
+      <button *ngIf="isEditing" (click)="cancelEdit()">❌ Отмена</button>
+    </div>
+  </form>
+
+  <div class="halls-list">
+    <h2>📋 Список залов</h2>
+    <div *ngIf="halls.length === 0" class="no-halls">Залов пока нет.</div>
+
+    <div *ngFor="let hall of halls" class="hall-card">
+      <h3>🏛 {{ hall.name }}</h3>
+      <p><strong>Общее количество мест:</strong> {{ hall.totalSeats }}</p>
+      <p><strong>Количество рядов:</strong> {{ getNumberOfRows(hall) }}</p>
+      <p><strong>Места в рядах:</strong> {{ getSeatsPerRow(hall) }}</p>
+
+      <div class="buttons">
+        <button class="edit-btn" (click)="editHall(hall)">✏ Редактировать</button>
+        <button class="delete-btn" (click)="deleteHall(hall.id)">🗑 Удалить</button>
+      </div>
+    </div>
+  </div>
+</div>

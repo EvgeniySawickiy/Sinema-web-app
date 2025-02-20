@@ -7,7 +7,6 @@ import {SessionButtonComponent} from '../../common-ui/session-button/session-but
 import {NgFor, NgIf} from '@angular/common';
 import {SeatSelectionComponent} from '../../common-ui/seat-selection/seat-selection.component';
 
-
 @Component({
   selector: 'app-sessions-card',
   standalone: true,
@@ -42,6 +41,7 @@ export class SessionCardComponent {
       this.groupSessionsByMovie();
     }
   }
+
   groupSessionsByMovie() {
     if (this.movies.length === 0 || this.showTimes.length === 0) {
       this.groupedSessions = [];
